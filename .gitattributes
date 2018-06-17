@@ -1,0 +1,5 @@
+* eol=lf
+*.inc linguist-language=PAWN
+*.pwn linguist-language=PAWN
+*.p linguist-language=PAWN
+vendor/* linguist-vendored
