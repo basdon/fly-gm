@@ -1,15 +1,16 @@
 SHELL = cmd.exe
 .SHELLFLAGS = /c
 sed = "K:\Program Files\Git\usr\bin\sed.exe"
-pp = $(sed) -f preprocess.sed
+ppfile = preprocess.sed
+pp = $(sed) -f $(ppfile)
 
-basdon: p/basdon.p p/panel.p
+build: p/basdon.p p/panel.p
 	@echo.
 
-p/basdon.p: basdon.pwn
+p/basdon.p: basdon.pwn $(ppfile)
 	$(pp) basdon.pwn>p/basdon.p
 
-p/panel.p: panel.pwn
+p/panel.p: panel.pwn $(ppfile)
 	$(pp) panel.pwn>p/panel.p
 
 clean:
