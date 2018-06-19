@@ -6,16 +6,14 @@
 #define TEXT_BG_SPD 1
 #define TEXT_BG_ALT 2
 
-#if defined INIT
+##section INIT
 	new Text:text[2]
-#endinput
-#endif
+##endsection
 
-#if defined LOOP150
-#endinput
-#endif
+##section LOOP150
+##endsection
 
-#if defined ONGAMEMODEINIT
+##section ONGAMEMODEINIT
 #define TEXT_GREY 0x777777FF
 
 	text[0] = TextDrawCreate(320.0, 360.0, "~n~~n~~n~~n~~n~~n~~n~~n~");
@@ -136,6 +134,5 @@
 	TextDrawSetShadow(TDVAR, 0);
 	TextDrawSetProportional(TDVAR, 0);
 */
-#endinput
-#endif
+##endsection
 
