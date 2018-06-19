@@ -21,6 +21,7 @@
 
 #define INIT
 ##include "panel"
+
 #undef INIT
 
 main()
@@ -40,6 +41,7 @@ EXPORT PUB_LOOP25()
 		invoc = 0
 #define LOOP150
 ##include "panel"
+
 #undef LOOP150
 	}
 }
@@ -74,6 +76,7 @@ public OnGameModeInit()
 
 #define ONGAMEMODEINIT
 ##include "panel"
+
 #undef ONGAMEMODEINIT
 
 	return 1;
