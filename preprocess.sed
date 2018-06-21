@@ -23,6 +23,7 @@
 }
 
 /^##section/,/^##endsection/ {
+	/^\s*return/c#error "no return in sections please"
 	/^\s*#allowreturn$/ {
 		N
 		/.*\n\s*return[$ ]/ !{
@@ -31,9 +32,7 @@
 		}
 		i
 		s/.*\n//
-		n
 	}
-	/^\s*return/c#error "no return in sections please"
 }
 
 s/^##section\s\+\(.*\)$/#if defined \1/
