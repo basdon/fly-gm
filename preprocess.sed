@@ -23,8 +23,19 @@
 }
 
 /^##section/,/^##endsection/ {
-	/return/c#error "no return in sections please"
+	/^\s*#allowreturn$/ {
+		N
+		/.*\n\s*return[$ ]/ !{
+			c\#error "#allowreturn should only precede a return statement"
+			q
+		}
+		i
+		s/.*\n//
+		n
+	}
+	/^\s*return/c#error "no return in sections please"
 }
+
 s/^##section\s\+\(.*\)$/#if defined \1/
 /^##endsection$/ {
 	i\#endinput
