@@ -35,9 +35,27 @@
 	}
 }
 
-s/^>>\s\+\(.*\)$/#if defined \1/
+/^>>/ {
+	s/^>>\s\+\(.*\)\s*$/#if defined \1/
+	# also check first if next line is empty (is '>>')
+	p
+	s/^.*defined \(.*\)$/§§§\1/
+	H
+	N
+	s/.*\n//
+	/^>>$/ !{
+		c\#error "keep lines after section start '>>'"
+		q
+	}
+	g
+	s/^\(.*\)§§§.*$/\1/
+	x
+	s/^.*§§§\(.*\)$/#define SECTION_\1/
+}
+
 /^<<$/ {
 	i\#endinput
 	N
 	c\#endif
 }
+
