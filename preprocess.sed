@@ -22,7 +22,7 @@
 	s/^.*§§§\(.*\)$/#undef _inc_\1/
 }
 
-/^##section/,/^##endsection/ {
+/^>>/,/^<<$/ {
 	/^\s*return/c#error "no return in sections please"
 	/^\s*#allowreturn$/ {
 		N
@@ -35,8 +35,8 @@
 	}
 }
 
-s/^##section\s\+\(.*\)$/#if defined \1/
-/^##endsection$/ {
+s/^>>\s\+\(.*\)$/#if defined \1/
+/^<<$/ {
 	i\#endinput
 	N
 	c\#endif
