@@ -11,7 +11,7 @@
 	new Text:text[2]
 <<
 
->> LOOP150
+>> LOOP100
 >>
 <<
 

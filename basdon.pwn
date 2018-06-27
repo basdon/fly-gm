@@ -37,12 +37,17 @@ EXPORT PUB_LOOP25()
 #define LOOP25
 #undef LOOP25
 	++invoc
-	if (invoc & 0x4) {
-		invoc = 0
-#define LOOP150
+	if (invoc & 0x3 == 0) {
+#define LOOP100
 ##include "panel"
 
-#undef LOOP150
+#undef LOOP100
+	}
+	if (invoc >= 60) {
+		invoc = 0
+#define LOOP1M
+
+#undef LOOP1M
 	}
 }
 
