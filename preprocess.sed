@@ -22,8 +22,8 @@
 	s/^.*§§§\(.*\)$/#undef _inc_\1/
 }
 
-/^>>/,/^<<$/ {
-	/^\s*return/c#error "no return in sections please"
+/^hook /,/^}$/ {
+	/^\s*return/c#error "no return in hooks please"
 	/^\s*#allowreturn$/ {
 		N
 		/.*\n\s*return[$ ]/ !{
@@ -33,29 +33,28 @@
 		i
 		s/.*\n//
 	}
+	/^}$/ {
+		i\#endinput
+		N
+		c\#endif
+	}
 }
 
-/^>>/ {
-	s/^>>\s\+\(.*\)\s*$/#if defined \1/
-	# also check first if next line is empty (is '>>')
+/^hook / {
+	s/^hook\s\+\(.*\)()$/#if defined \1/
+	# also check first if next line is empty (is '{')
 	p
 	s/^.*defined \(.*\)$/§§§\1/
 	H
 	N
 	s/.*\n//
-	/^>>$/ !{
-		c\#error "keep lines after section start '>>'"
+	/^{$/ !{
+		c\#error "keep lines after hook start '{'"
 		q
 	}
 	g
 	s/^\(.*\)§§§.*$/\1/
 	x
 	s/^.*§§§\(.*\)$/#define SECTION_\1/
-}
-
-/^<<$/ {
-	i\#endinput
-	N
-	c\#endif
 }
 
