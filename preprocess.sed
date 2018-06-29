@@ -41,7 +41,7 @@
 }
 
 /^hook / {
-	s/^hook\s\+\(.*\)()$/#if defined \1/
+	s/^hook\s\+\(.*\)(.*)$/#if defined \1/
 	# also check first if next line is empty (is '{')
 	p
 	s/^.*defined \(.*\)$/§§§\1/
