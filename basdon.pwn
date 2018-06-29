@@ -2,11 +2,14 @@
 // vim: set filetype=c ts=8 noexpandtab:
 
 #include <a_samp>
+#include "simpleiter"
+
+#pragma tabsize 0 // it does not go well with some macros and preprocess
 
 #define VERSION "0.1"
 
 #undef MAX_PLAYERS
-#define MAX_PLAYERS (100)
+#define MAX_PLAYERS (50)
 #define SLOTS MAX_PLAYERS
 
 #define EXPORT%0\32%1(%2) forward %1(%2);public %1(%2)
@@ -18,6 +21,8 @@
 
 // public symbols
 #define PUB_LOOP25 a
+
+new Iter:players[MAX_PLAYERS]
 
 #define INIT
 ##include "panel"
@@ -61,11 +66,15 @@ public OnPlayerConnect(playerid)
 	TogglePlayerClock(playerid, 1)
 	SetPlayerTime(playerid, 12, 0)
 
+	iter_add(players, playerid)
+
 	return 1
 }
 
 public OnPlayerDisconnect(playerid, reason)
 {
+	iter_remove(players, playerid)
+
 	return 1
 }
 
