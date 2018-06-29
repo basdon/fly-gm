@@ -82,7 +82,7 @@ public OnGameModeInit()
 {
 	SetGameModeText VERSION
 
-	UsePlayerPedAnims
+	//UsePlayerPedAnims
 	AddPlayerClassNoWeapon(0, 345.5279, 1950.8094, 17.6406, 90.0)
 	SetWorldTime 0
 
