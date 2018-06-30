@@ -36,6 +36,8 @@ hook VAR()
 	                             "_70-~n~_60-~n~_50-~n~_40-~n~_30-~n~_20-~n~_10-~n~___-~n~____~n~___"
 
 	new PANEL_BGTEXT[] = "~n~~n~~n~"
+
+	stock const HDG_FORMAT[] = "%03d"
 }
 
 hook LOOP100()
@@ -81,6 +83,31 @@ hook LOOP100()
 		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_SPD_METER2], meter2txt
 
 skipspd:
+		// HDG
+		GetVehicleZAngle(vid, vz)
+		new heading = floatround(vz)
+		if (heading == 0) {
+			heading = 360
+		}
+		format txt, 4, "%03d", heading
+		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_HDG], txt
+
+		// HDG METER
+		new hdgmeter[30] = { '_', ... }
+		heading = heading % 360 + 1
+		format hdgmeter[8], 4, HDG_FORMAT, heading; heading = heading % 360 + 1
+		format hdgmeter[4], 4, HDG_FORMAT, heading; heading = heading % 360 + 1
+		format hdgmeter[0], 4, HDG_FORMAT, heading; heading = (heading + 355) % 360 + 1
+		format hdgmeter[18], 4, HDG_FORMAT, heading; heading = (heading + 358) % 360 + 1
+		format hdgmeter[22], 4, HDG_FORMAT, heading; heading = (heading + 358) % 360 + 1
+		format hdgmeter[26], 4, HDG_FORMAT, heading
+		hdgmeter[3] = '_'
+		hdgmeter[7] = '_'
+		hdgmeter[11] = '_'
+		hdgmeter[21] = '_'
+		hdgmeter[25] = '_'
+		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_HDG_METER], hdgmeter
+
 		// VAI
 		vz = clamp(floatround(/*VEL_TO_KFPMA*14.5*/88.61422 * vz), -34, 34)
 		#define TDVAR tmp
@@ -252,7 +279,7 @@ hook ONPLAYERCONNECT(playerid)
 	TDVAR = CreatePlayerTextDraw(playerid, 320.0, 423.0, TXT_EMPTY);
 	PlayerTextDrawAlignment(playerid, TDVAR, 2);
 	PlayerTextDrawFont(playerid, TDVAR, 2);
-	PlayerTextDrawLetterSize(playerid, TDVAR, 0.3, 1.2);
+	PlayerTextDrawLetterSize(playerid, TDVAR, 0.22, 1.0);
 	PlayerTextDrawColor(playerid, TDVAR, TEXT_COLOR_METER2);
 	PlayerTextDrawSetOutline(playerid, TDVAR, 0);
 	PlayerTextDrawSetShadow(playerid, TDVAR, 0);
