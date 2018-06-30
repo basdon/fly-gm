@@ -305,7 +305,7 @@ hook ONPLAYERCONNECT(playerid)
 #undef TDVAR
 
 #define TDVAR playerpnltxt[playerid][PNLTXT_ALT_METER2]
-	TDVAR = CreatePlayerTextDraw(playerid, 446.0, 380.0, TXT_EMPTY);
+	TDVAR = CreatePlayerTextDraw(playerid, 442.0, 380.0, TXT_EMPTY);
 	PlayerTextDrawAlignment(playerid, TDVAR, 2);
 	PlayerTextDrawFont(playerid, TDVAR, 2);
 	PlayerTextDrawLetterSize(playerid, TDVAR, 0.3, 1.2);
@@ -316,7 +316,7 @@ hook ONPLAYERCONNECT(playerid)
 #undef TDVAR
 
 #define TDVAR playerpnltxt[playerid][PNLTXT_ALT]
-	TDVAR = CreatePlayerTextDraw(playerid, 458.0, 389.0, TXT_EMPTY);
+	TDVAR = CreatePlayerTextDraw(playerid, 455.0, 389.0, TXT_EMPTY);
 	PlayerTextDrawAlignment(playerid, TDVAR, 3);
 	PlayerTextDrawFont(playerid, TDVAR, 2);
 	PlayerTextDrawLetterSize(playerid, TDVAR, 0.4, 1.6);
