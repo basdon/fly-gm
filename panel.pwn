@@ -33,6 +33,8 @@ hook VAR()
 
 	stock const SPDMETERDATA[] = "160-~n~150-~n~140-~n~130-~n~120-~n~110-~n~100-~n~_90-~n~_80-~n~"\
 	                             "_70-~n~_60-~n~_50-~n~_40-~n~_30-~n~_20-~n~_10-~n~___-~n~____~n~___"
+
+	new PANEL_BGTEXT[] = "~n~~n~~n~"
 }
 
 hook LOOP100()
@@ -127,7 +129,7 @@ hook ONGAMEMODEINIT()
 #undef TDVAR
 
 #define TDVAR pnltxt[PNLTXT_BG_SPD]
-	TDVAR = TextDrawCreate(203.0, 383.0, "~n~~n~~n~");
+	TDVAR = TextDrawCreate(203.0, 383.0, PANEL_BGTEXT);
 	TextDrawAlignment(TDVAR, 2);
 	TextDrawFont(TDVAR, 1);
 	TextDrawLetterSize(TDVAR, 0.3, 1.0);
@@ -138,7 +140,7 @@ hook ONGAMEMODEINIT()
 #undef TDVAR
 
 #define TDVAR pnltxt[PNLTXT_BG_ALT]
-	TDVAR = TextDrawCreate(436.0, 383.0, "~n~~n~~n~");
+	TDVAR = TextDrawCreate(436.0, 383.0, PANEL_BGTEXT);
 	TextDrawAlignment(TDVAR, 2);
 	TextDrawFont(TDVAR, 1);
 	TextDrawLetterSize(TDVAR, 0.3, 1.0);
@@ -166,7 +168,7 @@ hook ONPLAYERCONNECT(playerid)
 #define TEXT_COLOR_METER2 0x989898FF
 
 #define TDVAR playerpnltxt[playerid][PNLTXT_SPD_METER]
-	TDVAR = CreatePlayerTextDraw(playerid, 220.0, 360.0, "220-~n~210-~n~~n~~n~~n~~n~200-~n~190-");
+	TDVAR = CreatePlayerTextDraw(playerid, 220.0, 360.0, TXT_EMPTY);
 	PlayerTextDrawAlignment(playerid, TDVAR, 3);
 	PlayerTextDrawFont(playerid, TDVAR, 2);
 	PlayerTextDrawLetterSize(playerid, TDVAR, 0.25, 1.0);
@@ -177,7 +179,7 @@ hook ONPLAYERCONNECT(playerid)
 #undef TDVAR
 
 #define TDVAR playerpnltxt[playerid][PNLTXT_SPD_METER2]
-	TDVAR = CreatePlayerTextDraw(playerid, 217.0, 380.0, "7~n~~n~5");
+	TDVAR = CreatePlayerTextDraw(playerid, 217.0, 380.0, TXT_EMPTY);
 	PlayerTextDrawAlignment(playerid, TDVAR, 2);
 	PlayerTextDrawFont(playerid, TDVAR, 2);
 	PlayerTextDrawLetterSize(playerid, TDVAR, 0.3, 1.2);
@@ -188,7 +190,7 @@ hook ONPLAYERCONNECT(playerid)
 #undef TDVAR
 
 #define TDVAR playerpnltxt[playerid][PNLTXT_SPD]
-	TDVAR = CreatePlayerTextDraw(playerid, 222.0, 389.0, "206");
+	TDVAR = CreatePlayerTextDraw(playerid, 222.0, 389.0, TXT_EMPTY);
 	PlayerTextDrawAlignment(playerid, TDVAR, 3);
 	PlayerTextDrawFont(playerid, TDVAR, 2);
 	PlayerTextDrawLetterSize(playerid, TDVAR, 0.4, 1.6);
@@ -199,7 +201,7 @@ hook ONPLAYERCONNECT(playerid)
 #undef TDVAR
 
 #define TDVAR playerpnltxt[playerid][PNLTXT_ALT_METER]
-	TDVAR = CreatePlayerTextDraw(playerid, 453.0, 360.0, "100-~n~50-~n~~n~~n~~n~~n~0-~n~-50-");
+	TDVAR = CreatePlayerTextDraw(playerid, 453.0, 360.0, TXT_EMPTY);
 	PlayerTextDrawAlignment(playerid, TDVAR, 3);
 	PlayerTextDrawFont(playerid, TDVAR, 2);
 	PlayerTextDrawLetterSize(playerid, TDVAR, 0.25, 1.0);
@@ -210,7 +212,7 @@ hook ONPLAYERCONNECT(playerid)
 #undef TDVAR
 
 #define TDVAR playerpnltxt[playerid][PNLTXT_ALT_METER2]
-	TDVAR = CreatePlayerTextDraw(playerid, 446.0, 380.0, "40~n~~n~20");
+	TDVAR = CreatePlayerTextDraw(playerid, 446.0, 380.0, TXT_EMPTY);
 	PlayerTextDrawAlignment(playerid, TDVAR, 2);
 	PlayerTextDrawFont(playerid, TDVAR, 2);
 	PlayerTextDrawLetterSize(playerid, TDVAR, 0.3, 1.2);
@@ -221,7 +223,7 @@ hook ONPLAYERCONNECT(playerid)
 #undef TDVAR
 
 #define TDVAR playerpnltxt[playerid][PNLTXT_ALT]
-	TDVAR = CreatePlayerTextDraw(playerid, 458.0, 389.0, "031");
+	TDVAR = CreatePlayerTextDraw(playerid, 458.0, 389.0, TXT_EMPTY);
 	PlayerTextDrawAlignment(playerid, TDVAR, 3);
 	PlayerTextDrawFont(playerid, TDVAR, 2);
 	PlayerTextDrawLetterSize(playerid, TDVAR, 0.4, 1.6);
@@ -232,7 +234,7 @@ hook ONPLAYERCONNECT(playerid)
 #undef TDVAR
 
 #define TDVAR playerpnltxt[playerid][PNLTXT_HDG_METER]
-	TDVAR = CreatePlayerTextDraw(playerid, 320.0, 423.0, "271_272_______274_275");
+	TDVAR = CreatePlayerTextDraw(playerid, 320.0, 423.0, TXT_EMPTY);
 	PlayerTextDrawAlignment(playerid, TDVAR, 2);
 	PlayerTextDrawFont(playerid, TDVAR, 2);
 	PlayerTextDrawLetterSize(playerid, TDVAR, 0.3, 1.2);
@@ -243,7 +245,7 @@ hook ONPLAYERCONNECT(playerid)
 #undef TDVAR
 
 #define TDVAR playerpnltxt[playerid][PNLTXT_HDG]
-	TDVAR = CreatePlayerTextDraw(playerid, 320.0, 420.0, "273");
+	TDVAR = CreatePlayerTextDraw(playerid, 320.0, 420.0, TXT_EMPTY);
 	PlayerTextDrawAlignment(playerid, TDVAR, 2);
 	PlayerTextDrawFont(playerid, TDVAR, 2);
 	PlayerTextDrawLetterSize(playerid, TDVAR, 0.4, 1.6);

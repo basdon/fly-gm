@@ -23,6 +23,7 @@
 #define PUB_LOOP25 a
 
 new Iter:players[MAX_PLAYERS]
+new TXT_EMPTY[] = "_"
 
 #define VAR
 ##include "panel"
@@ -65,7 +66,7 @@ public OnPlayerConnect(playerid)
 	DisablePlayerCheckpoint(playerid)
 	DisablePlayerRaceCheckpoint(playerid)
 
-	ShowPlayerDialog(playerid, -1, DIALOG_STYLE_MSGBOX, "_", "_", "_", "_")
+	ShowPlayerDialog(playerid, -1, DIALOG_STYLE_MSGBOX, TXT_EMPTY, TXT_EMPTY, TXT_EMPTY, TXT_EMPTY)
 
 	TogglePlayerClock(playerid, 1)
 	SetPlayerTime(playerid, 12, 0)
