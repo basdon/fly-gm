@@ -1,5 +1,6 @@
 
 command! -nargs=? Smake call SampMake(<q-args>)
+command! -nargs=? SMake call SampMake(<q-args>)
 func! SampMake(parm)
 	update
 	botright new
