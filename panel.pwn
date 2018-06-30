@@ -1,6 +1,8 @@
 
 // vim: set filetype=c ts=8 noexpandtab:
 
+#namespace "panel"
+
 #define VEL_TO_KPH(%0) (195.555*%0)
 #define VEL_TO_KTS(%0) (96.77661*%0) // KPH / 293 * 145
 #define VEL_TO_MPS(%0) (54.3297*%0) // (KPH / 3.6)
@@ -354,4 +356,6 @@ hook ONPLAYERCONNECT(playerid)
 	PlayerTextDrawSetProportional(playerid, TDVAR, 0);
 #undef TDVAR
 }
+
+#printhookguards
 

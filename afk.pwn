@@ -1,6 +1,8 @@
 
 // vim: set filetype=c ts=8 noexpandtab:
 
+#namespace "afk"
+
 #if !defined isAfk
 //@summary Check if a player is afk.
 //@param playerid the playerid to check
@@ -20,4 +22,6 @@ hook ONPLAYERUPDATE(playerid)
 {
 	lastupdate[playerid] = gettime()
 }
+
+#printhookguards
 

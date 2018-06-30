@@ -1,6 +1,8 @@
 
 // vim: set filetype=c ts=8 noexpandtab:
 
+#namespace "game_sa"
+
 #define MODEL_LEVIATHAN 417 // 0, 0x2000
 #define MODEL_HUNTER 425 // 0, 0x2000000
 #define MODEL_SEASPARROW 447 // 1, 0x8000
@@ -40,4 +42,6 @@ isInAirVehicle(playerid)
 	new model = GetVehicleModel(GetPlayerVehicleID(playerid)) - 400
 	return model != -400 && ((airvehicles[model / 32] >> (model & 31)) & 1);
 }
+
+#printhookguards
 

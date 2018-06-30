@@ -71,6 +71,42 @@
 	g
 	s/^\(.*\)§§§.*$/\1/
 	x
-	s/^.*§§§\(.*\)$/#define SECTION_\1/
+	s/^.*§§§\(.*\)$/\1§§§/
+	G
+	/§ns§/ !{
+		c#error "can't hook without having a namespace!"
+		q
+	}
+	s/^\(.*\)§§§.*\n\(.*\)§ns§.*$/\2_\1§hg§/
+	s/^\(.*\)§§§\(.*\)§ns§.*$/\2_\1§hg§/
+	H
+	s/^/#define /
+	s/§hg§//
+}
+
+# hook guards
+/^#printhookguards/ {
+	i// hookguards start
+:nextguard
+	g
+	/§hg§/ {
+		s/^.*\n\(.*\)§hg§.*$/#if !defined \1\n#error "missing hook \1"\n#endif/p
+		g
+		s/^\(.*\)\n.*§hg§\(.*\)$/\1\2/
+		x
+		b nextguard
+	}
+	c// hookguards end
+}
+
+# namespaces
+/^#namespace / {
+	s/^#namespace\s\+"\(.*\)"$/\1§ns§/
+	H
+	# remove previous namespace, if there's one
+	g
+	s/[^\n][^§]\+§ns§\(.*\)§ns§/\1§ns§/
+	x
+	c
 }
 
