@@ -27,6 +27,7 @@ ECHO.
 IF %ERRORLEVEL% NEQ 0 EXIT
 ECHO.
 IF EXIST "out\basdon.xml" (
-	"%_SED%" -i 's/xml-stylesheet href="[^"]*"/xml-stylesheet href="pawndoc.xsl"/' out/basdon.xml
+	MOVE /Y "out\basdon.xml" "basdon.xml"
+	"%_SED%" -i 's/xml-stylesheet href="[^"]*"/xml-stylesheet href="pawndoc.xsl"/' basdon.xml
 )
 
