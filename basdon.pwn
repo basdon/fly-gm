@@ -83,6 +83,10 @@ public OnPlayerConnect(playerid)
 
 public OnPlayerDisconnect(playerid, reason)
 {
+#define ONPLAYERDISCONNECT
+##include "panel"
+
+#undef ONPLAYERDISCONNECT
 	iter_remove(players, playerid)
 
 	return 1

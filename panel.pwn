@@ -209,6 +209,11 @@ hook ONGAMEMODEINIT()
 
 }
 
+hook ONPLAYERDISCONNECT(playerid)
+{
+	iter_remove(panelplayers, playerid)
+}
+
 hook ONPLAYERCONNECT(playerid)
 {
 	lastdatacache[playerid] = 0xFFFFFFFF
