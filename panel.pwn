@@ -43,22 +43,60 @@ hook VAR()
 
 hook LOOP100()
 {
-	for (new i : panelplayers) {
-		new playerid = iter_access(panelplayers, i)
+	for (new _i : panelplayers) {
+		new playerid = iter_access(panelplayers, _i)
 		new vid = GetPlayerVehicleID(playerid)
 		new Float:vx, Float:vy, Float:vz
+
+		// ALT
 		GetVehiclePos vid, vx, vy, vz
+		new v = floatround(vz)
+		if (((lastdatacache[playerid] & 0xFF0000) >> 16) == v) {
+			goto skipalt
+		}
+
+		new txt[4]
+		format txt, sizeof(txt), _03DFORMAT, v
+		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ALT], txt
+
+		// ALT METER
+		new t = v / 50
+		if ((lastdatacache[playerid] & 0xFF000000) != (t << 24)) {
+			lastdatacache[playerid] = (lastdatacache[playerid] & 0xFFFFFF) | (t << 24)
+			new metertxt[] = "____-~n~____-~n~~n~~n~~n~~n~____-~n~____-~n~"
+			for (new i = 0; i < 4; i++) {
+				new value = t + 2 - i
+				if (value < -18 || 19 < value) {
+					continue
+				}
+				new pos = i * 8 + (i >> 1) * 12
+				format metertxt[pos], 5, "%*d", (4 - ((value & 0x80000000) >>> 31)), (value * 50)
+				metertxt[pos + 4] = '-'
+			}
+			PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ALT_METER], metertxt
+		}
+
+		// ALT METER2
+		new altmetertxt[] = "_00~n~~n~_00"
+		t = v + 10
+		if (t < 0) t = -t, altmetertxt[0] = '-'
+		altmetertxt[1] = '0' + (t / 10) % 10
+		t = v - 10
+		if (t < 0) t = -t, altmetertxt[9] = '-'
+		altmetertxt[10] = '0' + (t / 10) % 10
+		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ALT_METER2], altmetertxt
+
+skipalt:
 		GetVehicleVelocity vid, vx, vy, vz
 
 		// SPD
 		vx = VEL_TO_KTS(VectorSize(vx, vy, vz))
-		new v = floatround(vx, floatround_tozero)
+		v = floatround(vx, floatround_tozero)
 		if ((lastdatacache[playerid] & 0xFF) == v) {
 			goto skipspd
 		}
 		lastdatacache[playerid] = (lastdatacache[playerid] & 0xFFFFFF00) | v
 
-		new txt[4]
 		format txt, sizeof(txt), _03DFORMAT, v
 		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_SPD], txt
 
