@@ -30,6 +30,8 @@ new TXT_EMPTY[] = "_"
 
 ##include "game_sa"
 
+##include "afk"
+
 #undef VAR
 
 main()
@@ -109,6 +111,15 @@ public OnGameModeInit()
 	return 1;
 }
 
+public OnPlayerUpdate(playerid)
+{
+#define ONPLAYERUPDATE
+##include "afk"
+
+#undef ONPLAYERUPDATE
+	return 1
+}
+
 public OnGameModeExit()
 {
 	return 1
@@ -125,4 +136,5 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 
 #include "panel"
 #include "game_sa"
+#include "afk"
 

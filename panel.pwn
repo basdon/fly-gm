@@ -47,6 +47,9 @@ hook LOOP100()
 {
 	for (new _i : panelplayers) {
 		new playerid = iter_access(panelplayers, _i)
+		if (isAfk(playerid)) {
+			continue
+		}
 		new vid = GetPlayerVehicleID(playerid)
 		new Float:vx, Float:vy, Float:vz
 

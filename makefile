@@ -4,13 +4,13 @@ sed = "K:\Program Files\Git\usr\bin\sed.exe"
 ppfile = preprocess.sed
 pp = $(sed) -f $(ppfile)
 
-build: p/basdon.p p/panel.p p/game_sa.p
+build: p/basdon.p p/panel.p p/game_sa.p p/afk.p
 	@echo.
 
 p/basdon.p: basdon.pwn p/simpleiter.p $(ppfile)
 	$(pp) basdon.pwn>p/basdon.p
 
-p/panel.p: panel.pwn $(ppfile)
+p/panel.p: panel.pwn p/simpleiter.p $(ppfile)
 	$(pp) panel.pwn>p/panel.p
 
 p/simpleiter.p: simpleiter.pwn $(ppfile)
@@ -18,6 +18,9 @@ p/simpleiter.p: simpleiter.pwn $(ppfile)
 
 p/game_sa.p: game_sa.pwn $(ppfile)
 	$(pp) game_sa.pwn>p/game_sa.p
+
+p/afk.p: afk.pwn $(ppfile)
+	$(pp) afk.pwn>p/afk.p
 
 clean:
 	del p
