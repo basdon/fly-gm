@@ -30,6 +30,7 @@ hook VAR()
 	new PlayerText:playerpnltxt[MAX_PLAYERS][PNLTXT_P_TOTAL]
 	new PlayerText:pnltxtvai[MAX_PLAYERS]
 	new lastdatacache[MAX_PLAYERS]
+	new headingcache[MAX_PLAYERS]
 	new Iter:panelplayers[MAX_PLAYERS]
 
 	stock const SPDMETERDATA[] = "160-~n~150-~n~140-~n~130-~n~120-~n~110-~n~100-~n~_90-~n~_80-~n~"\
@@ -104,6 +105,11 @@ skipspd:
 		if (heading == 0) {
 			heading = 360
 		}
+		if (heading == headingcache[playerid]) {
+			printf "skipped %d", random(10)
+			continue
+		}
+		headingcache[playerid] = heading
 		format txt, 4, "%03d", heading
 		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_HDG], txt
 
@@ -207,14 +213,14 @@ hook ONPLAYERCONNECT(playerid)
 {
 	lastdatacache[playerid] = 0xFFFFFFFF
 
-#define TEXT_COLOR_METER2 0x989898FF
+#define PANELTEXTCOLORGREY 0x989898FF
 
 #define TDVAR playerpnltxt[playerid][PNLTXT_SPD_METER]
 	TDVAR = CreatePlayerTextDraw(playerid, 220.0, 360.0, TXT_EMPTY);
 	PlayerTextDrawAlignment(playerid, TDVAR, 3);
 	PlayerTextDrawFont(playerid, TDVAR, 2);
 	PlayerTextDrawLetterSize(playerid, TDVAR, 0.25, 1.0);
-	PlayerTextDrawColor(playerid, TDVAR, 0xFFFFFFFF);
+	PlayerTextDrawColor(playerid, TDVAR, PANELTEXTCOLORGREY);
 	PlayerTextDrawSetOutline(playerid, TDVAR, 0);
 	PlayerTextDrawSetShadow(playerid, TDVAR, 0);
 	PlayerTextDrawSetProportional(playerid, TDVAR, 0);
@@ -225,7 +231,7 @@ hook ONPLAYERCONNECT(playerid)
 	PlayerTextDrawAlignment(playerid, TDVAR, 2);
 	PlayerTextDrawFont(playerid, TDVAR, 2);
 	PlayerTextDrawLetterSize(playerid, TDVAR, 0.3, 1.2);
-	PlayerTextDrawColor(playerid, TDVAR, TEXT_COLOR_METER2);
+	PlayerTextDrawColor(playerid, TDVAR, PANELTEXTCOLORGREY);
 	PlayerTextDrawSetOutline(playerid, TDVAR, 0);
 	PlayerTextDrawSetShadow(playerid, TDVAR, 0);
 	PlayerTextDrawSetProportional(playerid, TDVAR, 0);
@@ -247,7 +253,7 @@ hook ONPLAYERCONNECT(playerid)
 	PlayerTextDrawAlignment(playerid, TDVAR, 3);
 	PlayerTextDrawFont(playerid, TDVAR, 2);
 	PlayerTextDrawLetterSize(playerid, TDVAR, 0.25, 1.0);
-	PlayerTextDrawColor(playerid, TDVAR, 0xFFFFFFFF);
+	PlayerTextDrawColor(playerid, TDVAR, PANELTEXTCOLORGREY);
 	PlayerTextDrawSetOutline(playerid, TDVAR, 0);
 	PlayerTextDrawSetShadow(playerid, TDVAR, 0);
 	PlayerTextDrawSetProportional(playerid, TDVAR, 0);
@@ -258,7 +264,7 @@ hook ONPLAYERCONNECT(playerid)
 	PlayerTextDrawAlignment(playerid, TDVAR, 2);
 	PlayerTextDrawFont(playerid, TDVAR, 2);
 	PlayerTextDrawLetterSize(playerid, TDVAR, 0.3, 1.2);
-	PlayerTextDrawColor(playerid, TDVAR, TEXT_COLOR_METER2);
+	PlayerTextDrawColor(playerid, TDVAR, PANELTEXTCOLORGREY);
 	PlayerTextDrawSetOutline(playerid, TDVAR, 0);
 	PlayerTextDrawSetShadow(playerid, TDVAR, 0);
 	PlayerTextDrawSetProportional(playerid, TDVAR, 0);
@@ -280,7 +286,7 @@ hook ONPLAYERCONNECT(playerid)
 	PlayerTextDrawAlignment(playerid, TDVAR, 2);
 	PlayerTextDrawFont(playerid, TDVAR, 2);
 	PlayerTextDrawLetterSize(playerid, TDVAR, 0.22, 1.0);
-	PlayerTextDrawColor(playerid, TDVAR, TEXT_COLOR_METER2);
+	PlayerTextDrawColor(playerid, TDVAR, PANELTEXTCOLORGREY);
 	PlayerTextDrawSetOutline(playerid, TDVAR, 0);
 	PlayerTextDrawSetShadow(playerid, TDVAR, 0);
 	PlayerTextDrawSetProportional(playerid, TDVAR, 0);
