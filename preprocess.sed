@@ -43,7 +43,7 @@
 		q
 	}
 	x
-	s/##section\s\+/#define S/p
+	s/##section\s\+/#define @/p
 	s/^.*\s\+\(.*\)$/\1§se§/
 	H
 	d
@@ -84,7 +84,7 @@
 
 # handles the start of a hook
 /^hook / {
-	s/^hook\s\+\(.*\)(.*)$/#if defined S\1/
+	s/^hook\s\+\(.*\)(.*)$/#if defined @\1/
 	# also check first if next line is empty (is '{')
 	p
 	s/^.*defined \(.*\)$/§§§\1/
