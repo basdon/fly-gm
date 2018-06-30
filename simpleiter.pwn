@@ -3,7 +3,7 @@
 
 // simple, fast, memory-eating iter
 
-#define Iter:%1[%2] %1[%2],%1@h[%2],%1@c=0,%1@t;const %1@m=%2
+#define Iter:%1[%2] %1[%2],%1@h[%2],%1@c=0;stock %1@t;const %1@m=%2
 
 #define iter_add(%1,%2) if(!(%1@h[%2]))%1[%1@c++]=%2,%1@h[%2]=%1@c
 #define iter_add_us(%1,%2) %1@t=%2;iter_add(%1,%1@t)
