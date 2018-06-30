@@ -37,7 +37,7 @@ hook VAR()
 
 	new PANEL_BGTEXT[] = "~n~~n~~n~"
 
-	stock const HDG_FORMAT[] = "%03d"
+	stock const _03DFORMAT[] = "%03d"
 }
 
 hook LOOP100()
@@ -58,7 +58,7 @@ hook LOOP100()
 		lastdatacache[playerid] = (lastdatacache[playerid] & 0xFFFFFF00) | v
 
 		new txt[4]
-		format txt, sizeof(txt), "%03.0f", vx
+		format txt, sizeof(txt), _03DFORMAT, v
 		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_SPD], txt
 
 		// SPD METER
@@ -95,12 +95,12 @@ skipspd:
 		// HDG METER
 		new hdgmeter[30] = { '_', ... }
 		heading = heading % 360 + 1
-		format hdgmeter[8], 4, HDG_FORMAT, heading; heading = heading % 360 + 1
-		format hdgmeter[4], 4, HDG_FORMAT, heading; heading = heading % 360 + 1
-		format hdgmeter[0], 4, HDG_FORMAT, heading; heading = (heading + 355) % 360 + 1
-		format hdgmeter[18], 4, HDG_FORMAT, heading; heading = (heading + 358) % 360 + 1
-		format hdgmeter[22], 4, HDG_FORMAT, heading; heading = (heading + 358) % 360 + 1
-		format hdgmeter[26], 4, HDG_FORMAT, heading
+		format hdgmeter[8], 4, _03DFORMAT, heading; heading = heading % 360 + 1
+		format hdgmeter[4], 4, _03DFORMAT, heading; heading = heading % 360 + 1
+		format hdgmeter[0], 4, _03DFORMAT, heading; heading = (heading + 355) % 360 + 1
+		format hdgmeter[18], 4, _03DFORMAT, heading; heading = (heading + 358) % 360 + 1
+		format hdgmeter[22], 4, _03DFORMAT, heading; heading = (heading + 358) % 360 + 1
+		format hdgmeter[26], 4, _03DFORMAT, heading
 		hdgmeter[3] = '_'
 		hdgmeter[7] = '_'
 		hdgmeter[11] = '_'
