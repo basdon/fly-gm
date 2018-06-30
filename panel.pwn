@@ -30,22 +30,46 @@ hook VAR()
 	new PlayerText:playerpnltxt[MAX_PLAYERS][PNLTXT_P_TOTAL]
 	new PlayerText:pnltxtvai[MAX_PLAYERS]
 	new Iter:panelplayers[MAX_PLAYERS]
+
+	stock const SPDMETERDATA[] = "160-~n~150-~n~140-~n~130-~n~120-~n~110-~n~100-~n~_90-~n~_80-~n~"\
+	                             "_70-~n~_60-~n~_50-~n~_40-~n~_30-~n~_20-~n~_10-~n~___-~n~____~n~___"
 }
 
 hook LOOP100()
 {
 	for (new i : panelplayers) {
 		new playerid = iter_access(panelplayers, i)
+		new vid = GetPlayerVehicleID(playerid)
 		new Float:vx, Float:vy, Float:vz
-		GetVehicleVelocity(GetPlayerVehicleID(playerid), vx, vy, vz)
+		GetVehiclePos vid, vx, vy, vz
+		GetVehicleVelocity vid, vx, vy, vz
 
+		// SPD
+		vx = VEL_TO_KTS(VectorSize(vx, vy, vz))
 		new txt[4]
-		format txt, sizeof(txt), "%03.0f", VEL_TO_KTS(VectorSize(vx, vy, vz))
+		format txt, sizeof(txt), "%03.0f", vx
 		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_SPD], txt
 
-		vz = clamp(floatround(/*VEL_TO_KFPMA*14.5*/88.61422 * vz), -34, 34)
+		// SPD METER
+		new v = floatround(vx, floatround_tozero)
+		if (v >= 0 && v < 150) {
+			new metertxt[] = "xxx-~n~xxx-~n~~n~~n~~n~~n~xxx-~n~xxx-~n~"
+			new offset = (14 - v / 10) * 7
+			memcpy metertxt, SPDMETERDATA[offset], 0, 11 * 4, 11
+			memcpy metertxt, SPDMETERDATA[offset + 14], 26 * 4, 37
+			PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_SPD_METER], metertxt
+		}
 
-		#define TDVAR pnltxtvai[playerid]
+		// SPD METER2
+		new meter2txt[] = "0~n~~n~0"
+		meter2txt[0] = '0' + ((v + 1) % 10)
+		meter2txt[7] = '0' + ((v + 9) % 10)
+		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_SPD_METER2], meter2txt
+
+		// VAI
+		vz = clamp(floatround(/*VEL_TO_KFPMA*14.5*/88.61422 * vz), -34, 34)
+		#define TDVAR tmp
+		new PlayerText:TDVAR = pnltxtvai[playerid]
 		PlayerTextDrawDestroy(playerid, TDVAR)
 		TDVAR = CreatePlayerTextDraw(playerid, 458.0, 391.0 - vz, "~<~")
 		PlayerTextDrawAlignment(playerid, TDVAR, 2)
