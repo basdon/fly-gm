@@ -106,7 +106,6 @@ skipspd:
 			heading = 360
 		}
 		if (heading == headingcache[playerid]) {
-			printf "skipped %d", random(10)
 			continue
 		}
 		headingcache[playerid] = heading
