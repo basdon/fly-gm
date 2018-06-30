@@ -24,14 +24,18 @@
 
 new Iter:players[MAX_PLAYERS]
 
-#define INIT
+#define VAR
 ##include "panel"
 
-#undef INIT
+##include "game_sa"
+
+#undef VAR
 
 main()
 {
 	print "  Loaded gamemode basdon-fly "#VERSION"\n"
+#define INIT
+#undef INIT
 	SetTimer #PUB_LOOP25, 25, .repeating=1
 }
 
@@ -68,6 +72,11 @@ public OnPlayerConnect(playerid)
 
 	iter_add(players, playerid)
 
+#define ONPLAYERCONNECT
+##include "panel"
+
+#undef ONPLAYERCONNECT
+
 	return 1
 }
 
@@ -83,10 +92,9 @@ public OnGameModeInit()
 	SetGameModeText VERSION
 
 	//UsePlayerPedAnims
-	AddPlayerClassNoWeapon(0, 345.5279, 1950.8094, 17.6406, 90.0)
+	AddPlayerClassNoWeapon(0, 1467.4471, 1244.7747, 10.8281, 90.0)
 	SetWorldTime 0
-
-	AddStaticVehicle 520, 345.5279, 1954.8094, 17.6406, 90.0, 0, 0
+	AddStaticVehicle MODEL_HYDRA, 1477.4471, 1244.7747, 10.8281, 0.0, 0, 0
 
 #define ONGAMEMODEINIT
 ##include "panel"
@@ -101,5 +109,15 @@ public OnGameModeExit()
 	return 1
 }
 
+public OnPlayerStateChange(playerid, newstate, oldstate)
+{
+#define ONPLAYERSTATECHANGE
 ##include "panel"
+
+#undef ONPLAYERSTATECHANGE
+    return 1
+}
+
+#include "panel"
+#include "game_sa"
 
