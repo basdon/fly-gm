@@ -25,20 +25,20 @@
 new Iter:players[MAX_PLAYERS]
 new TXT_EMPTY[] = "_"
 
-#define VAR
+##section VAR
 ##include "panel"
 
 ##include "game_sa"
 
 ##include "afk"
 
-#undef VAR
+##endsection
 
 main()
 {
 	print "  Loaded gamemode basdon-fly "#VERSION"\n"
-#define INIT
-#undef INIT
+##section INIT
+##endsection
 	SetTimer #PUB_LOOP25, 25, .repeating=1
 }
 
@@ -46,20 +46,20 @@ main()
 EXPORT PUB_LOOP25()
 {
 	static invoc = 0
-#define LOOP25
-#undef LOOP25
+##section LOOP25
+##endsection
 	++invoc
 	if (invoc & 0x3 == 0) {
-#define LOOP100
+##section LOOP100
 ##include "panel"
 
-#undef LOOP100
+##endsection
 	}
 	if (invoc >= 60) {
 		invoc = 0
-#define LOOP1M
+##section LOOP1M
 
-#undef LOOP1M
+##endsection
 	}
 }
 
@@ -75,20 +75,20 @@ public OnPlayerConnect(playerid)
 
 	iter_add(players, playerid)
 
-#define ONPLAYERCONNECT
+##section ONPLAYERCONNECT
 ##include "panel"
 
-#undef ONPLAYERCONNECT
+##endsection
 
 	return 1
 }
 
 public OnPlayerDisconnect(playerid, reason)
 {
-#define ONPLAYERDISCONNECT
+##section ONPLAYERDISCONNECT
 ##include "panel"
 
-#undef ONPLAYERDISCONNECT
+##endsection
 	iter_remove(players, playerid)
 
 	return 1
@@ -103,20 +103,20 @@ public OnGameModeInit()
 	SetWorldTime 0
 	AddStaticVehicle MODEL_HYDRA, 1477.4471, 1244.7747, 10.8281, 0.0, 0, 0
 
-#define ONGAMEMODEINIT
+##section ONGAMEMODEINIT
 ##include "panel"
 
-#undef ONGAMEMODEINIT
+##endsection
 
 	return 1;
 }
 
 public OnPlayerUpdate(playerid)
 {
-#define ONPLAYERUPDATE
+##section ONPLAYERUPDATE
 ##include "afk"
 
-#undef ONPLAYERUPDATE
+##endsection
 	return 1
 }
 
@@ -127,10 +127,10 @@ public OnGameModeExit()
 
 public OnPlayerStateChange(playerid, newstate, oldstate)
 {
-#define ONPLAYERSTATECHANGE
+##section ONPLAYERSTATECHANGE
 ##include "panel"
 
-#undef ONPLAYERSTATECHANGE
+##endsection
     return 1
 }
 

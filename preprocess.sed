@@ -35,6 +35,26 @@
 	s-{@param \([^}]*\)}-<paramref name="\1"/>-g
 }
 
+# hooked sections
+/^##section/ {
+	s/##section\s\+/#define _S/p
+	s/^.*\s\+\(.*\)$/\1§se§/
+	H
+	d
+}
+
+/^##endsection/ {
+	g
+	/§se§/ !{
+		c#error "cannot end section because none was started"
+		q
+	}
+	s/^.*\n\(.*\)§se§.*$/#undef \1/p
+	s/^\(.*\)\n\(.*\)§se§\(.*\)$/\1\2/
+	x
+	d
+}
+
 # only allow returns inside hooks if preceded by #allowreturn
 # also replaces the end of a hook
 /^hook /,/^}$/ {
@@ -57,7 +77,7 @@
 
 # handles the start of a hook
 /^hook / {
-	s/^hook\s\+\(.*\)(.*)$/#if defined \1/
+	s/^hook\s\+\(.*\)(.*)$/#if defined _S\1/
 	# also check first if next line is empty (is '{')
 	p
 	s/^.*defined \(.*\)$/§§§\1/
