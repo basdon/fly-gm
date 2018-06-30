@@ -37,6 +37,12 @@
 
 # hooked sections
 /^##section/ {
+	x
+	/§se§/ {
+		c#error "cannot start a section while already in a section"
+		q
+	}
+	x
 	s/##section\s\+/#define S/p
 	s/^.*\s\+\(.*\)$/\1§se§/
 	H
