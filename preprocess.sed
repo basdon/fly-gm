@@ -55,10 +55,11 @@
 		c#error "cannot end section because none was started"
 		q
 	}
-	s/^.*\n\(.*\)§se§.*$/#undef \1/p
-	s/^\(.*\)\n\(.*\)§se§\(.*\)$/\1\2/
+	s/^\(.*\)\n\(.*\)§se§\(.*\)$/\1\3§§§\2/
+	h
+	s/^\(.*\)§§§.*$/\1/
 	x
-	d
+	s/^.*§§§/#undef /
 }
 
 # only allow returns inside hooks if preceded by #allowreturn
