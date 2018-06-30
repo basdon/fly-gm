@@ -31,6 +31,7 @@
 	s-{@code \([^}]*\)}-<b><c>\1</c></b>-g
 	s-{@b \([^}]*\)}-<b>\1</b>-g
 	s-{@link \([^}]*\)}-<a href="#\1">\1</a>-g
+	s-{@param \([^}]*\)}-<paramref name="\1"/>-g
 }
 
 # only allow returns inside hooks if preceded by #allowreturn
