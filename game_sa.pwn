@@ -32,6 +32,9 @@ hook VAR()
 	new airvehicles[] = { 0x02020000, 0x10008000, 0x01801023, 0x01838022, 0x02100000, 0x00020008, 0x00000003 }
 }
 
+//@summary Checks if a player is in a vehicle in the category 'air'
+//@param playerid the id of the player to check
+//@returns {@code 1} if the player is in an air vehicle.
 isInAirVehicle(playerid)
 {
 	new model = GetVehicleModel(GetPlayerVehicleID(playerid)) - 400
