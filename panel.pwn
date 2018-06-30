@@ -83,6 +83,21 @@ hook LOOP100()
 		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_SPD_METER2], meter2txt
 
 skipspd:
+		// VAI
+		vz = clamp(floatround(/*VEL_TO_KFPMA*14.5*/88.61422 * vz), -34, 34)
+		#define TDVAR tmp
+		new PlayerText:TDVAR = pnltxtvai[playerid]
+		PlayerTextDrawDestroy(playerid, TDVAR)
+		TDVAR = CreatePlayerTextDraw(playerid, 458.0, 391.0 - vz, "~<~")
+		PlayerTextDrawAlignment(playerid, TDVAR, 2)
+		PlayerTextDrawFont(playerid, TDVAR, 2)
+		PlayerTextDrawLetterSize(playerid, TDVAR, 0.25, 1.1)
+		PlayerTextDrawColor(playerid, TDVAR, 0xFF0000FF)
+		PlayerTextDrawSetOutline(playerid, TDVAR, 0)
+		PlayerTextDrawSetShadow(playerid, TDVAR, 0)
+		PlayerTextDrawShow(playerid, TDVAR)
+		#undef TDVAR
+
 		// HDG
 		GetVehicleZAngle(vid, vz)
 		new heading = floatround(vz)
@@ -107,21 +122,6 @@ skipspd:
 		hdgmeter[21] = '_'
 		hdgmeter[25] = '_'
 		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_HDG_METER], hdgmeter
-
-		// VAI
-		vz = clamp(floatround(/*VEL_TO_KFPMA*14.5*/88.61422 * vz), -34, 34)
-		#define TDVAR tmp
-		new PlayerText:TDVAR = pnltxtvai[playerid]
-		PlayerTextDrawDestroy(playerid, TDVAR)
-		TDVAR = CreatePlayerTextDraw(playerid, 458.0, 391.0 - vz, "~<~")
-		PlayerTextDrawAlignment(playerid, TDVAR, 2)
-		PlayerTextDrawFont(playerid, TDVAR, 2)
-		PlayerTextDrawLetterSize(playerid, TDVAR, 0.25, 1.1)
-		PlayerTextDrawColor(playerid, TDVAR, 0xFF0000FF)
-		PlayerTextDrawSetOutline(playerid, TDVAR, 0)
-		PlayerTextDrawSetShadow(playerid, TDVAR, 0)
-		PlayerTextDrawShow(playerid, TDVAR)
-		#undef TDVAR
 
 	}
 }
