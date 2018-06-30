@@ -188,6 +188,9 @@ hook ONPLAYERSTATECHANGE(playerid, newstate, oldstate)
 
 hook ONGAMEMODEINIT()
 {
+#define PANEL_BG 0x00000077
+#define METER2_BG 0x00000077
+
 #define TDVAR pnltxt[PNLTXT_BG]
 	TDVAR = TextDrawCreate(320.0, 360.0, "~n~~n~~n~~n~~n~~n~~n~~n~");
 	TextDrawAlignment(TDVAR, 2);
@@ -195,7 +198,7 @@ hook ONGAMEMODEINIT()
 	TextDrawLetterSize(TDVAR, 0.5, 1.0);
 	TextDrawSetOutline(TDVAR, 0);
 	TextDrawUseBox(TDVAR, 1);
-	TextDrawBoxColor(TDVAR, 0x00000099);
+	TextDrawBoxColor(TDVAR, PANEL_BG);
 	TextDrawTextSize(TDVAR, 100.0, 271.0);
 #undef TDVAR
 
@@ -209,7 +212,7 @@ hook ONGAMEMODEINIT()
 	TextDrawSetShadow(TDVAR, 0);
 	TextDrawSetProportional(TDVAR, 1);
 	TextDrawUseBox(TDVAR, 1);
-	TextDrawBoxColor(TDVAR, 0x00000099);
+	TextDrawBoxColor(TDVAR, PANEL_BG);
 	TextDrawTextSize(TDVAR, 476.0, 7.0);
 #undef TDVAR
 
@@ -220,7 +223,7 @@ hook ONGAMEMODEINIT()
 	TextDrawLetterSize(TDVAR, 0.3, 1.0);
 	TextDrawSetOutline(TDVAR, 0);
 	TextDrawUseBox(TDVAR, 1);
-	TextDrawBoxColor(TDVAR, 0x00000099);
+	TextDrawBoxColor(TDVAR, METER2_BG);
 	TextDrawTextSize(TDVAR, 100.0, 35.0);
 #undef TDVAR
 
@@ -231,7 +234,7 @@ hook ONGAMEMODEINIT()
 	TextDrawLetterSize(TDVAR, 0.3, 1.0);
 	TextDrawSetOutline(TDVAR, 0);
 	TextDrawUseBox(TDVAR, 1);
-	TextDrawBoxColor(TDVAR, 0x00000099);
+	TextDrawBoxColor(TDVAR, METER2_BG);
 	TextDrawTextSize(TDVAR, 100.0, 35.0);
 #undef TDVAR
 
