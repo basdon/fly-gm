@@ -1,6 +1,6 @@
 #
 
-#s/^##include\s\+"\(.*\)"$/#include "\1"\n#undef _inc_\1/
+# include with include guard removal
 /^##include/ {
 	s/^.*"\(.*\)"$/#include "\1"/
 	# check if the next line is empty first before
@@ -22,6 +22,19 @@
 	s/^.*§§§\(.*\)$/#undef _inc_\1/
 }
 
+# custom doc comment formats
+/^\/\/@/ {
+	s-^//@summary \(.*\)$-/// <summary>\1</summary>-
+	s-^//@param \([^ \t]\+\) \(.*\)$-/// <param name="\1">\2</param>-
+	s-^//@remarks \(.*\)$-/// <remarks>\1</remarks>-
+	s-^//@returns \(.*\)$-/// <returns>\1</returns>-
+	s-{@code \([^}]*\)}-<b><c>\1</c></b>-g
+	s-{@b \([^}]*\)}-<b>\1</b>-g
+	s-{@link \([^}]*\)}-<a href="#\1">\1</a>-g
+}
+
+# only allow returns inside hooks if preceded by #allowreturn
+# also replaces the end of a hook
 /^hook /,/^}$/ {
 	/^\s*return/c#error "no return in hooks please"
 	/^\s*#allowreturn$/ {
@@ -40,6 +53,7 @@
 	}
 }
 
+# handles the start of a hook
 /^hook / {
 	s/^hook\s\+\(.*\)(.*)$/#if defined \1/
 	# also check first if next line is empty (is '{')
