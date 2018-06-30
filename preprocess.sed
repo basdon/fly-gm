@@ -37,7 +37,7 @@
 
 # hooked sections
 /^##section/ {
-	s/##section\s\+/#define _S/p
+	s/##section\s\+/#define S/p
 	s/^.*\s\+\(.*\)$/\1§se§/
 	H
 	d
@@ -77,7 +77,7 @@
 
 # handles the start of a hook
 /^hook / {
-	s/^hook\s\+\(.*\)(.*)$/#if defined _S\1/
+	s/^hook\s\+\(.*\)(.*)$/#if defined S\1/
 	# also check first if next line is empty (is '{')
 	p
 	s/^.*defined \(.*\)$/§§§\1/
@@ -110,7 +110,8 @@
 :nextguard
 	g
 	/§hg§/ {
-		s/^.*\n\(.*\)§hg§.*$/#if !defined \1\n#error "missing hook \1"\n#endif/p
+		s/^.*\n\(.*\)§hg§.*$/#if !defined \1\n#error "missing \1 \\\
+		(either missing or name too long or in unexpected hook)"\n#endif/p
 		g
 		s/^\(.*\)\n.*§hg§\(.*\)$/\1\2/
 		x
