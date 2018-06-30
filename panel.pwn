@@ -29,6 +29,7 @@ hook VAR()
 	new Text:pnltxt[PNLTXT_G_TOTAL]
 	new PlayerText:playerpnltxt[MAX_PLAYERS][PNLTXT_P_TOTAL]
 	new PlayerText:pnltxtvai[MAX_PLAYERS]
+	new lastdatacache[MAX_PLAYERS]
 	new Iter:panelplayers[MAX_PLAYERS]
 
 	stock const SPDMETERDATA[] = "160-~n~150-~n~140-~n~130-~n~120-~n~110-~n~100-~n~_90-~n~_80-~n~"\
@@ -48,15 +49,26 @@ hook LOOP100()
 
 		// SPD
 		vx = VEL_TO_KTS(VectorSize(vx, vy, vz))
+		new v = floatround(vx, floatround_tozero)
+		if ((lastdatacache[playerid] & 0xFF) == v) {
+			goto skipspd
+		}
+		lastdatacache[playerid] = (lastdatacache[playerid] & 0xFFFFFF00) | v
+
 		new txt[4]
 		format txt, sizeof(txt), "%03.0f", vx
 		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_SPD], txt
 
 		// SPD METER
-		new v = floatround(vx, floatround_tozero)
-		if (v >= 0 && v < 150) {
+		if (v < 0 || v > 149) {
+			goto skipspd
+		}
+
+		new offset = (14 - v / 10) * 7
+		if (((lastdatacache[playerid] & 0xFF00) >> 8) != offset) {
+			assert offset < 256
+			lastdatacache[playerid] = (lastdatacache[playerid] & 0xFFFF00FF) | (offset << 8)
 			new metertxt[] = "xxx-~n~xxx-~n~~n~~n~~n~~n~xxx-~n~xxx-~n~"
-			new offset = (14 - v / 10) * 7
 			memcpy metertxt, SPDMETERDATA[offset], 0, 11 * 4, 11
 			memcpy metertxt, SPDMETERDATA[offset + 14], 26 * 4, 37
 			PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_SPD_METER], metertxt
@@ -68,6 +80,7 @@ hook LOOP100()
 		meter2txt[7] = '0' + ((v + 9) % 10)
 		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_SPD_METER2], meter2txt
 
+skipspd:
 		// VAI
 		vz = clamp(floatround(/*VEL_TO_KFPMA*14.5*/88.61422 * vz), -34, 34)
 		#define TDVAR tmp
@@ -165,6 +178,8 @@ hook ONGAMEMODEINIT()
 
 hook ONPLAYERCONNECT(playerid)
 {
+	lastdatacache[playerid] = 0xFFFFFFFF
+
 #define TEXT_COLOR_METER2 0x989898FF
 
 #define TDVAR playerpnltxt[playerid][PNLTXT_SPD_METER]
