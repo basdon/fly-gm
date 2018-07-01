@@ -264,6 +264,7 @@ hook OnPlayerDisconnect(playerid)
 hook OnPlayerConnect(playerid)
 {
 	lastdatacache[playerid] = 0xFFFFFFFF
+	headingcache[playerid] = 0xFFFFFFFF
 
 #define METER_COLOR 0x989898FF
 #define METER2_COLOR 0x585858FF
