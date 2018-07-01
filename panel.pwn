@@ -28,7 +28,7 @@
 #define PNLTXT_HDG 7
 #define PNLTXT_P_TOTAL 8
 
-hook VAR()
+hook varinit()
 {
 	new Text:pnltxt[PNLTXT_G_TOTAL]
 	new PlayerText:playerpnltxt[MAX_PLAYERS][PNLTXT_P_TOTAL]
@@ -45,7 +45,7 @@ hook VAR()
 	stock const _03DFORMAT[] = "%03d"
 }
 
-hook LOOP100()
+hook loop100()
 {
 	for (new _i : panelplayers) {
 		new playerid = iter_access(panelplayers, _i)
@@ -176,7 +176,7 @@ skipspd:
 	}
 }
 
-hook ONPLAYERSTATECHANGE(playerid, newstate, oldstate)
+hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
 	if (newstate == PLAYER_STATE_DRIVER && isInAirVehicle(playerid)) {
 		pnltxtvai[playerid] = CreatePlayerTextDraw(playerid, -10.0, -10.0, "_")
@@ -191,7 +191,7 @@ hook ONPLAYERSTATECHANGE(playerid, newstate, oldstate)
 	}
 }
 
-hook ONGAMEMODEINIT()
+hook OnGameModeInit()
 {
 #define PANEL_BG 0x00000077
 #define METER2_BG 0x00000077
@@ -256,12 +256,12 @@ hook ONGAMEMODEINIT()
 
 }
 
-hook ONPLAYERDISCONNECT(playerid)
+hook OnPlayerDisconnect(playerid)
 {
 	iter_remove(panelplayers, playerid)
 }
 
-hook ONPLAYERCONNECT(playerid)
+hook OnPlayerConnect(playerid)
 {
 	lastdatacache[playerid] = 0xFFFFFFFF
 

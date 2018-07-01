@@ -12,7 +12,7 @@
 #define MAX_PLAYERS (50)
 #define SLOTS MAX_PLAYERS
 
-#define EXPORT%0\32%1(%2) forward %1(%2);public %1(%2)
+#define export%0\32%1(%2) forward %1(%2);public %1(%2)
 
 #define cos(%0) floatcos(%0, degrees)
 #define sin(%0) floatsin(%0, degrees)
@@ -25,7 +25,7 @@
 new Iter:players[MAX_PLAYERS]
 new TXT_EMPTY[] = "_"
 
-##section VAR
+##section varinit
 ##include "panel"
 
 ##include "game_sa"
@@ -37,27 +37,27 @@ new TXT_EMPTY[] = "_"
 main()
 {
 	print "  Loaded gamemode basdon-fly "#VERSION"\n"
-##section INIT
+##section init
 ##endsection
 	SetTimer #PUB_LOOP25, 25, .repeating=1
 }
 
 /// <summary>PUB_LOOP25</summary>
-EXPORT PUB_LOOP25()
+export PUB_LOOP25()
 {
 	static invoc = 0
-##section LOOP25
+##section loop25
 ##endsection
 	++invoc
 	if (invoc & 0x3 == 0) {
-##section LOOP100
+##section loop100
 ##include "panel"
 
 ##endsection
 	}
 	if (invoc >= 60) {
 		invoc = 0
-##section LOOP1M
+##section loop1M
 
 ##endsection
 	}
@@ -75,7 +75,7 @@ public OnPlayerConnect(playerid)
 
 	iter_add(players, playerid)
 
-##section ONPLAYERCONNECT
+##section OnPlayerConnect
 ##include "panel"
 
 ##endsection
@@ -85,7 +85,7 @@ public OnPlayerConnect(playerid)
 
 public OnPlayerDisconnect(playerid, reason)
 {
-##section ONPLAYERDISCONNECT
+##section OnPlayerDisconnect
 ##include "panel"
 
 ##endsection
@@ -103,7 +103,7 @@ public OnGameModeInit()
 	SetWorldTime 0
 	AddStaticVehicle MODEL_HYDRA, 1477.4471, 1244.7747, 10.8281, 0.0, 0, 0
 
-##section ONGAMEMODEINIT
+##section OnGameModeInit
 ##include "panel"
 
 ##endsection
@@ -113,7 +113,7 @@ public OnGameModeInit()
 
 public OnPlayerUpdate(playerid)
 {
-##section ONPLAYERUPDATE
+##section OnPlayerUpdate
 ##include "afk"
 
 ##endsection
@@ -127,7 +127,7 @@ public OnGameModeExit()
 
 public OnPlayerStateChange(playerid, newstate, oldstate)
 {
-##section ONPLAYERSTATECHANGE
+##section OnPlayerStateChange
 ##include "panel"
 
 ##endsection

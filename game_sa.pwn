@@ -29,7 +29,7 @@
 
 #define MODEL_TOTAL (611-400)
 
-hook VAR()
+hook varinit()
 {
 	new airvehicles[] = { 0x02020000, 0x10008000, 0x01801023, 0x01838022, 0x02100000, 0x00020008, 0x00000003 }
 }

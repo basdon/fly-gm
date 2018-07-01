@@ -13,12 +13,12 @@ stock isAfk(playerid) { }
 #define isAfk(%0) (lastupdate[%0]<gettime()-1)
 #endif
 
-hook VAR()
+hook varinit()
 {
 	new lastupdate[MAX_PLAYERS]
 }
 
-hook ONPLAYERUPDATE(playerid)
+hook OnPlayerUpdate(playerid)
 {
 	lastupdate[playerid] = gettime()
 }
