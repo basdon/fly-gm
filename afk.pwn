@@ -10,8 +10,8 @@
 //@remarks A player is considered to be ask if they has not sent an update for over {@b 1000ms}.
 //@returns {@code 0} if the player is not afk
 stock isAfk(playerid) { }
-#define isAfk(%0) (lastupdate[%0]<gettime()-1)
 #endif
+#define isAfk(%0) (lastupdate[%0]<gettime()-1)
 
 hook varinit()
 {
