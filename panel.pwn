@@ -146,7 +146,7 @@ skipspd:
 
 		// HDG
 		GetVehicleZAngle(vid, vz)
-		new heading = floatround(vz)
+		new heading = 360 - floatround(vz)
 		if (heading == 0) {
 			heading = 360
 		}
