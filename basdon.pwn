@@ -26,6 +26,8 @@ new Iter:players[MAX_PLAYERS]
 new TXT_EMPTY[] = "_"
 
 ##section varinit
+##include "playername"
+
 ##include "panel"
 
 ##include "game_sa"
@@ -76,6 +78,8 @@ public OnPlayerConnect(playerid)
 	iter_add(players, playerid)
 
 ##section OnPlayerConnect
+##include "playername"
+
 ##include "panel"
 
 ##endsection
@@ -92,6 +96,18 @@ public OnPlayerDisconnect(playerid, reason)
 	iter_remove(players, playerid)
 
 	return 1
+}
+
+new val = 0
+public OnPlayerRequestSpawn(playerid)
+{
+	SendClientMessageToAll(-1, "request spawn");
+	return val
+}
+
+public OnPlayerCommandText(playerid, cmdtext[])
+{
+	val = 1
 }
 
 public OnGameModeInit()
@@ -135,6 +151,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
     return 1
 }
 
+#include "playername"
 #include "panel"
 #include "game_sa"
 #include "afk"
