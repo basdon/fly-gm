@@ -2,7 +2,9 @@
 // vim: set filetype=c ts=8 noexpandtab:
 
 #include <a_samp>
+#include <a_http>
 #include "simpleiter"
+#include "util"
 
 #pragma tabsize 0 // it does not go well with some macros and preprocess
 
@@ -11,6 +13,13 @@
 #undef MAX_PLAYERS
 #define MAX_PLAYERS (50)
 #define SLOTS MAX_PLAYERS
+
+#if !defined PROD
+// NO http:// PREFIX!
+#define API_URL "localhost:8080/sap"
+#else
+#error "no prod API_URL defined yet"
+#endif
 
 #define export%0\32%1(%2) forward %1(%2);public %1(%2)
 
@@ -21,6 +30,7 @@
 
 // public symbols
 #define PUB_LOOP25 a
+#define PUB_LOGIN_USERCHECK_CB b
 
 new Iter:players[MAX_PLAYERS]
 new TXT_EMPTY[] = "_"
@@ -80,6 +90,8 @@ public OnPlayerConnect(playerid)
 ##section OnPlayerConnect
 ##include "playername"
 
+##include "login"
+
 ##include "panel"
 
 ##endsection
@@ -98,7 +110,7 @@ public OnPlayerDisconnect(playerid, reason)
 	return 1
 }
 
-new val = 0
+new val = 1
 public OnPlayerRequestSpawn(playerid)
 {
 	SendClientMessageToAll(-1, "request spawn");
@@ -152,6 +164,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 }
 
 #include "playername"
+#include "login"
 #include "panel"
 #include "game_sa"
 #include "afk"
