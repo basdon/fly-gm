@@ -67,7 +67,8 @@ main()
 	SetTimer #PUB_LOOP25, 25, .repeating=1
 }
 
-/// <summary>PUB_LOOP25</summary>
+//@summary Basic loop that handles (almost) all timed stuff.
+//@remarks PUB_LOOP25
 export PUB_LOOP25()
 {
 	static invoc = 0
