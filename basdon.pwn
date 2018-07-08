@@ -31,6 +31,16 @@
 // public symbols
 #define PUB_LOOP25 a
 #define PUB_LOGIN_USERCHECK_CB b
+#define PUB_KICKEX c
+
+//@summary Public function to kick a player.
+//@param playerid the player to kick
+//@remarks Calls to {@link Kick} gets replaced with a non-repeating timer to this function.
+export PUB_KICKEX(playerid)
+{
+	Kick playerid
+}
+#define KickDelayed SetTimerEx #PUB_KICKEX,25,0,"i",
 
 new Iter:players[MAX_PLAYERS]
 new TXT_EMPTY[] = "_"
