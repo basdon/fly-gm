@@ -20,7 +20,7 @@ hook OnPlayerConnect(playerid)
 //@param data response data
 export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 {
-	if (response_code < 10) {
+	if (response_code != 200) {
 		printf "usercheck api call returned code %d, data %s", response_code, data
 		goto err;
 	}
