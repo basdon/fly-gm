@@ -5,7 +5,7 @@ ppfile = preprocess.sed
 pp = $(sed) -f $(ppfile)
 
 build: p/basdon.p p/panel.p p/game_sa.p p/afk.p p/playername.p p/login.p \
-       p/util.p p/settings.p p/dialog.p
+       p/util.p p/settings.p p/dialog.p p/simpleiter.p
 	@echo.
 
 p/basdon.p: basdon.pwn $(ppfile)
