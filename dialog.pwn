@@ -3,16 +3,10 @@
 
 #namespace "dialog"
 
-hook varinit()
+varinit
 {
+#define ShowPlayerDialog ShowPlayerDialogSafe
 	new showndialog[MAX_PLAYERS]
-
-	ShowPlayerDialogSafe(playerid, dialogid, style, caption[], info[], button1[], button2[])
-	{
-		showndialog[playerid] = dialogid
-		ShowPlayerDialog playerid, dialogid, style, caption, info, button1, button2
-	}
-	#define ShowPlayerDialog ShowPlayerDialogSafe
 }
 
 hook OnPlayerConnect(playerid)
@@ -30,6 +24,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		return 1
 	}
 	showndialog[playerid] = -1
+}
+
+ShowPlayerDialogSafe(playerid, dialogid, style, caption[], info[], button1[], button2[])
+{
+	showndialog[playerid] = dialogid
+#undef ShowPlayerDialog
+	ShowPlayerDialog playerid, dialogid, style, caption, info, button1, button2
+#define ShowPlayerDialog ShowPlayerDialogSafe
 }
 
 #printhookguards

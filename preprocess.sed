@@ -24,11 +24,11 @@
 
 # custom doc comment formats
 /^\/\/@/ {
-	s-^//@summary \(.*\)$-/// <summary>\1</summary>-
-	s-^//@param \([^ \t]\+\) \(.*\)$-/// <param name="\1">\2</param>-
-	s-^//@remarks \(.*\)$-/// <remarks>\1</remarks>-
-	s-^//@returns \(.*\)$-/// <returns>\1</returns>-
-	s-^//@seealso \(.*\)$-/// <seealso name="\1"/>-
+	s-^\s\+//@summary \(.*\)$-/// <summary>\1</summary>-
+	s-^\s\+//@param \([^ \t]\+\) \(.*\)$-/// <param name="\1">\2</param>-
+	s-^\s\+//@remarks \(.*\)$-/// <remarks>\1</remarks>-
+	s-^\s\+//@returns \(.*\)$-/// <returns>\1</returns>-
+	s-^\s\+//@seealso \(.*\)$-/// <seealso name="\1"/>-
 	s-{@code \([^}]*\)}-<b><c>\1</c></b>-g
 	s-{@b \([^}]*\)}-<b>\1</b>-g
 	s-{@bold \([^}]*\)}-<b>\1</b>-g
@@ -62,6 +62,9 @@
 	x
 	s/^.*§§§/#undef /
 }
+
+# varinit syntactic sugar
+s/^varinit$/hook varinit()/
 
 # only allow returns inside hooks if preceded by #allowreturn
 # also replaces the end of a hook

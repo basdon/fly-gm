@@ -28,7 +28,7 @@
 #define PNLTXT_HDG 7
 #define PNLTXT_P_TOTAL 8
 
-hook varinit()
+varinit
 {
 	new Text:pnltxt[PNLTXT_G_TOTAL]
 	new PlayerText:playerpnltxt[MAX_PLAYERS][PNLTXT_P_TOTAL]
