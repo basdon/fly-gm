@@ -47,6 +47,8 @@ new Iter:players[MAX_PLAYERS]
 new TXT_EMPTY[] = "_"
 
 ##section varinit
+##include "dialog"
+
 ##include "playername"
 
 ##include "panel"
@@ -91,8 +93,6 @@ public OnPlayerConnect(playerid)
 	DisablePlayerCheckpoint(playerid)
 	DisablePlayerRaceCheckpoint(playerid)
 
-	ShowPlayerDialog(playerid, -1, DIALOG_STYLE_MSGBOX, TXT_EMPTY, TXT_EMPTY, TXT_EMPTY, TXT_EMPTY)
-
 	TogglePlayerClock(playerid, 1)
 	SetPlayerTime(playerid, 12, 0)
 
@@ -102,6 +102,8 @@ public OnPlayerConnect(playerid)
 ##include "playername"
 
 ##include "login"
+
+##include "dialog"
 
 ##include "panel"
 
@@ -174,9 +176,19 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
     return 1
 }
 
+public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+##section OnDialogResponse
+##include "dialog"
+
+##endsection
+	return 0
+}
+
 #include "playername"
 #include "login"
 #include "panel"
 #include "game_sa"
 #include "afk"
+#include "dialog"
 
