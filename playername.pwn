@@ -4,6 +4,7 @@
 #namespace "pname"
 
 #if defined @varinit
+#define PLAYERNAMEVER 1 // increase this when any of this logic changes
 new playernames[MAX_PLAYERS][MAX_PLAYER_NAME + 2]
 
 SetPlayerNameHook(playerid, const name[])

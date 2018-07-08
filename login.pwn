@@ -5,7 +5,22 @@
 
 hook OnPlayerConnect(playerid)
 {
-	// TODO check if playername begins with [G], if so, strip it
+	#assert PLAYERNAMEVER == 1
+	while (playernames[playerid][1] == '=') {
+		// wiki states that SetPlayerName does not propagate for the user
+		// if used in OnPlayerConnect, but tests have proven otherwise.
+		if (NAMELEN(playerid) <= 3 || SetPlayerName(playerid, playernames[playerid][2]) != 1) {
+			SendClientMessage playerid, COL_INFO_SAMP,
+				"Failed to change your nickname. Please come back with a different name."
+			KickDelayed playerid
+			#allowreturn
+			return 0
+		}
+		new s[34 + MAX_PLAYER_NAME + 1]
+		format s, sizeof(s), "Your name has been changed to '%s'", NAMEOF(playerid)
+		SendClientMessage playerid, COL_INFO_SAMP, "Names starting with '=' are reserved for guest players."
+		SendClientMessage playerid, COL_INFO_SAMP, s
+	}
 	new data[MAX_PLAYER_NAME * 3 + 4]
 	data[0] = 'u'
 	data[1] = '='
@@ -40,16 +55,14 @@ export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 	printf "usercheck api call returned '%s'", data
 err:
 	new newname[MAX_PLAYER_NAME]
-	newname[0] = '['
-	newname[1] = 'G'
-	newname[2] = ']'
-	memcpy(newname, NAMEOF(playerid), 3 * 4, NAMELEN(playerid) * 4 + 4)
+	newname[0] = '='
+	memcpy(newname, NAMEOF(playerid), 4, NAMELEN(playerid) * 4 + 4)
 	if (SetPlayerName(playerid, newname) == 1) {
 		goto spawnasguest
 	}
 	new guard = 5;
 	while (guard-- > 0) {
-		for (new i = 3; i < 10; i++) {
+		for (new i = 1; i < 10; i++) {
 			newname[i] = 'a' + random('z' - 'a' + 1)
 		}
 		if (SetPlayerName(playerid, newname) == 1) {

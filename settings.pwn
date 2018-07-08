@@ -1,0 +1,3 @@
+
+#define COL_INFO_SAMP 0x88AA62FF
+

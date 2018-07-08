@@ -5,6 +5,7 @@
 #include <a_http>
 #include "simpleiter"
 #include "util"
+#include "settings"
 
 #pragma tabsize 0 // it does not go well with some macros and preprocess
 
