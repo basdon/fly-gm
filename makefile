@@ -8,10 +8,10 @@ build: p/basdon.p p/panel.p p/game_sa.p p/afk.p p/playername.p p/login.p \
        p/util.p p/settings.p p/dialog.p
 	@echo.
 
-p/basdon.p: basdon.pwn p/simpleiter.p $(ppfile)
+p/basdon.p: basdon.pwn $(ppfile)
 	$(pp) basdon.pwn>p/basdon.p
 
-p/panel.p: panel.pwn p/simpleiter.p $(ppfile)
+p/panel.p: panel.pwn $(ppfile)
 	$(pp) panel.pwn>p/panel.p
 
 p/simpleiter.p: simpleiter.pwn $(ppfile)
