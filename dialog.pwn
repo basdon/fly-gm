@@ -26,6 +26,16 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	showndialog[playerid] = -1
 }
 
+//@summary Hooks {@link ShowPlayerDialog} to save the shown id to validate in {@link OnDialogResponse}.
+//@param playerid see {@link ShowPlayerDialog}
+//@param dialogid see {@link ShowPlayerDialog}
+//@param style see {@link ShowPlayerDialog}
+//@param caption see {@link ShowPlayerDialog}
+//@param info see {@link ShowPlayerDialog}
+//@param button1 see {@link ShowPlayerDialog}
+//@param button2 see {@link ShowPlayerDialog}
+//@returns info see {@link ShowPlayerDialog}
+//@remarks info see {@link ShowPlayerDialog}
 ShowPlayerDialogSafe(playerid, dialogid, style, caption[], info[], button1[], button2[])
 {
 	showndialog[playerid] = dialogid
