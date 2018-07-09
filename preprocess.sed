@@ -128,7 +128,14 @@ s/^varinit$/hook varinit()/
 		x
 		b nextguard
 	}
-	c// hookguards end
+	#c// hookguards end
+	g
+	s-^.*\n\(.*\)§ns§.*$-\
+		// hookguards end\
+		#if defined \1_hookguards\
+		#error "multiple inclusion"\
+		#endif\
+		#define \1_hookguards-
 }
 
 # namespaces
