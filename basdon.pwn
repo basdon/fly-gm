@@ -6,6 +6,7 @@
 #include "simpleiter"
 #include "util"
 #include "settings"
+#include "colors"
 
 #pragma tabsize 0 // it does not go well with some macros and preprocess
 

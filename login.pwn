@@ -52,13 +52,13 @@ hook OnPlayerConnect(playerid)
 		// wiki states that SetPlayerName does not propagate for the user
 		// if used in OnPlayerConnect, but tests have proven otherwise.
 		if (NAMELEN(playerid) <= 3 || SetPlayerName(playerid, playernames[playerid][2]) != 1) {
-			SendClientMessage playerid, COL_INFO_SAMP,
+			SendClientMessage playerid, COL_WARN,
 				"Failed to change your nickname. Please come back with a different name."
 			KickDelayed playerid
 			#allowreturn
 			return 0
 		}
-		SendClientMessage playerid, COL_INFO_SAMP, "Names starting with '=' are reserved for guest players."
+		SendClientMessage playerid, COL_SAMP_GREEN, "Names starting with '=' are reserved for guest players."
 	}
 	new data[MAX_PLAYER_NAME * 3 + 4]
 	data[0] = 'u'
@@ -71,7 +71,7 @@ hook OnPlayerConnect(playerid)
 hook OnPlayerRequestSpawn(playerid)
 {
 	if (!isPlaying(playerid)) {
-		SendClientMessage playerid, COL_INFO_SAMP, "Log in first."
+		SendClientMessage playerid, COL_WARN, "Log in first."
 		#allowreturn
 		return 0
 	}
@@ -80,7 +80,7 @@ hook OnPlayerRequestSpawn(playerid)
 hook OnPlayerCommandText(playerid, cmdtext[])
 {
 	if (!isPlaying(playerid)) {
-		SendClientMessage playerid, COL_INFO_SAMP, "Log in first."
+		SendClientMessage playerid, COL_WARN, "Log in first."
 		#allowreturn
 		return 1
 	}
@@ -89,7 +89,7 @@ hook OnPlayerCommandText(playerid, cmdtext[])
 hook OnPlayerText(playerid, text[])
 {
 	if (!isPlaying(playerid)) {
-		SendClientMessage playerid, COL_INFO_SAMP, "Log in first."
+		SendClientMessage playerid, COL_WARN, "Log in first."
 		#allowreturn
 		return 0
 	}
@@ -144,11 +144,12 @@ err:
 		}
 	}
 	print "[ERROR][LOGIN] failed to give player a guest name after err, player will be kicked!!"
-	SendClientMessage playerid, COL_INFO_SAMP, "Fatal error, you will be kicked (sorry!), please reconnect"
+	SendClientMessage playerid, COL_WARN, "Fatal error, you will be kicked (sorry!), please reconnect"
 	KickDelayed playerid
 	goto @@return // just returning here gives 'unreachable code' warning for next line so yeah...
 spawnasguest:
-	SendClientMessage playerid, COL_INFO_SAMP, "An error occured while contacting the login server. You will be spawned as a guest."
+	SendClientMessage playerid, COL_WARN, "An error occured while contacting the login server."
+	SendClientMessage playerid, COL_SAMP_GREEN, "You will be spawned as a guest."
 	loggedstatus[playerid] = LOGGED_GUEST
 	// TODO spawn as guest
 @@return:

@@ -1,3 +1,3 @@
 
-#define COL_INFO_SAMP 0x88AA62FF
+// vim: set filetype=c ts=8 noexpandtab:
 
