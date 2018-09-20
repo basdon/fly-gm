@@ -5,7 +5,7 @@ ppfile = preprocess.sed
 pp = $(sed) -f $(ppfile)
 
 build: p/basdon.p p/panel.p p/game_sa.p p/afk.p p/playername.p p/login.p \
-       p/util.p p/settings.p p/dialog.p p/simpleiter.p p/colors.p
+       p/util.p p/settings.p p/dialog.p p/simpleiter.p p/colors.p p/spawn.p
 	@echo.
 
 p/basdon.p: basdon.pwn $(ppfile)
@@ -40,6 +40,9 @@ p/colors.p: colors.pwn $(ppfile)
 
 p/dialog.p: dialog.pwn $(ppfile)
 	$(pp) dialog.pwn>p/dialog.p
+
+p/spawn.p: spawn.pwn $(ppfile)
+	$(pp) spawn.pwn>p/spawn.p
 
 clean:
 	del p

@@ -28,7 +28,6 @@
 #define cos(%0) floatcos(%0, degrees)
 #define sin(%0) floatsin(%0, degrees)
 #define tan(%0) floattan(%0, degrees)
-#define AddPlayerClassNoWeapon(%1) AddPlayerClass(%1,0,0,0,0,0,0)
 
 // public symbols
 #define PUB_LOOP25 a
@@ -51,7 +50,16 @@ stock KickDelayed(playerid) {}
 
 //@summary Iter that contains {@b logged in (or guest)} players
 new Iter:players[MAX_PLAYERS]
+
+//@summary Just an underscore used as empty text for dialogs, textdraws, ...
+//@remarks normal variable
+//@seealso TXT_EMPTY_CONST
 new TXT_EMPTY[] = "_"
+
+//@summary Just an underscore used as empty text for dialogs, textdraws, ...
+//@remarks stock const
+//@seealso TXT_EMPTY
+stock const TXT_EMPTY_CONST[] = "_"
 
 ##section varinit
 ###include "dialog"
@@ -106,6 +114,7 @@ public OnPlayerConnect(playerid)
 ###include "login"
 ###include "dialog"
 ###include "panel"
+###include "spawn"
 ##endsection
 
 	return 1
@@ -122,17 +131,36 @@ public OnPlayerDisconnect(playerid, reason)
 	return 1
 }
 
+public OnPlayerRequestClass(playerid, classid)
+{
+##section OnPlayerRequestClass
+###include "spawn"
+##endsection
+	return 1
+}
+
 public OnPlayerRequestSpawn(playerid)
 {
 ##section OnPlayerRequestSpawn
 ###include "login"
 // login needs to be first!
+###include "spawn"
+// spawn needs to be last!
 ##endsection
-	return 1
 }
 
 public OnPlayerCommandText(playerid, cmdtext[])
 {
+
+#if !defined PROD
+	if (strcmp("/jetpack", cmdtext, 1) == 0) {
+		SetPlayerSpecialAction playerid, SPECIAL_ACTION_USEJETPACK
+	}
+	if (strcmp("/kill", cmdtext, 1) == 0) {
+		SetPlayerHealth playerid, 0.0
+	}
+#endif
+
 ##section OnPlayerCommandText
 ###include "login"
 // login needs to be first!
@@ -154,13 +182,14 @@ public OnGameModeInit()
 	SetGameModeText VERSION
 
 	//UsePlayerPedAnims
-	AddPlayerClassNoWeapon(0, 1467.4471, 1244.7747, 10.8281, 90.0)
+
 	SetWorldTime 0
 	AddStaticVehicle MODEL_HYDRA, 1477.4471, 1244.7747, 10.8281, 0.0, 0, 0
 	AddStaticVehicle MODEL_HYDRA, 1477.4471, 1254.7747, 10.8281, 0.0, 0, 0
 
 ##section OnGameModeInit
 ###include "panel"
+###include "spawn"
 ##endsection
 
 	return 1;
@@ -201,4 +230,5 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 #include "game_sa"
 #include "afk"
 #include "dialog"
+#include "spawn"
 
