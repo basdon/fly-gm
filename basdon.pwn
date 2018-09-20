@@ -36,11 +36,16 @@
 
 //@summary Public function to kick a player.
 //@param playerid the player to kick
-//@remarks Calls to {@link Kick} gets replaced with a non-repeating timer to this function.
+//@remarks Calls to {@link KickDelayed} gets replaced with a non-repeating timer to this function.
 export PUB_KICKEX(playerid)
 {
 	Kick playerid
 }
+//@summary Delayed kick to be able to send some messages first
+//@param playerid player to kick
+//@remarks Is implemented as a preprocessor replacement.
+//@seealso Kick
+stock KickDelayed(playerid) {}
 #define KickDelayed SetTimerEx #PUB_KICKEX,25,0,"i",
 
 new Iter:players[MAX_PLAYERS]
