@@ -22,6 +22,12 @@
 	s/^.*§§§\(.*\)$/#undef _inc_\1/
 }
 
+# include with include guard removal not giving a shit about line nums
+/^###include/ {
+	s/^.*"\(.*\)"$/#include "\1"/p
+	s/^.*"\(.*\)"$/#undef _inc_\1/
+}
+
 # custom doc comment formats
 /^\s*\/\/@/ {
 	s-^\s*//@summary \(.*\)$-/// <summary>\1</summary>-

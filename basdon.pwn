@@ -52,16 +52,11 @@ new Iter:players[MAX_PLAYERS]
 new TXT_EMPTY[] = "_"
 
 ##section varinit
-##include "dialog"
-
-##include "playername"
-
-##include "panel"
-
-##include "game_sa"
-
-##include "afk"
-
+###include "dialog"
+###include "playername"
+###include "panel"
+###include "game_sa"
+###include "afk"
 ##endsection
 
 main()
@@ -82,8 +77,7 @@ export PUB_LOOP25()
 	++invoc
 	if (invoc & 0x3 == 0) {
 ##section loop100
-##include "panel"
-
+###include "panel"
 ##endsection
 	}
 	if (invoc >= 60) {
@@ -105,14 +99,10 @@ public OnPlayerConnect(playerid)
 	iter_add(players, playerid)
 
 ##section OnPlayerConnect
-##include "playername"
-
-##include "login"
-
-##include "dialog"
-
-##include "panel"
-
+###include "playername"
+###include "login"
+###include "dialog"
+###include "panel"
 ##endsection
 
 	return 1
@@ -121,8 +111,7 @@ public OnPlayerConnect(playerid)
 public OnPlayerDisconnect(playerid, reason)
 {
 ##section OnPlayerDisconnect
-##include "panel"
-
+###include "panel"
 ##endsection
 	iter_remove(players, playerid)
 
@@ -152,8 +141,7 @@ public OnGameModeInit()
 	AddStaticVehicle MODEL_HYDRA, 1477.4471, 1254.7747, 10.8281, 0.0, 0, 0
 
 ##section OnGameModeInit
-##include "panel"
-
+###include "panel"
 ##endsection
 
 	return 1;
@@ -162,8 +150,7 @@ public OnGameModeInit()
 public OnPlayerUpdate(playerid)
 {
 ##section OnPlayerUpdate
-##include "afk"
-
+###include "afk"
 ##endsection
 	return 1
 }
@@ -176,8 +163,7 @@ public OnGameModeExit()
 public OnPlayerStateChange(playerid, newstate, oldstate)
 {
 ##section OnPlayerStateChange
-##include "panel"
-
+###include "panel"
 ##endsection
     return 1
 }
@@ -185,8 +171,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 ##section OnDialogResponse
-##include "dialog"
-
+###include "dialog"
 ##endsection
 	return 0
 }
