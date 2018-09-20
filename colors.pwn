@@ -8,3 +8,7 @@
 #define COL_WARN 0xe84c3dff
 #define COL_SUCC 0x2cc36bff
 
+#define WARN "! "
+#define INFO "* "
+#define SUCC "+ "
+
