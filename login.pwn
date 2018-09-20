@@ -58,10 +58,7 @@ hook OnPlayerConnect(playerid)
 			#allowreturn
 			return 0
 		}
-		new s[34 + MAX_PLAYER_NAME + 1]
-		format s, sizeof(s), "Your name has been changed to '%s'", NAMEOF(playerid)
 		SendClientMessage playerid, COL_INFO_SAMP, "Names starting with '=' are reserved for guest players."
-		SendClientMessage playerid, COL_INFO_SAMP, s
 	}
 	new data[MAX_PLAYER_NAME * 3 + 4]
 	data[0] = 'u'
@@ -139,6 +136,8 @@ err:
 		}
 	}
 spawnasguest:
+	SendClientMessage playerid, COL_INFO_SAMP, "An error occured while contacting the login server. You will be spawned as a guest."
+	loggedstatus[playerid] = LOGGED_GUEST
 	// TODO spawn as guest
 }
 
