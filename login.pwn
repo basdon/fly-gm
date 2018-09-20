@@ -102,8 +102,8 @@ hook OnPlayerText(playerid, text[])
 export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 {
 	if (response_code != 200) {
-		printf "usercheck api call returned code %d, data %s", response_code, data
-		goto err;
+		printf "[ERROR][LOGIN] usercheck api call returned code %d, data: '%s'", response_code, data
+		goto err
 	}
 
 	if (data[0] == 't') {
@@ -118,7 +118,7 @@ export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 		return
 	}
 
-	printf "usercheck api call returned '%s'", data
+	printf "[ERROR][LOGIN] usercheck api call returned unknown status: '%s'", data
 err:
 	new newname[MAX_PLAYER_NAME]
 	newname[0] = '='
@@ -135,10 +135,15 @@ err:
 			goto spawnasguest
 		}
 	}
+	printf "[ERROR][LOGIN] failed to give player a guest name after err, player will be kicked!!"
+	SendClientMessage playerid, COL_INFO_SAMP, "Fatal error, you will be kicked (sorry!), please reconnect"
+	KickDelayed playerid
+	goto @@return // just returning here gives 'unreachable code' warning for next line so yeah...
 spawnasguest:
 	SendClientMessage playerid, COL_INFO_SAMP, "An error occured while contacting the login server. You will be spawned as a guest."
 	loggedstatus[playerid] = LOGGED_GUEST
 	// TODO spawn as guest
+@@return:
 }
 
 #printhookguards
