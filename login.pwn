@@ -9,35 +9,12 @@
 
 varinit
 {
-	//@summary Check if a player is playing (=past the login screen, can be guest)
-	//@param playerid the playerid to check
-	//@remarks Is implemented as a preprocessor replacement.
-	//@seealso isGuest
-	//@seealso isRegistered
-	//@returns {@code 0} if the player is not playing
-	stock isPlaying(playerid) { }
 	#define isPlaying(%0) (loggedstatus[%0])
-
-	//@summary Check if a player has an account (=is not a guest)
-	//@param playerid the playerid to check
-	//@remarks Is implemented as a preprocessor replacement.
-	//@seealso isPlaying
-	//@seealso isGuest
-	//@returns {@code 0} if the player is not registered
-	stock isRegistered(playerid) { }
 	#define isRegistered(%0) (loggedstatus[%0] == LOGGED_IN)
-
-	//@summary Check if a player is playing as a guest
-	//@param playerid the playerid to check
-	//@remarks Is implemented as a preprocessor replacement.
-	//@seealso isPlaying
-	//@seealso isRegistered
-	//@returns {@code 0} if the player is not logged in
-	stock isGuest(playerid) { }
 	#define isGuest(%0) (loggedstatus[%0] == LOGGED_GUEST)
 
 	//@summary Logged in status, either {@code LOGGED_NO}, {@code LOGGED_IN} or {@code LOGGED_GUEST}
-	new loggedstatus[MAX_PLAYERS]
+	new loggedstatus[MAX_PLAYERS];
 }
 
 hook OnPlayerDisconnect(playerid)
@@ -154,6 +131,44 @@ spawnasguest:
 	// TODO spawn as guest
 @@return:
 }
+
+#define _isPlaying isPlaying
+#undef isPlaying
+#define _isRegistered isRegistered
+#undef isRegistered
+#define _isGuest isGuest
+#undef isGuest
+
+//@summary Check if a player is playing (=past the login screen, can be guest)
+//@param playerid the playerid to check
+//@remarks Is implemented as a preprocessor replacement.
+//@seealso isGuest
+//@seealso isRegistered
+//@returns {@code 0} if the player is not playing
+stock isPlaying(playerid) { }
+
+//@summary Check if a player has an account (=is not a guest)
+//@param playerid the playerid to check
+//@remarks Is implemented as a preprocessor replacement.
+//@seealso isPlaying
+//@seealso isGuest
+//@returns {@code 0} if the player is not registered
+stock isRegistered(playerid) { }
+
+//@summary Check if a player is playing as a guest
+//@param playerid the playerid to check
+//@remarks Is implemented as a preprocessor replacement.
+//@seealso isPlaying
+//@seealso isRegistered
+//@returns {@code 0} if the player is not logged in
+stock isGuest(playerid) { }
+
+#define isPlaying _isPlaying
+#undef _isPlaying
+#define isRegistered _isRegistered
+#undef _isRegistered
+#define isGuest _isGuest
+#undef _isGuest
 
 #printhookguards
 
