@@ -128,6 +128,7 @@ export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 	}
 	printf "[ERROR][LOGIN] usercheck api call returned unknown status: '%s'", data
 err:
+	SendClientMessage playerid, COL_WARN, WARN"An error occured while contacting the login server."
 	new newname[MAX_PLAYER_NAME]
 	newname[0] = '='
 	memcpy(newname, NAMEOF(playerid), 4, NAMELEN(playerid) * 4 + 4)
@@ -148,7 +149,6 @@ err:
 	KickDelayed playerid
 	goto @@return // just returning here gives 'unreachable code' warning for next line so yeah...
 spawnasguest:
-	SendClientMessage playerid, COL_WARN, WARN"An error occured while contacting the login server."
 	SendClientMessage playerid, COL_SAMP_GREEN, "You will be spawned as a guest."
 	loggedstatus[playerid] = LOGGED_GUEST
 	// TODO spawn as guest
