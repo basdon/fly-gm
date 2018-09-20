@@ -102,6 +102,10 @@ hook OnPlayerText(playerid, text[])
 export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 {
 	if (response_code != 200) {
+		// printf can crash server if formatstr or output len is > 1024
+		if (strlen(data) > 500) {
+			data[499] = 0
+		}
 		printf "[ERROR][LOGIN] usercheck api call returned code %d, data: '%s'", response_code, data
 		goto err
 	}
@@ -118,6 +122,10 @@ export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 		return
 	}
 
+	// printf can crash server if formatstr or output len is > 1024
+	if (strlen(data) > 500) {
+		data[499] = 0
+	}
 	printf "[ERROR][LOGIN] usercheck api call returned unknown status: '%s'", data
 err:
 	new newname[MAX_PLAYER_NAME]
@@ -135,7 +143,7 @@ err:
 			goto spawnasguest
 		}
 	}
-	printf "[ERROR][LOGIN] failed to give player a guest name after err, player will be kicked!!"
+	print "[ERROR][LOGIN] failed to give player a guest name after err, player will be kicked!!"
 	SendClientMessage playerid, COL_INFO_SAMP, "Fatal error, you will be kicked (sorry!), please reconnect"
 	KickDelayed playerid
 	goto @@return // just returning here gives 'unreachable code' warning for next line so yeah...
