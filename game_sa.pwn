@@ -36,6 +36,7 @@ varinit
 
 //@summary Checks if a player is in a vehicle in the category 'air'
 //@param playerid the id of the player to check
+//@remarks No need to check if player is in vehicle (or connected even)
 //@returns {@code 1} if the player is in an air vehicle.
 isInAirVehicle(playerid)
 {

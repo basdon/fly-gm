@@ -58,6 +58,7 @@ new TXT_EMPTY[] = "_"
 ###include "panel"
 ###include "game_sa"
 ###include "afk"
+###include "login"
 ##endsection
 
 main()
@@ -112,6 +113,7 @@ public OnPlayerConnect(playerid)
 public OnPlayerDisconnect(playerid, reason)
 {
 ##section OnPlayerDisconnect
+###include "login"
 ###include "panel"
 ##endsection
 	iter_remove(players, playerid)
@@ -119,16 +121,31 @@ public OnPlayerDisconnect(playerid, reason)
 	return 1
 }
 
-new val = 1
 public OnPlayerRequestSpawn(playerid)
 {
-	SendClientMessageToAll(-1, "request spawn");
-	return val
+##section OnPlayerRequestSpawn
+###include "login"
+// login needs to be first!
+##endsection
+	return 1
 }
 
 public OnPlayerCommandText(playerid, cmdtext[])
 {
-	val = 1
+##section OnPlayerCommandText
+###include "login"
+// login needs to be first!
+##endsection
+	return 1
+}
+
+public OnPlayerText(playerid, text[])
+{
+##section OnPlayerText
+###include "login"
+// login needs to be first!
+##endsection
+	return 1
 }
 
 public OnGameModeInit()

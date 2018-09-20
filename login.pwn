@@ -3,6 +3,48 @@
 
 #namespace "login"
 
+#define LOGGED_NO 0
+#define LOGGED_IN 1
+#define LOGGED_GUEST 2
+
+varinit
+{
+	//@summary Check if a player is playing (=past the login screen, can be guest)
+	//@param playerid the playerid to check
+	//@remarks Is implemented as a preprocessor replacement.
+	//@seealso isGuest
+	//@seealso isRegistered
+	//@returns {@code 0} if the player is not playing
+	stock isPlaying(playerid) { }
+	#define isPlaying(%0) (loggedstatus[%0])
+
+	//@summary Check if a player has an account (=is not a guest)
+	//@param playerid the playerid to check
+	//@remarks Is implemented as a preprocessor replacement.
+	//@seealso isPlaying
+	//@seealso isGuest
+	//@returns {@code 0} if the player is not registered
+	stock isRegistered(playerid) { }
+	#define isRegistered(%0) (loggedstatus[%0] == LOGGED_IN)
+
+	//@summary Check if a player is playing as a guest
+	//@param playerid the playerid to check
+	//@remarks Is implemented as a preprocessor replacement.
+	//@seealso isPlaying
+	//@seealso isRegistered
+	//@returns {@code 0} if the player is not logged in
+	stock isGuest(playerid) { }
+	#define isGuest(%0) (loggedstatus[%0] == LOGGED_GUEST)
+
+	//@summary Logged in status, either {@code LOGGED_NO}, {@code LOGGED_IN} or {@code LOGGED_GUEST}
+	new loggedstatus[MAX_PLAYERS]
+}
+
+hook OnPlayerDisconnect(playerid)
+{
+	loggedstatus[playerid] = LOGGED_NO
+}
+
 hook OnPlayerConnect(playerid)
 {
 	#assert PLAYERNAMEVER == 1
@@ -27,6 +69,33 @@ hook OnPlayerConnect(playerid)
 	new len = urlencode(NAMEOF(playerid), NAMELEN(playerid), data[2])
 	data[len + 2] = 0
 	HTTP(playerid, HTTP_POST, #API_URL"/api-usercheck.php", data, #PUB_LOGIN_USERCHECK_CB)
+}
+
+hook OnPlayerRequestSpawn(playerid)
+{
+	if (!isPlaying(playerid)) {
+		SendClientMessage playerid, COL_INFO_SAMP, "Log in first."
+		#allowreturn
+		return 0
+	}
+}
+
+hook OnPlayerCommandText(playerid, cmdtext[])
+{
+	if (!isPlaying(playerid)) {
+		SendClientMessage playerid, COL_INFO_SAMP, "Log in first."
+		#allowreturn
+		return 1
+	}
+}
+
+hook OnPlayerText(playerid, text[])
+{
+	if (!isPlaying(playerid)) {
+		SendClientMessage playerid, COL_INFO_SAMP, "Log in first."
+		#allowreturn
+		return 0
+	}
 }
 
 //@summary Callback for usercheck done in {@link OnPlayerConnect}.
