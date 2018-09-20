@@ -26,6 +26,7 @@ hook OnPlayerConnect(playerid)
 {
 	#assert PLAYERNAMEVER == 1
 	while (playernames[playerid][1] == '=') {
+		SendClientMessage playerid, COL_SAMP_GREEN, "Names starting with '=' are reserved for guest players."
 		// wiki states that SetPlayerName does not propagate for the user
 		// if used in OnPlayerConnect, but tests have proven otherwise.
 		if (NAMELEN(playerid) <= 3 || SetPlayerName(playerid, playernames[playerid][2]) != 1) {
@@ -35,7 +36,6 @@ hook OnPlayerConnect(playerid)
 			#allowreturn
 			return 0
 		}
-		SendClientMessage playerid, COL_SAMP_GREEN, "Names starting with '=' are reserved for guest players."
 	}
 	new data[MAX_PLAYER_NAME * 3 + 4]
 	data[0] = 'u'
