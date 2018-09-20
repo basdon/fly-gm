@@ -48,6 +48,7 @@ export PUB_KICKEX(playerid)
 stock KickDelayed(playerid) {}
 #define KickDelayed SetTimerEx #PUB_KICKEX,25,0,"i",
 
+//@summary Iter that contains {@b logged in (or guest)} players
 new Iter:players[MAX_PLAYERS]
 new TXT_EMPTY[] = "_"
 

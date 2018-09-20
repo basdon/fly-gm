@@ -7,6 +7,8 @@
 #define VEL_TO_KTS(%0) (96.77661*%0) // KPH / 293 * 145
 #define VEL_TO_MPS(%0) (54.3297*%0) // (KPH / 3.6)
 #define VEL_TO_KFPM(%0) (10.69482*%0) // K feet per minute (MPS * 3.28084 * 60 / 1000)
+
+#define VEL_TO_KFPMA_VER 1 // change this when the value changes
 #define VEL_TO_KFPMA(%0) (6.11132*%0) // some adjustment (KFPM / 1.75)
 
 #define PNLTXT_BG 0
@@ -30,18 +32,27 @@
 
 varinit
 {
+	//@summary Shared panel textdraws
 	new Text:pnltxt[PNLTXT_G_TOTAL]
+	//@summary Per-player panel textdraws
 	new PlayerText:playerpnltxt[MAX_PLAYERS][PNLTXT_P_TOTAL]
+	//@summary Vertical Speed Indicator playertext
 	new PlayerText:pnltxtvai[MAX_PLAYERS]
+	//@summary cache for updating various panel values
 	new lastdatacache[MAX_PLAYERS]
+	//@summary cache for updating panel heading
 	new headingcache[MAX_PLAYERS]
+	//@summary Players that should get panel updates
 	new Iter:panelplayers[MAX_PLAYERS]
 
+	//@summary Data for panel SPD meter
 	stock const SPDMETERDATA[] = "160-~n~150-~n~140-~n~130-~n~120-~n~110-~n~100-~n~_90-~n~_80-~n~"\
 	                             "_70-~n~_60-~n~_50-~n~_40-~n~_30-~n~_20-~n~_10-~n~___-~n~____~n~___"
 
+	//@summary Empty text to size background textdraw boxes
 	new PANEL_BGTEXT[] = "~n~~n~~n~"
 
+	//@summary Common string to format number using 3 digits
 	stock const _03DFORMAT[] = "%03d"
 }
 
@@ -130,6 +141,7 @@ skipalt:
 
 skipspd:
 		// VAI
+		#assert VEL_TO_KFPMA_VER == 1
 		vz = clamp(floatround(/*VEL_TO_KFPMA*14.5*/88.61422 * vz), -34, 34)
 		#define TDVAR tmp
 		new PlayerText:TDVAR = pnltxtvai[playerid]
