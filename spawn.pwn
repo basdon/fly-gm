@@ -85,7 +85,7 @@ OnPlayerRequestClassImpl(playerid, classid = 0)
 	SetPlayerFacingAngle playerid, 236.0
 	SetPlayerSpecialAction playerid, SPECIAL_ACTION_DANCE1
 	#assert SPAWN_ORDER_VER == 1
-	GameTextForPlayer playerid, SPAWN_CLASSNAMES[SPAWN_POSITIONS[classid]], 120000, 3
+	GameTextForPlayer playerid, SPAWN_CLASSNAMES[SPAWN_POSITIONS[classid]], 0x800000, 3
 	SetPlayerColor playerid, CLASS_COLORS[classid]
 }
 

@@ -37,7 +37,7 @@ hook OnPlayerConnect(playerid)
 			return 0
 		}
 	}
-	GameTextForPlayer playerid, "~b~Contacting login server...", 120000, 3
+	GameTextForPlayer playerid, "~b~Contacting login server...", 0x800000, 3
 	new data[MAX_PLAYER_NAME * 3 + 4]
 	data[0] = 'u'
 	data[1] = '='
