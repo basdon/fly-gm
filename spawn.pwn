@@ -18,6 +18,8 @@ varinit
 {
 	#define isSpawned(%0) spawned[%0]
 	new spawned[MAX_PLAYERS]
+	#define getPlayerClass(%0) playerclass[%0]
+	new playerclass[MAX_PLAYERS]
 }
 
 hook OnGameModeInit()
@@ -50,6 +52,9 @@ hook OnPlayerConnect(playerid)
 
 hook OnPlayerRequestClass(playerid, classid)
 {
+	// cannot block changing class, so save it
+	playerclass[playerid] = classid
+
 	// is also called upon connecting, but then player is not
 	// logged in yet, so don't show if that's the case
 	if (isPlaying(playerid)) {
@@ -96,9 +101,14 @@ stock const CLASS_COLORS[] = {
 
 //@summary Class selection, sets camera, dance moves, shows class name
 //@param playerid Player to show class selection for
-//@param classid Class id to show (optional={@code 0})
-OnPlayerRequestClassImpl(playerid, classid = 0)
+//@param classid Class id to show (optional={@code -1})
+//@remarks if {@paramref classid} is {@code -1}, the last know classid will be used
+OnPlayerRequestClassImpl(playerid, classid = -1)
 {
+	if (classid == -1) {
+		classid = playerclass[playerid]
+	}
+
 	SetPlayerCameraPos playerid, VINEWOOD_CAMERA_PS
 	SetPlayerCameraLookAt playerid, VINEWOOD_CAMERA_AT
 	SetPlayerPos playerid, 1486.2727, -874.0833, 58.8885
@@ -119,6 +129,16 @@ OnPlayerRequestClassImpl(playerid, classid = 0)
 stock isSpawned(playerid) {}
 #define isSpawned _isSpawned
 #undef _isSpawned
+
+#define _getPlayerClass getPlayerClass
+#undef getPlayerClass
+//@summary Gets a player's class
+//@param playerid the player to check
+//@remarks Is implemented as a preprocessor replacement.
+//@returns The player's class, should be one of the {@code CLASS_*} constants.
+stock getPlayerClass(playerid) {}
+#define getPlayerClass _getPlayerClass
+#undef _getPlayerClass
 
 #printhookguards
 
