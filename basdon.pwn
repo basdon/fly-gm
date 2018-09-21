@@ -30,6 +30,7 @@
 #define tan(%0) floattan(%0, degrees)
 #define strcicmp(%0) strcmp(%0, .ignorecase=true)
 #define strcscmp(%0) strcmp(%0, .ignorecase=false)
+#define atoi strval
 
 // public symbols
 #define PUB_LOOP25 a
@@ -152,9 +153,23 @@ public OnPlayerCommandText(playerid, cmdtext[])
 #if !defined PROD
 	if (strcicmp("/jetpack", cmdtext) == 0) {
 		SetPlayerSpecialAction playerid, SPECIAL_ACTION_USEJETPACK
+		return 1
 	}
 	if (strcicmp("/kill", cmdtext) == 0) {
 		SetPlayerHealth playerid, 0.0
+		return 1
+	}
+	if (strcicmp("/clock", cmdtext, .length=6) == 0) {
+		TogglePlayerClock playerid, atoi(cmdtext[7])
+		return 1
+	}
+	if (strcicmp("/weather", cmdtext, .length=8) == 0) {
+		SetWeather atoi(cmdtext[9])
+		return 1
+	}
+	if (strcicmp("/time", cmdtext, .length=5) == 0) {
+		SetPlayerTime playerid, atoi(cmdtext[6]), 0
+		return 1
 	}
 #endif
 
@@ -162,7 +177,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 ###include "login"
 // login needs to be first!
 ##endsection
-	return 1
+	return 0
 }
 
 public OnPlayerText(playerid, text[])

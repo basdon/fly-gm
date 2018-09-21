@@ -29,7 +29,6 @@ hook OnGameModeInit()
 hook OnPlayerConnect(playerid)
 {
 	TogglePlayerClock playerid, 0
-	SetPlayerTime playerid, 12, 0
 	SetPlayerColor playerid, 0x888888ff
 	SetPlayerPos playerid, 1415.386, -807.9211, 85.0615
 	// OnPlayerRequestClass seems to not be called when player
