@@ -139,6 +139,7 @@ spawnasguest:
 loginPlayer(playerid, status)
 {
 	loggedstatus[playerid] = status
+	iter_add(players, playerid)
 	OnPlayerRequestClassImpl playerid
 }
 

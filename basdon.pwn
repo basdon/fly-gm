@@ -106,8 +106,6 @@ public OnPlayerConnect(playerid)
 	DisablePlayerCheckpoint(playerid)
 	DisablePlayerRaceCheckpoint(playerid)
 
-	iter_add(players, playerid)
-
 ##section OnPlayerConnect
 ###include "playername"
 ###include "login"
