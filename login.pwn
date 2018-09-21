@@ -153,6 +153,7 @@ loginPlayer(playerid, status)
 //@summary Check if a player is playing (=past the login screen, can be guest)
 //@param playerid the playerid to check
 //@remarks Is implemented as a preprocessor replacement.
+//@seealso isSpawned
 //@seealso isGuest
 //@seealso isRegistered
 //@returns {@code 0} if the player is not playing

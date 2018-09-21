@@ -14,6 +14,12 @@
 #define CLASS_ARMY 3
 #define CLASS_AID 4
 
+varinit
+{
+	#define isSpawned(%0) spawned[%0]
+	new spawned[MAX_PLAYERS]
+}
+
 hook OnGameModeInit()
 {
 	#define AddPlayerClassNoWeapon(%1) AddPlayerClass(%1,0,0,0,0,0,0)
@@ -24,6 +30,11 @@ hook OnGameModeInit()
 	AddPlayerClassNoWeapon(275, 1488.5236, -873.1125, 59.3885, 232.0) // rescue worker
 	AddPlayerClassNoWeapon(287, 1488.5236, -873.1125, 59.3885, 232.0) // army
 	AddPlayerClassNoWeapon(287, 1488.5236, -873.1125, 59.3885, 232.0) // aid worker
+}
+
+hook OnPlayerDisconnect(playerid)
+{
+	spawned[playerid] = 0
 }
 
 hook OnPlayerConnect(playerid)
@@ -58,6 +69,16 @@ hook OnPlayerRequestSpawn(playerid)
 	return 1
 }
 
+hook OnPlayerSpawn(playerid)
+{
+	spawned[playerid] = 1
+}
+
+hook OnPlayerDeath(playerid, killerid, reason)
+{
+	spawned[playerid] = 0
+}
+
 //@summary Class names, used for class selection
 #assert SPAWN_ORDER_VER == 1
 stock const SPAWN_CLASSNAMES[] = "~p~Pilot\0~y~Trucker\0~b~~h~~h~Rescue worker\0~g~~h~Army\0~r~~h~~h~Aid worker"
@@ -87,6 +108,17 @@ OnPlayerRequestClassImpl(playerid, classid = 0)
 	GameTextForPlayer playerid, SPAWN_CLASSNAMES[SPAWN_POSITIONS[classid]], 0x800000, 3
 	SetPlayerColor playerid, CLASS_COLORS[classid]
 }
+
+#define _isSpawned isSpawned
+#undef isSpawned
+//@summary Check if a player is spawned.
+//@param playerid the playerid to check
+//@remarks Is implemented as a preprocessor replacement.
+//@returns {@code 0} if the player is not spawned
+//@seealso isPlaying
+stock isSpawned(playerid) {}
+#define isSpawned _isSpawned
+#undef _isSpawned
 
 #printhookguards
 

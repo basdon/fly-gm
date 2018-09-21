@@ -71,6 +71,7 @@ stock const TXT_EMPTY_CONST[] = "_"
 ###include "game_sa"
 ###include "afk"
 ###include "login"
+###include "spawn"
 ##endsection
 
 main()
@@ -122,6 +123,7 @@ public OnPlayerDisconnect(playerid, reason)
 {
 ##section OnPlayerDisconnect
 ###include "login"
+###include "spawn"
 ###include "panel"
 ##endsection
 	iter_remove(players, playerid)
@@ -154,6 +156,7 @@ public OnPlayerSpawn(playerid)
 	}
 
 ##section OnPlayerSpawn
+###include "spawn"
 ###include "timecyc"
 ##endsection
 
@@ -167,6 +170,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 	}
 
 ##section OnPlayerDeath
+###include "spawn"
 ###include "timecyc"
 ##endsection
 
