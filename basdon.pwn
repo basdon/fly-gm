@@ -28,6 +28,8 @@
 #define cos(%0) floatcos(%0, degrees)
 #define sin(%0) floatsin(%0, degrees)
 #define tan(%0) floattan(%0, degrees)
+#define strcicmp(%0) strcmp(%0, .ignorecase=true)
+#define strcscmp(%0) strcmp(%0, .ignorecase=false)
 
 // public symbols
 #define PUB_LOOP25 a
@@ -153,10 +155,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 {
 
 #if !defined PROD
-	if (strcmp("/jetpack", cmdtext, 1) == 0) {
+	if (strcicmp("/jetpack", cmdtext) == 0) {
 		SetPlayerSpecialAction playerid, SPECIAL_ACTION_USEJETPACK
 	}
-	if (strcmp("/kill", cmdtext, 1) == 0) {
+	if (strcicmp("/kill", cmdtext) == 0) {
 		SetPlayerHealth playerid, 0.0
 	}
 #endif
