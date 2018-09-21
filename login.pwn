@@ -37,6 +37,7 @@ hook OnPlayerConnect(playerid)
 			return 0
 		}
 	}
+	GameTextForPlayer playerid, "~b~Contacting login server...", 120000, 3
 	new data[MAX_PLAYER_NAME * 3 + 4]
 	data[0] = 'u'
 	data[1] = '='
@@ -78,6 +79,7 @@ hook OnPlayerText(playerid, text[])
 //@param data response data
 export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 {
+	GameTextForPlayer playerid, TXT_EMPTY_CONST, 5, 3
 	if (response_code != 200) {
 		// printf can crash server if formatstr or output len is > 1024
 		if (strlen(data) > 500) {
@@ -127,9 +129,17 @@ err:
 	goto @@return // just returning here gives 'unreachable code' warning for next line so yeah...
 spawnasguest:
 	SendClientMessage playerid, COL_SAMP_GREEN, "You will be spawned as a guest."
-	loggedstatus[playerid] = LOGGED_GUEST
-	// TODO spawn as guest
+	loginPlayer playerid, LOGGED_GUEST
 @@return:
+}
+
+//@summary Sets a player's logged status and triggers class selection for them
+//@param playerid The player to login
+//@param status the logged status to give, should be either {@code LOGGED_IN} or {@code LOGGED_GUEST}
+loginPlayer(playerid, status)
+{
+	loggedstatus[playerid] = status
+	OnPlayerRequestClassImpl playerid
 }
 
 #define _isPlaying isPlaying

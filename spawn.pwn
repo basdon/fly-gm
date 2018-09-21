@@ -54,7 +54,7 @@ stock const CLASSNAMES[] = "~p~Pilot\0~y~Trucker\0~b~~h~~h~Rescue worker\0~g~Arm
 
 //@summary Class selection, sets camera, dance moves, shows class name
 //@param playerid Player to show class selection for
-//@param classid Class id to show (optional=0)
+//@param classid Class id to show (optional={@code 0})
 OnPlayerRequestClassImpl(playerid, classid = 0)
 {
 	SetPlayerCameraPos playerid, VINEWOOD_CAMERA_PS
