@@ -35,6 +35,7 @@ SetPlayerNameHook(playerid, const name[])
 		new s[34 + MAX_PLAYER_NAME + 1]
 		format s, sizeof(s), "Your name has been changed to '%s'", NAMEOF(playerid)
 		SendClientMessage playerid, COL_SAMP_GREEN, s
+		// TODO: if we ever do name changes, broadcast to other players that someone's name changed
 	}
 	return res
 }

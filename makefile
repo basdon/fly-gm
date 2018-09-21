@@ -62,5 +62,8 @@ p/spawn.p: spawn.pwn $(ppfile)
 #S3
 #STOP
 
+file: makefile mkmakefile.sed
+	$(sed) -f mkmakefile.sed -i makefile
+
 clean:
 	del p
