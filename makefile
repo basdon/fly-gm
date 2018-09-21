@@ -16,11 +16,12 @@ pp = $(sed) -f $(ppfile)
 #FILE colors
 #FILE dialog
 #FILE spawn
+#FILE timecyc
 
 #START
 #S2
 
-build: p/spawn.p p/dialog.p p/colors.p p/settings.p p/util.p p/login.p p/playername.p p/afk.p p/game_sa.p p/simpleiter.p p/panel.p p/basdon.p
+build: p/timecyc.p p/spawn.p p/dialog.p p/colors.p p/settings.p p/util.p p/login.p p/playername.p p/afk.p p/game_sa.p p/simpleiter.p p/panel.p p/basdon.p
 	@echo.
 
 p/basdon.p: basdon.pwn $(ppfile)
@@ -58,6 +59,9 @@ p/dialog.p: dialog.pwn $(ppfile)
 
 p/spawn.p: spawn.pwn $(ppfile)
 	$(pp) spawn.pwn>p/spawn.p
+
+p/timecyc.p: timecyc.pwn $(ppfile)
+	$(pp) timecyc.pwn>p/timecyc.p
 
 #S3
 #STOP

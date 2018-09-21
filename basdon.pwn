@@ -147,6 +147,32 @@ public OnPlayerRequestSpawn(playerid)
 ##endsection
 }
 
+public OnPlayerSpawn(playerid)
+{
+	if (!isPlaying(playerid)) {
+		return 0
+	}
+
+##section OnPlayerSpawn
+###include "timecyc"
+##endsection
+
+	return 1
+}
+
+public OnPlayerDeath(playerid, killerid, reason)
+{
+	if (!isPlaying(playerid)) {
+		return 0
+	}
+
+##section OnPlayerDeath
+###include "timecyc"
+##endsection
+
+	return 1
+}
+
 public OnPlayerCommandText(playerid, cmdtext[])
 {
 
