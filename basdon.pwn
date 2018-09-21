@@ -44,14 +44,6 @@ export PUB_KICKEX(playerid)
 {
 	Kick playerid
 }
-//@summary Delayed kick to be able to send some messages first
-//@param playerid player to kick
-//@remarks Is implemented as a preprocessor replacement.
-//@seealso Kick
-stock KickDelayed(playerid) {
-	this_function _ should_not _ be_called
-}
-#define KickDelayed SetTimerEx #PUB_KICKEX,25,0,"i",
 
 //@summary Iter that contains {@b logged in (or guest)} players
 new Iter:players[MAX_PLAYERS]

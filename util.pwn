@@ -24,3 +24,12 @@ stock hideGameTextForPlayer(playerid) {
 }
 #define hideGameTextForPlayer(%0) GameTextForPlayer(%0, TXT_EMPTY_CONST, 2, 3)
 
+//@summary Delayed kick to be able to send some messages first
+//@param playerid player to kick
+//@remarks Is implemented as a preprocessor replacement.
+//@seealso Kick
+stock KickDelayed(playerid) {
+	this_function _ should_not _ be_called
+}
+#define KickDelayed SetTimerEx #PUB_KICKEX,25,0,"i",
+
