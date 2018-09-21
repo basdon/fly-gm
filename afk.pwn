@@ -17,7 +17,6 @@ hook OnPlayerUpdate(playerid)
 
 #define _isAfk isAfk
 #undef isAfk
-
 //@summary Check if a player is afk.
 //@param playerid the playerid to check
 //@remarks Is implemented as a preprocessor replacement.
@@ -26,7 +25,6 @@ hook OnPlayerUpdate(playerid)
 stock isAfk(playerid) {
 	this_function _ should_not _ be_called
 }
-
 #define isAfk _isAfk
 #undef _isAfk
 

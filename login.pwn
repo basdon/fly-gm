@@ -145,11 +145,6 @@ loginPlayer(playerid, status)
 
 #define _isPlaying isPlaying
 #undef isPlaying
-#define _isRegistered isRegistered
-#undef isRegistered
-#define _isGuest isGuest
-#undef isGuest
-
 //@summary Check if a player is playing (=past the login screen, can be guest)
 //@param playerid the playerid to check
 //@remarks Is implemented as a preprocessor replacement.
@@ -160,7 +155,11 @@ loginPlayer(playerid, status)
 stock isPlaying(playerid) {
 	this_function _ should_not _ be_called
 }
+#define isPlaying _isPlaying
+#undef _isPlaying
 
+#define _isRegistered isRegistered
+#undef isRegistered
 //@summary Check if a player has an account (=is not a guest)
 //@param playerid the playerid to check
 //@remarks Is implemented as a preprocessor replacement.
@@ -170,7 +169,11 @@ stock isPlaying(playerid) {
 stock isRegistered(playerid) {
 	this_function _ should_not _ be_called
 }
+#define isRegistered _isRegistered
+#undef _isRegistered
 
+#define _isGuest isGuest
+#undef isGuest
 //@summary Check if a player is playing as a guest
 //@param playerid the playerid to check
 //@remarks Is implemented as a preprocessor replacement.
@@ -180,11 +183,6 @@ stock isRegistered(playerid) {
 stock isGuest(playerid) {
 	this_function _ should_not _ be_called
 }
-
-#define isPlaying _isPlaying
-#undef _isPlaying
-#define isRegistered _isRegistered
-#undef _isRegistered
 #define isGuest _isGuest
 #undef _isGuest
 
