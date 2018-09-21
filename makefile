@@ -4,8 +4,23 @@ sed = "K:\Program Files\Git\usr\bin\sed.exe"
 ppfile = preprocess.sed
 pp = $(sed) -f $(ppfile)
 
-build: p/basdon.p p/panel.p p/game_sa.p p/afk.p p/playername.p p/login.p \
-       p/util.p p/settings.p p/dialog.p p/simpleiter.p p/colors.p p/spawn.p
+#FILE basdon
+#FILE panel
+#FILE simpleiter
+#FILE game_sa
+#FILE afk
+#FILE playername
+#FILE login
+#FILE util
+#FILE settings
+#FILE colors
+#FILE dialog
+#FILE spawn
+
+#START
+#S2
+
+build: p/spawn.p p/dialog.p p/colors.p p/settings.p p/util.p p/login.p p/playername.p p/afk.p p/game_sa.p p/simpleiter.p p/panel.p p/basdon.p
 	@echo.
 
 p/basdon.p: basdon.pwn $(ppfile)
@@ -26,7 +41,7 @@ p/afk.p: afk.pwn $(ppfile)
 p/playername.p: playername.pwn $(ppfile)
 	$(pp) playername.pwn>p/playername.p
 
-p/login.p: login.pwn p/basdon.p $(ppfile)
+p/login.p: login.pwn $(ppfile)
 	$(pp) login.pwn>p/login.p
 
 p/util.p: util.pwn $(ppfile)
@@ -43,6 +58,9 @@ p/dialog.p: dialog.pwn $(ppfile)
 
 p/spawn.p: spawn.pwn $(ppfile)
 	$(pp) spawn.pwn>p/spawn.p
+
+#S3
+#STOP
 
 clean:
 	del p

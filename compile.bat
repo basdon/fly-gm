@@ -15,6 +15,8 @@ IF [%~1] EQU [clean] (
 MKDIR out
 IF NOT EXIST p MKDIR p
 
+"%_SED%" -i makefile -f mkmakefile.sed
+
 IF [%~1] EQU [make] (
 	"%_MAKE%" %~2
 	EXIT
