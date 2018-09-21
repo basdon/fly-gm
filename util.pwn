@@ -16,3 +16,9 @@ urlencode(const data[], len, output[])
 	return len * 3
 }
 
+//@summary Hides any possible shown game text for a player
+//@param playerid the player to hide any possible shown game text for
+//@remarks Is implemented as a preprocessor replacement.
+stock hideGameTextForPlayer(playerid) { }
+#define hideGameTextForPlayer(%0) GameTextForPlayer(%0, TXT_EMPTY_CONST, 2, 3)
+

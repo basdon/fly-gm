@@ -64,11 +64,8 @@ hook OnPlayerRequestClass(playerid, classid)
 
 hook OnPlayerRequestSpawn(playerid)
 {
-	// to hide the class name text
-	GameTextForPlayer playerid, TXT_EMPTY_CONST, 5, 3
-	TogglePlayerClock playerid, 1
-	// TODO sync player time/weather here
-	// TODO: toggleplayerclock 0 on death and 1 on spawn?
+	hideGameTextForPlayer(playerid)
+	updateTimecycForPlayer playerid
 
 	#allowreturn
 	return 1

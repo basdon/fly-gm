@@ -18,5 +18,12 @@ hook OnPlayerDeath(playerid, killerid, reason)
 	TogglePlayerClock playerid, 0
 }
 
+//@summary Make sure player's time is in sync
+//@param playerid player to sync
+updateTimecycForPlayer(playerid)
+{
+	// TODO timecyc sync
+}
+
 #printhookguards
 

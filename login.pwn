@@ -79,7 +79,7 @@ hook OnPlayerText(playerid, text[])
 //@param data response data
 export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 {
-	GameTextForPlayer playerid, TXT_EMPTY_CONST, 5, 3
+	hideGameTextForPlayer(playerid)
 	if (response_code != 200) {
 		// printf can crash server if formatstr or output len is > 1024
 		if (strlen(data) > 500) {

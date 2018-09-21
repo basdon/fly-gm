@@ -269,4 +269,5 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 #include "afk"
 #include "dialog"
 #include "spawn"
+#include "timecyc"
 
