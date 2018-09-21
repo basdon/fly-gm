@@ -106,9 +106,6 @@ public OnPlayerConnect(playerid)
 	DisablePlayerCheckpoint(playerid)
 	DisablePlayerRaceCheckpoint(playerid)
 
-	TogglePlayerClock(playerid, 1)
-	SetPlayerTime(playerid, 12, 0)
-
 	iter_add(players, playerid)
 
 ##section OnPlayerConnect
