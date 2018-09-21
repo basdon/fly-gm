@@ -142,10 +142,8 @@ public OnPlayerRequestClass(playerid, classid)
 public OnPlayerRequestSpawn(playerid)
 {
 ##section OnPlayerRequestSpawn
-###include "login"
-// login needs to be first!
-###include "spawn"
-// spawn needs to be last!
+###include "login" // login needs to be first! (to block if not logged)
+###include "spawn" // spawn needs to be last! (to set things when actually spawning)
 ##endsection
 }
 
@@ -204,8 +202,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 #endif
 
 ##section OnPlayerCommandText
-###include "login"
-// login needs to be first!
+###include "login" // login needs to be first! (to block if not logged)
 ##endsection
 	return 0
 }
@@ -213,8 +210,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 public OnPlayerText(playerid, text[])
 {
 ##section OnPlayerText
-###include "login"
-// login needs to be first!
+###include "login" // login needs to be first! (to block if not logged)
 ##endsection
 	return 1
 }

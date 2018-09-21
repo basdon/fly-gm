@@ -13,8 +13,10 @@
 	s/.*\n//
 	s_\s*//.*$__
 	/^$/ !{
-		c\#error "keep lines after ##include empty"
-		q
+		/\s*\/\.*$/ !{
+			c\#error "keep lines after ##include empty"
+			q
+		}
 	}
 	g
 	s/^\(.*\)§§§.*$/\1/
@@ -24,8 +26,8 @@
 
 # include with include guard removal not giving a shit about line nums
 /^###include/ {
-	s/^.*"\(.*\)"$/#include "\1"/p
-	s/^.*"\(.*\)"$/#undef _inc_\1/
+	s/^.*"\(.*\)".*$/#include "\1"/p
+	s/^.*"\(.*\)".*$/#undef _inc_\1/
 }
 
 # custom doc comment formats
