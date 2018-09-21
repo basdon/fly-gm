@@ -50,7 +50,8 @@ hook OnPlayerRequestSpawn(playerid)
 
 //@summary Class names, used for class selection
 #assert SPAWN_ORDER_VER == 1
-stock const CLASSNAMES[] = "~p~Pilot\0~y~Trucker\0~b~~h~~h~Rescue worker\0~g~Army\0~r~~h~~h~Aid worker"
+stock const SPAWN_CLASSNAMES[] = "~p~Pilot\0~y~Trucker\0~b~~h~~h~Rescue worker\0~g~Army\0~r~~h~~h~Aid worker"
+stock const SPAWN_POSITIONS[] = { 0, 9, 20, 43, 51 };
 
 //@summary Class selection, sets camera, dance moves, shows class name
 //@param playerid Player to show class selection for
@@ -63,8 +64,7 @@ OnPlayerRequestClassImpl(playerid, classid = 0)
 	SetPlayerFacingAngle playerid, 226.0
 	SetPlayerSpecialAction playerid, SPECIAL_ACTION_DANCE1
 	#assert SPAWN_ORDER_VER == 1
-	new positions[] = { 0, 9, 20, 43, 51 };
-	GameTextForPlayer playerid, CLASSNAMES[positions[classid]], 120000, 3
+	GameTextForPlayer playerid, SPAWN_CLASSNAMES[SPAWN_POSITIONS[classid]], 120000, 3
 }
 
 #printhookguards
