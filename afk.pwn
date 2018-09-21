@@ -23,7 +23,9 @@ hook OnPlayerUpdate(playerid)
 //@remarks Is implemented as a preprocessor replacement.
 //@remarks A player is considered to be ask if they has not sent an update for over {@b 1000ms}.
 //@returns {@code 0} if the player is not afk
-stock isAfk(playerid) { }
+stock isAfk(playerid) {
+	this_function _ should_not _ be_called
+}
 
 #define isAfk _isAfk
 #undef _isAfk

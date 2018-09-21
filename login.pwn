@@ -157,7 +157,9 @@ loginPlayer(playerid, status)
 //@seealso isGuest
 //@seealso isRegistered
 //@returns {@code 0} if the player is not playing
-stock isPlaying(playerid) { }
+stock isPlaying(playerid) {
+	this_function _ should_not _ be_called
+}
 
 //@summary Check if a player has an account (=is not a guest)
 //@param playerid the playerid to check
@@ -165,7 +167,9 @@ stock isPlaying(playerid) { }
 //@seealso isPlaying
 //@seealso isGuest
 //@returns {@code 0} if the player is not registered
-stock isRegistered(playerid) { }
+stock isRegistered(playerid) {
+	this_function _ should_not _ be_called
+}
 
 //@summary Check if a player is playing as a guest
 //@param playerid the playerid to check
@@ -173,7 +177,9 @@ stock isRegistered(playerid) { }
 //@seealso isPlaying
 //@seealso isRegistered
 //@returns {@code 0} if the player is not logged in
-stock isGuest(playerid) { }
+stock isGuest(playerid) {
+	this_function _ should_not _ be_called
+}
 
 #define isPlaying _isPlaying
 #undef _isPlaying

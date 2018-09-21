@@ -123,7 +123,9 @@ OnPlayerRequestClassImpl(playerid, classid = -1)
 //@remarks Is implemented as a preprocessor replacement.
 //@returns {@code 0} if the player is not spawned
 //@seealso isPlaying
-stock isSpawned(playerid) {}
+stock isSpawned(playerid) {
+	this_function _ should_not _ be_called
+}
 #define isSpawned _isSpawned
 #undef _isSpawned
 
@@ -133,7 +135,9 @@ stock isSpawned(playerid) {}
 //@param playerid the player to check
 //@remarks Is implemented as a preprocessor replacement.
 //@returns The player's class, should be one of the {@code CLASS_*} constants.
-stock getPlayerClass(playerid) {}
+stock getPlayerClass(playerid) {
+	this_function _ should_not _ be_called
+}
 #define getPlayerClass _getPlayerClass
 #undef _getPlayerClass
 

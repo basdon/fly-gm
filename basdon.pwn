@@ -48,7 +48,9 @@ export PUB_KICKEX(playerid)
 //@param playerid player to kick
 //@remarks Is implemented as a preprocessor replacement.
 //@seealso Kick
-stock KickDelayed(playerid) {}
+stock KickDelayed(playerid) {
+	this_function _ should_not _ be_called
+}
 #define KickDelayed SetTimerEx #PUB_KICKEX,25,0,"i",
 
 //@summary Iter that contains {@b logged in (or guest)} players
