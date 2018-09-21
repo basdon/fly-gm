@@ -4,7 +4,7 @@
 #namespace "spawn"
 
 // 0.2 vinewood rulez
-#define VINEWOOD_CAMERA_PS 1498.3066, -887.3567, 62.9459
+#define VINEWOOD_CAMERA_PS 1496.7052, -883.7934, 59.9061
 #define VINEWOOD_CAMERA_AT 1395.9752, -787.6342, 82.1637
 
 #define SPAWN_ORDER_VER 1
@@ -81,8 +81,8 @@ OnPlayerRequestClassImpl(playerid, classid = 0)
 {
 	SetPlayerCameraPos playerid, VINEWOOD_CAMERA_PS
 	SetPlayerCameraLookAt playerid, VINEWOOD_CAMERA_AT
-	SetPlayerPos playerid, 1478.8986, -867.5325, 57.5157
-	SetPlayerFacingAngle playerid, 226.0
+	SetPlayerPos playerid, 1486.2727, -874.0833, 58.8885
+	SetPlayerFacingAngle playerid, 236.0
 	SetPlayerSpecialAction playerid, SPECIAL_ACTION_DANCE1
 	#assert SPAWN_ORDER_VER == 1
 	GameTextForPlayer playerid, SPAWN_CLASSNAMES[SPAWN_POSITIONS[classid]], 120000, 3
