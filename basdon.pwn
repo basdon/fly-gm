@@ -220,7 +220,6 @@ public OnGameModeInit()
 
 	//UsePlayerPedAnims
 
-	SetWorldTime 0
 	AddStaticVehicle MODEL_HYDRA, 1477.4471, 1244.7747, 10.8281, 0.0, 0, 0
 	AddStaticVehicle MODEL_HYDRA, 1477.4471, 1254.7747, 10.8281, 0.0, 0, 0
 
