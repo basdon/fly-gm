@@ -41,8 +41,7 @@ hook OnPlayerConnect(playerid)
 	new data[MAX_PLAYER_NAME * 3 + 4]
 	data[0] = 'u'
 	data[1] = '='
-	new len = urlencode(NAMEOF(playerid), NAMELEN(playerid), data[2])
-	data[len + 2] = 0
+	Urlencode(NAMEOF(playerid), NAMELEN(playerid), data[2])
 	HTTP(playerid, HTTP_POST, #API_URL"/api-usercheck.php", data, #PUB_LOGIN_USERCHECK_CB)
 }
 
