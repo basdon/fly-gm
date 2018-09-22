@@ -46,6 +46,8 @@ hook OnPlayerConnect(playerid)
 	SetPlayerTime playerid, 12, 0
 	SetPlayerColor playerid, 0x888888ff
 	SetPlayerPos playerid, 1415.386, -807.9211, 85.0615
+	// since this does not work on first invocation, 'preload' the animation here before request class
+	SetPlayerSpecialAction playerid, SPECIAL_ACTION_DANCE1
 	// OnPlayerRequestClass seems to not be called when player
 	// is connected and alt-tabbed during gmx, should we really need this?...
 	SetPlayerCameraPos playerid, VINEWOOD_CAMERA_PS
