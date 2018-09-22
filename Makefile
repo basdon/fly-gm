@@ -71,7 +71,7 @@ p/timecyc.p: timecyc.pwn $(ppfile)
 #S3
 #STOP
 
-file: makefile mkmakefile.sed
+file: Makefile mkmakefile.sed
 	$(sed) -f mkmakefile.sed -i makefile
 
 plugin: ../plugins/basdonfly.dll natives.pwn
