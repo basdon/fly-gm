@@ -23,8 +23,8 @@ pp = $(sed) -f $(ppfile)
 #START
 #S2
 
-build: plugin p/timecyc.p p/spawn.p p/dialog.p p/colors.p p/settings.p p/util.p p/login.p p/playername.p p/afk.p p/game_sa.p p/simpleiter.p p/panel.p p/natives.p p/basdon.p
-	@REM.
+build: p/timecyc.p p/spawn.p p/dialog.p p/colors.p p/settings.p p/util.p p/login.p p/playername.p p/afk.p p/game_sa.p p/simpleiter.p p/panel.p p/natives.p p/basdon.p
+	@echo.
 
 p/basdon.p: basdon.pwn $(ppfile)
 	$(pp) basdon.pwn>p/basdon.p
@@ -74,14 +74,8 @@ p/timecyc.p: timecyc.pwn $(ppfile)
 file: Makefile mkmakefile.sed
 	$(sed) -f mkmakefile.sed -i makefile
 
-plugin: ../plugins/basdonfly.dll natives.pwn
-	@REM.
-
 natives.pwn: ../../plugin/basdonfly.pwn
 	COPY /Y ..\..\plugin\basdonfly.pwn natives.pwn
-
-../plugins/basdonfly.dll: ../../plugin/vc2005/Debug/basdonfly.dll
-	COPY /Y ..\..\plugin\vc2005\Debug\basdonfly.dll ..\plugins\basdonfly.dll
 
 clean:
 	DEL p
