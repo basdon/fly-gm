@@ -7,6 +7,7 @@
 #include "util"
 #include "settings"
 #include "colors"
+#include "natives"
 
 #pragma tabsize 0 // it does not go well with some macros and preprocess
 
@@ -70,6 +71,10 @@ stock const TXT_EMPTY_CONST[] = "_"
 
 main()
 {
+	if (!ValidateMaxPlayers(MAX_PLAYERS)) {
+		SendRconCommand "exit"
+	}
+
 	print "  Loaded gamemode basdon-fly "#VERSION"\n"
 ##section init
 ##endsection

@@ -1,10 +1,12 @@
 SHELL = cmd.exe
 .SHELLFLAGS = /c
 sed = "K:\Program Files\Git\usr\bin\sed.exe"
+cp = "K:\Program Files\Git\usr\bin\cp.exe"
 ppfile = preprocess.sed
 pp = $(sed) -f $(ppfile)
 
 #FILE basdon
+#FILE natives
 #FILE panel
 #FILE simpleiter
 #FILE game_sa
@@ -21,11 +23,14 @@ pp = $(sed) -f $(ppfile)
 #START
 #S2
 
-build: p/timecyc.p p/spawn.p p/dialog.p p/colors.p p/settings.p p/util.p p/login.p p/playername.p p/afk.p p/game_sa.p p/simpleiter.p p/panel.p p/basdon.p
+build: plugin p/timecyc.p p/spawn.p p/dialog.p p/colors.p p/settings.p p/util.p p/login.p p/playername.p p/afk.p p/game_sa.p p/simpleiter.p p/panel.p p/natives.p p/basdon.p
 	@echo.
 
 p/basdon.p: basdon.pwn $(ppfile)
 	$(pp) basdon.pwn>p/basdon.p
+
+p/natives.p: natives.pwn $(ppfile)
+	$(pp) natives.pwn>p/natives.p
 
 p/panel.p: panel.pwn $(ppfile)
 	$(pp) panel.pwn>p/panel.p
@@ -68,6 +73,15 @@ p/timecyc.p: timecyc.pwn $(ppfile)
 
 file: makefile mkmakefile.sed
 	$(sed) -f mkmakefile.sed -i makefile
+
+plugin: ../plugins/basdonfly.dll natives.pwn
+	@echo.
+
+natives.pwn: ../../plugin/basdonfly.pwn
+	COPY /Y ..\..\plugin\basdonfly.pwn natives.pwn
+
+../plugins/basdonfly.dll: ../../plugin/vc2005/Debug/basdonfly.dll
+	COPY /Y ..\..\plugin\vc2005\Debug\basdonfly.dll ..\plugins\basdonfly.dll
 
 clean:
 	del p

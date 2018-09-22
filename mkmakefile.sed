@@ -29,7 +29,7 @@
 	g
 	s/@.*$//
 	s/\n//g
-	s/^/build:/
+	s/^/build: plugin/
 	p
 	s/^.*$/	@echo./p
 	i
