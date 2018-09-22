@@ -8,4 +8,5 @@ func! SampMake(parm)
 	silent execute "read !compile.bat" a:parm
 	silent! %s/\r//g
 	setlocal nomodifiable
+	nnoremap <buffer> <CR> :q<CR>
 endfunc
