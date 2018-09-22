@@ -99,7 +99,7 @@ stock const CLASS_COLORS[] = {
 //@summary Class selection, sets camera, dance moves, shows class name
 //@param playerid Player to show class selection for
 //@param classid Class id to show (optional={@code -1})
-//@remarks if {@paramref classid} is {@code -1}, the last know classid will be used
+//@remarks if {@param classid} is {@code -1}, the last know classid will be used
 OnPlayerRequestClassImpl(playerid, classid = -1)
 {
 	if (classid == -1) {
