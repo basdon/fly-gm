@@ -53,9 +53,7 @@ hook loop100()
 
 	for (new _i : panelplayers) {
 		new playerid = iter_access(panelplayers, _i)
-		if (isAfk(playerid)) {
-			continue
-		}
+
 		new vid = GetPlayerVehicleID(playerid)
 		new Float:vx, Float:vy, Float:vz
 
@@ -121,6 +119,18 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 		for (new i = 0; i < sizeof(playerpnltxt[]); i++) PlayerTextDrawHide playerid, playerpnltxt[playerid][i]
 		iter_remove(panelplayers, playerid)
 		PlayerTextDrawDestroy(playerid, pnltxtvai[playerid])
+	}
+}
+
+hook onPlayerNowAfk(playerid)
+{
+	iter_remove(panelplayers, playerid)
+}
+
+hook onPlayerWasAfk(playerid)
+{
+	if (isInAirVehicle(playerid)) {
+		iter_add(panelplayers, playerid)
 	}
 }
 

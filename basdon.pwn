@@ -92,13 +92,12 @@ export PUB_LOOP25()
 	if (invoc & 0x3 == 0) {
 ##section loop100
 ###include "panel"
+###include "afk"
 ##endsection
-	}
-	if (invoc >= 60) {
-		invoc = 0
-##section loop1M
-
-##endsection
+		if (invoc >= 120) {
+			// 3000ms
+			invoc = 0
+		}
 	}
 }
 
@@ -124,6 +123,7 @@ public OnPlayerDisconnect(playerid, reason)
 ###include "login"
 ###include "spawn"
 ###include "panel"
+###include "afk"
 ##endsection
 	iter_remove(players, playerid)
 
@@ -212,6 +212,30 @@ public OnPlayerText(playerid, text[])
 ###include "login" // login needs to be first! (to block if not logged)
 ##endsection
 	return 1
+}
+
+//@summary Called when a player goes afk
+//@summary playerid the playerid that went afk
+//@remarks {@b A player is also marked afk when they are not spawned (dead or in class select)!}
+//@seealso onPlayerWasAfk
+//@seealso isAfk
+onPlayerNowAfk(playerid)
+{
+##section onPlayerNowAfk
+###include "panel"
+##endsection
+}
+
+//@summary Gets called when a player comes back from being afk
+//@summary playerid the playerid that is now back
+//@remarks {@b A player is also marked afk when they are not spawned (dead or in class select)!}
+//@seealso onPlayerNowAfk
+//@seealso isAfk
+onPlayerWasAfk(playerid)
+{
+##section onPlayerWasAfk
+###include "panel"
+##endsection
 }
 
 public OnGameModeInit()
