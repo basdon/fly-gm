@@ -38,16 +38,10 @@ varinit
 	new PlayerText:playerpnltxt[MAX_PLAYERS][PNLTXT_P_TOTAL]
 	//@summary Vertical Speed Indicator playertext
 	new PlayerText:pnltxtvai[MAX_PLAYERS]
-	//@summary cache for updating various panel values
-	new lastdatacache[MAX_PLAYERS]
 	//@summary cache for updating panel heading
 	new headingcache[MAX_PLAYERS]
 	//@summary Players that should get panel updates
 	new Iter:panelplayers[MAX_PLAYERS]
-
-	//@summary Data for panel SPD meter
-	stock const SPDMETERDATA[] = "160-~n~150-~n~140-~n~130-~n~120-~n~110-~n~100-~n~_90-~n~_80-~n~"\
-	                             "_70-~n~_60-~n~_50-~n~_40-~n~_30-~n~_20-~n~_10-~n~___-~n~____~n~___"
 
 	//@summary Empty text to size background textdraw boxes
 	new PANEL_BGTEXT[] = "~n~~n~~n~"
@@ -73,7 +67,6 @@ hook loop100()
 		// ALT
 		GetVehiclePos vid, vx, vy, vz
 		if (Panel_UpdateAltitude(playerid, floatround(vz), buf4, buf13, buf44)) {
-			printf "yes"
 			PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ALT], buf4
 			if (buf13[0]) {
 				PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ALT_METER2], buf13
@@ -83,42 +76,19 @@ hook loop100()
 			}
 		}
 
-		GetVehicleVelocity vid, vx, vy, vz
-		new v
-		new txt[200]
 		// SPD
+		GetVehicleVelocity vid, vx, vy, vz
 		vx = VEL_TO_KTS(VectorSize(vx, vy, vz))
-		v = floatround(vx, floatround_tozero)
-		if ((lastdatacache[playerid] & 0xFF) == v) {
-			goto skipspd
-		}
-		lastdatacache[playerid] = (lastdatacache[playerid] & 0xFFFFFF00) | v
-
-		format txt, sizeof(txt), _03DFORMAT, v
-		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_SPD], txt
-
-		// SPD METER
-		if (v < 0 || v > 149) {
-			goto skipspd
+		if (Panel_UpdateSpeed(playerid, floatround(vx, floatround_tozero), buf4, buf13, buf44)) {
+			PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_SPD], buf4
+			if (buf13[0]) {
+				PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_SPD_METER2], buf13
+				if (buf44[0]) {
+					PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_SPD_METER], buf44
+				}
+			}
 		}
 
-		new offset = (14 - v / 10) * 7
-		if (((lastdatacache[playerid] & 0xFF00) >> 8) != offset) {
-			assert offset < 256
-			lastdatacache[playerid] = (lastdatacache[playerid] & 0xFFFF00FF) | (offset << 8)
-			new metertxt[] = "xxx-~n~xxx-~n~~n~~n~~n~~n~xxx-~n~xxx-~n~"
-			memcpy metertxt, SPDMETERDATA[offset], 0, 11 * 4, 11
-			memcpy metertxt, SPDMETERDATA[offset + 14], 26 * 4, 37
-			PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_SPD_METER], metertxt
-		}
-
-		// SPD METER2
-		new meter2txt[] = "0~n~~n~0"
-		meter2txt[0] = '0' + ((v + 1) % 10)
-		meter2txt[7] = '0' + ((v + 9) % 10)
-		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_SPD_METER2], meter2txt
-
-skipspd:
 		// VAI
 		#assert VEL_TO_KFPMA_VER == 1
 		vz = clamp(floatround(/*VEL_TO_KFPMA*14.5*/88.61422 * vz), -34, 34)
@@ -136,6 +106,7 @@ skipspd:
 		#undef TDVAR
 
 		// HDG
+		new txt[200]
 		GetVehicleZAngle(vid, vz)
 		new heading = 360 - floatround(vz)
 		if (heading == 0) {
