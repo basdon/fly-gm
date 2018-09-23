@@ -157,3 +157,7 @@ s/^varinit$/hook varinit()/
 	c
 }
 
+# ifdef ifndef syntactic sugar
+s/^\(\s*\)#ifdef/\1#if defined/
+s/^\(\s*\)#ifndef/\1#if !defined/
+

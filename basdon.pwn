@@ -15,12 +15,12 @@
 
 #undef MAX_PLAYERS
 #include "sharedsymbols"
-#if !defined MAX_PLAYERS
+#ifndef MAX_PLAYERS
 #error "no MAX_PLAYERS"
 #endif
 #define SLOTS MAX_PLAYERS
 
-#if !defined PROD
+#ifndef PROD
 // NO http:// PREFIX!
 #define API_URL "localhost:8080/sap"
 #else
