@@ -29,7 +29,7 @@
 	g
 	s/@.*$//
 	s/\n//g
-	s/^/build:/
+	s_^_build: p/sharedsymbols.p_
 	p
 	s/^.*$/	@echo./p
 	i

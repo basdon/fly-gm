@@ -14,7 +14,10 @@
 #define VERSION "0.1"
 
 #undef MAX_PLAYERS
-#define MAX_PLAYERS (50)
+#include "sharedsymbols"
+#if !defined MAX_PLAYERS
+#error "no MAX_PLAYERS"
+#endif
 #define SLOTS MAX_PLAYERS
 
 #if !defined PROD
