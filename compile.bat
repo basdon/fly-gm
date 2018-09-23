@@ -20,10 +20,18 @@ IF [%~1] EQU [make] (
 	EXIT
 )
 
+SET "_EXTRAFLAGS=%~1"
+SET "_FLAGS=-d3 -O1"
+
+IF [%~1] EQU [prod] (
+        set "_EXTRAFLAGS=PROD=1"
+        set "_FLAGS=-d0 -O0"
+)
+
 "%_MAKE%" build
 IF %ERRORLEVEL% NEQ 0 EXIT
 ECHO.
-"%_PAWNCC%" -(- -;- -ivendor/ -Dp/ %~1 basdon.p -r../out/basdon.xml -o../out/basdon.amx
+"%_PAWNCC%" -(- -;- -ivendor/ -Dp/ %_EXTRAFLAGS% basdon.p -r../out/basdon.xml -o../out/basdon.amx %_FLAGS%
 IF %ERRORLEVEL% NEQ 0 EXIT
 ECHO.
 IF EXIST "out\basdon.xml" (
