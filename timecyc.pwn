@@ -104,7 +104,6 @@ hook OnPlayerDeath(playerid, killerid, reason)
 
 hook onPlayerWasAfk(playerid)
 {
-	SendClientMessageToAll -1, "player was afk"
 	forceTimecycForPlayer playerid
 }
 
