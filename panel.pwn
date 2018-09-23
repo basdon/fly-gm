@@ -38,16 +38,11 @@ varinit
 	new PlayerText:playerpnltxt[MAX_PLAYERS][PNLTXT_P_TOTAL]
 	//@summary Vertical Speed Indicator playertext
 	new PlayerText:pnltxtvai[MAX_PLAYERS]
-	//@summary cache for updating panel heading
-	new headingcache[MAX_PLAYERS]
 	//@summary Players that should get panel updates
 	new Iter:panelplayers[MAX_PLAYERS]
 
 	//@summary Empty text to size background textdraw boxes
 	new PANEL_BGTEXT[] = "~n~~n~~n~"
-
-	//@summary Common string to format number using 3 digits
-	stock const _03DFORMAT[] = "%03d"
 }
 
 hook loop100()
@@ -106,35 +101,11 @@ hook loop100()
 		#undef TDVAR
 
 		// HDG
-		new txt[200]
 		GetVehicleZAngle(vid, vz)
-		new heading = 360 - floatround(vz)
-		if (heading == 0) {
-			heading = 360
+		if (Panel_UpdateHeading(playerid, floatround(vz), buf4, buf44)) {
+			PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_HDG], buf4
+			PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_HDG_METER], buf44
 		}
-		if (heading == headingcache[playerid]) {
-			continue
-		}
-		headingcache[playerid] = heading
-		format txt, 4, "%03d", heading
-		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_HDG], txt
-
-		// HDG METER
-		new hdgmeter[30] = { '_', ... }
-		heading = heading % 360 + 1
-		format hdgmeter[8], 4, _03DFORMAT, heading; heading = heading % 360 + 1
-		format hdgmeter[4], 4, _03DFORMAT, heading; heading = heading % 360 + 1
-		format hdgmeter[0], 4, _03DFORMAT, heading; heading = (heading + 355) % 360 + 1
-		format hdgmeter[18], 4, _03DFORMAT, heading; heading = (heading + 358) % 360 + 1
-		format hdgmeter[22], 4, _03DFORMAT, heading; heading = (heading + 358) % 360 + 1
-		format hdgmeter[26], 4, _03DFORMAT, heading
-		hdgmeter[3] = '_'
-		hdgmeter[7] = '_'
-		hdgmeter[11] = '_'
-		hdgmeter[21] = '_'
-		hdgmeter[25] = '_'
-		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_HDG_METER], hdgmeter
-
 	}
 }
 
