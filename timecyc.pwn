@@ -22,11 +22,15 @@
 
 // if player dies, cycle goes
 
+//#define TIMECYC_OVERLAY_CLOCK
+
 varinit
 {
 	new time_h, time_s
 	new lasttime
+#ifdef TIMECYC_OVERLAY_CLOCK
 	new Text:clocktext
+#endif
 	new lockedweather = 0, upcomingweather = 0, currentweather = 0
 	#define SetWeather USE_setWeather_INSTEAD
 }
@@ -36,6 +40,7 @@ hook OnGameModeInit()
 	lasttime = gettime()
 	time_h = 0, time_s = 0
 
+#ifdef TIMECYC_OVERLAY_CLOCK
 	clocktext = TextDrawCreate(608.0, 22.0, "12:73")
 	TextDrawColor clocktext, 0xE1E1E1FF
 	TextDrawLetterSize clocktext, 0.55, 2.2
@@ -45,6 +50,7 @@ hook OnGameModeInit()
 	TextDrawSetShadow clocktext, 0
 	TextDrawSetOutline clocktext, 2
 	TextDrawBackgroundColor clocktext, 0x000000FF
+#endif
 }
 
 hook loop100()
@@ -59,9 +65,11 @@ hook loop100()
 				time_h = 0
 			}
 		}
+#ifdef TIMECYC_OVERLAY_CLOCK
 		new buf[6]
 		format buf, 6, "%02d:%02d", time_h, time_s
 		TextDrawSetString clocktext, buf
+#endif
 		lasttime = time
 		// TODO: this is 1s loop
 	}
@@ -69,7 +77,9 @@ hook loop100()
 
 hook OnPlayerRequestClass(playerid, classid)
 {
+#ifdef TIMECYC_OVERLAY_CLOCK
 	TextDrawHideForPlayer playerid, clocktext
+#endif
 	TogglePlayerClock playerid, 0
 	SetPlayerTime playerid, 12, 0
 	SetPlayerWeather playerid, 0
@@ -77,7 +87,9 @@ hook OnPlayerRequestClass(playerid, classid)
 
 hook OnPlayerRequestSpawn(playerid)
 {
+#ifdef TIMECYC_OVERLAY_CLOCK
 	TextDrawShowForPlayer playerid, clocktext
+#endif
 }
 
 //hook OnPlayerSpawn(playerid)
