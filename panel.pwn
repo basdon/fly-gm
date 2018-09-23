@@ -61,7 +61,7 @@ hook loop100()
 
 		// ALT
 		GetVehiclePos vid, vx, vy, vz
-		if (Panel_UpdateAltitude(playerid, floatround(vz), buf4, buf13, buf44)) {
+		if (Panel_FormatAltitude(playerid, floatround(vz), buf4, buf13, buf44)) {
 			PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ALT], buf4
 			if (buf13[0]) {
 				PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ALT_METER2], buf13
@@ -74,7 +74,7 @@ hook loop100()
 		// SPD
 		GetVehicleVelocity vid, vx, vy, vz
 		vx = VEL_TO_KTS(VectorSize(vx, vy, vz))
-		if (Panel_UpdateSpeed(playerid, floatround(vx, floatround_tozero), buf4, buf13, buf44)) {
+		if (Panel_FormatSpeed(playerid, floatround(vx, floatround_tozero), buf4, buf13, buf44)) {
 			PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_SPD], buf4
 			if (buf13[0]) {
 				PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_SPD_METER2], buf13
@@ -102,7 +102,7 @@ hook loop100()
 
 		// HDG
 		GetVehicleZAngle(vid, vz)
-		if (Panel_UpdateHeading(playerid, floatround(vz), buf4, buf44)) {
+		if (Panel_FormatHeading(playerid, floatround(vz), buf4, buf44)) {
 			PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_HDG], buf4
 			PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_HDG_METER], buf44
 		}
