@@ -58,6 +58,10 @@ varinit
 
 hook loop100()
 {
+	new buf4[5] // value (spd, alt)
+	new buf13[14] // small meter (spd, alt)
+	new buf44[45] // large meter (spd, alt)
+
 	for (new _i : panelplayers) {
 		new playerid = iter_access(panelplayers, _i)
 		if (isAfk(playerid)) {
@@ -68,45 +72,20 @@ hook loop100()
 
 		// ALT
 		GetVehiclePos vid, vx, vy, vz
-		new v = floatround(vz)
-		if (((lastdatacache[playerid] & 0xFF0000) >> 16) == v) {
-			goto skipalt
-		}
-
-		new txt[4]
-		format txt, sizeof(txt), _03DFORMAT, v
-		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ALT], txt
-
-		// ALT METER
-		new t = v / 50
-		if ((lastdatacache[playerid] & 0xFF000000) != (t << 24)) {
-			lastdatacache[playerid] = (lastdatacache[playerid] & 0xFFFFFF) | (t << 24)
-			new metertxt[] = "____-~n~____-~n~~n~~n~~n~~n~____-~n~____-~n~"
-			for (new i = 0; i < 4; i++) {
-				new value = t + 2 - i
-				if (value < -18 || 19 < value) {
-					continue
-				}
-				new pos = i * 8 + (i >> 1) * 12
-				format metertxt[pos], 5, "%*d", (4 - ((value & 0x80000000) >>> 31)), (value * 50)
-				metertxt[pos + 4] = '-'
+		if (Panel_UpdateAltitude(playerid, floatround(vz), buf4, buf13, buf44)) {
+			printf "yes"
+			PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ALT], buf4
+			if (buf13[0]) {
+				PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ALT_METER2], buf13
 			}
-			PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ALT_METER], metertxt
+			if (buf44[0]) {
+				PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ALT_METER], buf44
+			}
 		}
 
-		// ALT METER2
-		new altmetertxt[] = "_00~n~~n~_00"
-		t = v + 10
-		if (t < 0) t = -t, altmetertxt[0] = '-'
-		altmetertxt[1] = '0' + (t / 10) % 10
-		t = v - 10
-		if (t < 0) t = -t, altmetertxt[9] = '-'
-		altmetertxt[10] = '0' + (t / 10) % 10
-		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ALT_METER2], altmetertxt
-
-skipalt:
 		GetVehicleVelocity vid, vx, vy, vz
-
+		new v
+		new txt[200]
 		// SPD
 		vx = VEL_TO_KTS(VectorSize(vx, vy, vz))
 		v = floatround(vx, floatround_tozero)
@@ -275,8 +254,7 @@ hook OnPlayerDisconnect(playerid)
 
 hook OnPlayerConnect(playerid)
 {
-	lastdatacache[playerid] = 0xFFFFFFFF
-	headingcache[playerid] = 0xFFFFFFFF
+	Panel_ResetCaches playerid
 
 #define METER_COLOR 0x989898FF
 #define METER2_COLOR 0x585858FF
