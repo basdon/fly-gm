@@ -8,7 +8,6 @@ varinit
 	#define isInAirVehicle(%0) IsAirVehicle(GetVehicleModel(GetPlayerVehicleID(%0)))
 }
 
-#define _isInAirVehicle isInAirVehicle
 #undef isInAirVehicle
 //@summary Checks if a player is in a vehicle in the category 'air'
 //@param playerid the id of the player to check
@@ -18,8 +17,6 @@ varinit
 stock isInAirVehicle(playerid) {
 	this_function _ should_not _ be_called
 }
-#define isInAirVehicle _isInAirVehicle
-#undef _isInAirVehicle
 
 #printhookguards
 

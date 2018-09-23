@@ -296,12 +296,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 }
 
 #include "playername"
-#include "login"
 #include "panel"
-#include "game_sa"
 #include "timecyc"
 #include "dialog"
 // try to keep these last
+#include "login"
+#include "game_sa"
 #include "afk"
 #include "spawn"
 
