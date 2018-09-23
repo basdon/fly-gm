@@ -134,71 +134,6 @@ hook onPlayerWasAfk(playerid)
 	}
 }
 
-hook OnGameModeInit()
-{
-#define PANEL_BG 0x00000077
-#define METER2_BG 0x00000077
-
-#define TDVAR pnltxt[PNLTXT_BG]
-	TDVAR = TextDrawCreate(320.0, 360.0, "~n~~n~~n~~n~~n~~n~~n~~n~");
-	TextDrawAlignment(TDVAR, 2);
-	TextDrawFont(TDVAR, 1);
-	TextDrawLetterSize(TDVAR, 0.5, 1.0);
-	TextDrawSetOutline(TDVAR, 0);
-	TextDrawUseBox(TDVAR, 1);
-	TextDrawBoxColor(TDVAR, PANEL_BG);
-	TextDrawTextSize(TDVAR, 100.0, 271.0);
-#undef TDVAR
-
-#define TDVAR pnltxt[PNLTXT_VAI_METER]
-	TDVAR = TextDrawCreate(461.0, 364.0, "-2~n~-_~n~-1~n~-_~n~-0~n~-_~n~-1~n~-_~n~-2");
-	TextDrawAlignment(TDVAR, 2);
-	TextDrawFont(TDVAR, 2);
-	TextDrawLetterSize(TDVAR, 0.2, 0.8);
-	TextDrawColor(TDVAR, 0xFFFFFFFF);
-	TextDrawSetOutline(TDVAR, 0);
-	TextDrawSetShadow(TDVAR, 0);
-	TextDrawSetProportional(TDVAR, 1);
-	TextDrawUseBox(TDVAR, 1);
-	TextDrawBoxColor(TDVAR, PANEL_BG);
-	TextDrawTextSize(TDVAR, 476.0, 7.0);
-#undef TDVAR
-
-#define TDVAR pnltxt[PNLTXT_BG_SPD]
-	TDVAR = TextDrawCreate(203.0, 383.0, PANEL_BGTEXT);
-	TextDrawAlignment(TDVAR, 2);
-	TextDrawFont(TDVAR, 1);
-	TextDrawLetterSize(TDVAR, 0.3, 1.0);
-	TextDrawSetOutline(TDVAR, 0);
-	TextDrawUseBox(TDVAR, 1);
-	TextDrawBoxColor(TDVAR, METER2_BG);
-	TextDrawTextSize(TDVAR, 100.0, 35.0);
-#undef TDVAR
-
-#define TDVAR pnltxt[PNLTXT_BG_ALT]
-	TDVAR = TextDrawCreate(436.0, 383.0, PANEL_BGTEXT);
-	TextDrawAlignment(TDVAR, 2);
-	TextDrawFont(TDVAR, 1);
-	TextDrawLetterSize(TDVAR, 0.3, 1.0);
-	TextDrawSetOutline(TDVAR, 0);
-	TextDrawUseBox(TDVAR, 1);
-	TextDrawBoxColor(TDVAR, METER2_BG);
-	TextDrawTextSize(TDVAR, 100.0, 35.0);
-#undef TDVAR
-
-#define TDVAR pnltxt[PNLTXT_ADF]
-	TDVAR = TextDrawCreate(320.0, 360.0, "DIS_________________ETA_________________CRS________");
-	TextDrawAlignment(TDVAR, 2);
-	TextDrawFont(TDVAR, 2);
-	TextDrawLetterSize(TDVAR, 0.25, 1.0);
-	TextDrawColor(TDVAR, 0xFFFFFFFF);
-	TextDrawSetOutline(TDVAR, 0);
-	TextDrawSetShadow(TDVAR, 0);
-	TextDrawSetProportional(TDVAR, 1);
-#undef TDVAR
-
-}
-
 hook OnPlayerDisconnect(playerid)
 {
 	iter_remove(panelplayers, playerid)
@@ -298,6 +233,71 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawSetShadow(playerid, TDVAR, 0);
 	PlayerTextDrawSetProportional(playerid, TDVAR, 0);
 #undef TDVAR
+}
+
+hook OnGameModeInit()
+{
+#define PANEL_BG 0x00000077
+#define METER2_BG 0x00000077
+
+#define TDVAR pnltxt[PNLTXT_BG]
+	TDVAR = TextDrawCreate(320.0, 360.0, "~n~~n~~n~~n~~n~~n~~n~~n~");
+	TextDrawAlignment(TDVAR, 2);
+	TextDrawFont(TDVAR, 1);
+	TextDrawLetterSize(TDVAR, 0.5, 1.0);
+	TextDrawSetOutline(TDVAR, 0);
+	TextDrawUseBox(TDVAR, 1);
+	TextDrawBoxColor(TDVAR, PANEL_BG);
+	TextDrawTextSize(TDVAR, 100.0, 271.0);
+#undef TDVAR
+
+#define TDVAR pnltxt[PNLTXT_VAI_METER]
+	TDVAR = TextDrawCreate(461.0, 364.0, "-2~n~-_~n~-1~n~-_~n~-0~n~-_~n~-1~n~-_~n~-2");
+	TextDrawAlignment(TDVAR, 2);
+	TextDrawFont(TDVAR, 2);
+	TextDrawLetterSize(TDVAR, 0.2, 0.8);
+	TextDrawColor(TDVAR, 0xFFFFFFFF);
+	TextDrawSetOutline(TDVAR, 0);
+	TextDrawSetShadow(TDVAR, 0);
+	TextDrawSetProportional(TDVAR, 1);
+	TextDrawUseBox(TDVAR, 1);
+	TextDrawBoxColor(TDVAR, PANEL_BG);
+	TextDrawTextSize(TDVAR, 476.0, 7.0);
+#undef TDVAR
+
+#define TDVAR pnltxt[PNLTXT_BG_SPD]
+	TDVAR = TextDrawCreate(203.0, 383.0, PANEL_BGTEXT);
+	TextDrawAlignment(TDVAR, 2);
+	TextDrawFont(TDVAR, 1);
+	TextDrawLetterSize(TDVAR, 0.3, 1.0);
+	TextDrawSetOutline(TDVAR, 0);
+	TextDrawUseBox(TDVAR, 1);
+	TextDrawBoxColor(TDVAR, METER2_BG);
+	TextDrawTextSize(TDVAR, 100.0, 35.0);
+#undef TDVAR
+
+#define TDVAR pnltxt[PNLTXT_BG_ALT]
+	TDVAR = TextDrawCreate(436.0, 383.0, PANEL_BGTEXT);
+	TextDrawAlignment(TDVAR, 2);
+	TextDrawFont(TDVAR, 1);
+	TextDrawLetterSize(TDVAR, 0.3, 1.0);
+	TextDrawSetOutline(TDVAR, 0);
+	TextDrawUseBox(TDVAR, 1);
+	TextDrawBoxColor(TDVAR, METER2_BG);
+	TextDrawTextSize(TDVAR, 100.0, 35.0);
+#undef TDVAR
+
+#define TDVAR pnltxt[PNLTXT_ADF]
+	TDVAR = TextDrawCreate(320.0, 360.0, "DIS_________________ETA_________________CRS________");
+	TextDrawAlignment(TDVAR, 2);
+	TextDrawFont(TDVAR, 2);
+	TextDrawLetterSize(TDVAR, 0.25, 1.0);
+	TextDrawColor(TDVAR, 0xFFFFFFFF);
+	TextDrawSetOutline(TDVAR, 0);
+	TextDrawSetShadow(TDVAR, 0);
+	TextDrawSetProportional(TDVAR, 1);
+#undef TDVAR
+
 }
 
 #printhookguards
