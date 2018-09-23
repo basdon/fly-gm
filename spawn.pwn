@@ -69,8 +69,6 @@ hook OnPlayerRequestClass(playerid, classid)
 hook OnPlayerRequestSpawn(playerid)
 {
 	hideGameTextForPlayer(playerid)
-	updateTimecycForPlayer playerid
-
 	#allowreturn
 	return 1
 }
@@ -78,6 +76,7 @@ hook OnPlayerRequestSpawn(playerid)
 hook OnPlayerSpawn(playerid)
 {
 	spawned[playerid] = 1
+	SetPlayerPos playerid, 1477.4471, 1244.7747, 10.8281
 }
 
 hook OnPlayerDeath(playerid, killerid, reason)

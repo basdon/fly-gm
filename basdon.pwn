@@ -70,6 +70,7 @@ stock const TXT_EMPTY_CONST[] = "_"
 ###include "afk"
 ###include "login"
 ###include "spawn"
+###include "timecyc"
 ##endsection
 
 main()
@@ -96,7 +97,9 @@ export PUB_LOOP25()
 ##section loop100
 ###include "panel"
 ###include "afk"
+###include "timecyc"
 ##endsection
+		// 1s loop is inside timecyc
 		if (invoc >= 120) {
 			// 3000ms
 			invoc = 0
@@ -145,6 +148,7 @@ public OnPlayerRequestSpawn(playerid)
 {
 ##section OnPlayerRequestSpawn
 ###include "login" // login needs to be first! (to block if not logged)
+###include "timecyc"
 ###include "spawn" // spawn needs to be last! (to set things when actually spawning)
 ##endsection
 }
@@ -254,6 +258,7 @@ public OnGameModeInit()
 ##section OnGameModeInit
 ###include "panel"
 ###include "spawn"
+###include "timecyc"
 ##endsection
 
 	return 1;
