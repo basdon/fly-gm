@@ -41,9 +41,6 @@ hook OnPlayerDisconnect(playerid)
 
 hook OnPlayerConnect(playerid)
 {
-	TogglePlayerClock playerid, 0
-	// wiki says SetPlayerTime doesn't work under OnPlayerConnect but tests have proven otherwise
-	SetPlayerTime playerid, 12, 0
 	SetPlayerColor playerid, 0x888888ff
 	SetPlayerPos playerid, 1415.386, -807.9211, 85.0615
 	// since this does not work on first invocation, 'preload' the animation here before request class
@@ -119,7 +116,6 @@ OnPlayerRequestClassImpl(playerid, classid = -1)
 	SetPlayerColor playerid, CLASS_COLORS[classid]
 }
 
-#define _isSpawned isSpawned
 #undef isSpawned
 //@summary Check if a player is spawned.
 //@param playerid the playerid to check
@@ -129,10 +125,7 @@ OnPlayerRequestClassImpl(playerid, classid = -1)
 stock isSpawned(playerid) {
 	this_function _ should_not _ be_called
 }
-#define isSpawned _isSpawned
-#undef _isSpawned
 
-#define _getPlayerClass getPlayerClass
 #undef getPlayerClass
 //@summary Gets a player's class
 //@param playerid the player to check
@@ -141,8 +134,6 @@ stock isSpawned(playerid) {
 stock getPlayerClass(playerid) {
 	this_function _ should_not _ be_called
 }
-#define getPlayerClass _getPlayerClass
-#undef _getPlayerClass
 
 #printhookguards
 

@@ -24,7 +24,7 @@ hook loop100(playerid)
 {
 	for (new _i : players) {
 		new playerid = iter_access(players, _i)
-		if (!iter_has(afkplayers, playerid) && lastupdate[playerid] < gettime() - 1 && !isSpawned(playerid)) {
+		if (!iter_has(afkplayers, playerid) && lastupdate[playerid] < gettime() - 1) {
 			iter_add(afkplayers, playerid)
 			onPlayerNowAfk playerid
 		}
@@ -36,7 +36,6 @@ hook OnPlayerDisconnect(playerid)
 	iter_remove(afkplayers, playerid)
 }
 
-#define _isAfk isAfk
 #undef isAfk
 //@summary Check if a player is afk.
 //@param playerid the playerid to check
@@ -48,8 +47,6 @@ hook OnPlayerDisconnect(playerid)
 stock isAfk(playerid) {
 	this_function _ should_not _ be_called
 }
-#define isAfk _isAfk
-#undef _isAfk
 
 #printhookguards
 

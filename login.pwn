@@ -76,6 +76,7 @@ hook OnPlayerText(playerid, text[])
 //@param playerid player that has been checked
 //@param response_code http response code or one of the {@code HTTP_*} macros
 //@param data response data
+//@remarks PUB_LOGIN_USERCHECK_CB
 export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 {
 	hideGameTextForPlayer(playerid)

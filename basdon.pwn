@@ -37,13 +37,16 @@
 #define atoi strval
 
 // public symbols
-#define PUB_LOOP25 a
-#define PUB_LOGIN_USERCHECK_CB b
-#define PUB_KICKEX c
+#define PUB_LOOP25 a // main
+#define PUB_LOGIN_USERCHECK_CB b // login
+#define PUB_KICKEX c // main
+#define PUB_SETPLAYERWEATHER d // timecyc
+#define PUB_SETPLAYERTIME e // timecyc
 
 //@summary Public function to kick a player.
 //@param playerid the player to kick
 //@remarks Calls to {@link KickDelayed} gets replaced with a non-repeating timer to this function.
+//@remarks PUB_KICKEX
 export PUB_KICKEX(playerid)
 {
 	Kick playerid
@@ -139,6 +142,7 @@ public OnPlayerDisconnect(playerid, reason)
 public OnPlayerRequestClass(playerid, classid)
 {
 ##section OnPlayerRequestClass
+###include "timecyc"
 ###include "spawn"
 ##endsection
 	return 1
@@ -161,7 +165,6 @@ public OnPlayerSpawn(playerid)
 
 ##section OnPlayerSpawn
 ###include "spawn"
-###include "timecyc"
 ##endsection
 
 	return 1
@@ -184,7 +187,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 public OnPlayerCommandText(playerid, cmdtext[])
 {
 
-#if !defined PROD
+#ifndef PROD
 	if (strcicmp("/jetpack", cmdtext) == 0) {
 		SetPlayerSpecialAction playerid, SPECIAL_ACTION_USEJETPACK
 		return 1
@@ -193,16 +196,13 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		SetPlayerHealth playerid, 0.0
 		return 1
 	}
-	if (strcicmp("/clock", cmdtext, .length=6) == 0) {
-		TogglePlayerClock playerid, atoi(cmdtext[7])
+	if (strcicmp("/tweather", cmdtext, .length=9) == 0) {
+		setWeather atoi(cmdtext[10])
+		SendClientMessageToAll -1, "changing weather"
 		return 1
 	}
-	if (strcicmp("/weather", cmdtext, .length=8) == 0) {
-		SetWeather atoi(cmdtext[9])
-		return 1
-	}
-	if (strcicmp("/time", cmdtext, .length=5) == 0) {
-		SetPlayerTime playerid, atoi(cmdtext[6]), 0
+	if (strcicmp("/timex", cmdtext, .length=6) == 0) {
+		SetPlayerTime playerid, atoi(cmdtext[7]), atoi(cmdtext[9])
 		return 1
 	}
 #endif
@@ -242,6 +242,7 @@ onPlayerWasAfk(playerid)
 {
 ##section onPlayerWasAfk
 ###include "panel"
+###include "timecyc"
 ##endsection
 }
 
@@ -297,8 +298,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 #include "login"
 #include "panel"
 #include "game_sa"
-#include "afk"
-#include "dialog"
-#include "spawn"
 #include "timecyc"
+#include "dialog"
+// try to keep these last
+#include "afk"
+#include "spawn"
 
