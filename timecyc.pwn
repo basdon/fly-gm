@@ -135,6 +135,9 @@ export PUB_SETPLAYERTIME(playerid, hour, minute)
 //@param weather the weather id to change to
 setWeather(weather)
 {
+	if (lockedweather == weather) {
+		return
+	}
 	lockedweather = weather
 	for (new _i : players) {
 		new playerid = iter_access(players, _i)
