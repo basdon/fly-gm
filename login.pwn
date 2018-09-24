@@ -94,12 +94,12 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			REGISTER_CAPTION,
 			REGISTER_TEXT[REGISTER_TEXT_OFFSET],
 			"Confirm",
-			""
+			"Cancel"
 		#return 1
 	}
 	case DIALOG_REGISTER2: {
 		if (!response) {
-			showRegisterDialog playerid, .textoffset=0
+			showRegisterDialog playerid, .textoffset=REGISTER_TEXT_OFFSET
 			#return 1
 		}
 		// TODO actually register
