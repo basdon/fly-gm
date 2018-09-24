@@ -87,6 +87,7 @@ s/^varinit$/hook varinit()/
 		i
 		s/.*\n//
 	}
+	s/^\s*#return /return /
 	/^}$/ {
 		i\#endinput
 		N
