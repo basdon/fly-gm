@@ -30,6 +30,7 @@ varinit
 hook OnPlayerDisconnect(playerid)
 {
 	loggedstatus[playerid] = LOGGED_NO
+	ResetPasswordConfirmData playerid
 }
 
 hook OnPlayerConnect(playerid)
@@ -86,7 +87,9 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			renameAndSpawnAsGuest playerid
 			#return 1
 		}
-		// TODO password
+		new pwhash[65]
+		SHA256_PassHash inputtext, .salt=REGISTER_CAPTION, .ret_hash=pwhash, .ret_hash_len=65
+		SetPasswordConfirmData playerid, pwhash
 		PREP_REGTEXT2
 		ShowPlayerDialog playerid,
 			DIALOG_REGISTER2,
@@ -99,7 +102,14 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 	}
 	case DIALOG_REGISTER2: {
 		if (!response) {
+			ResetPasswordConfirmData playerid
 			showRegisterDialog playerid, .textoffset=REGISTER_TEXT_OFFSET
+			#return 1
+		}
+		new pwhash[65]
+		SHA256_PassHash inputtext, .salt=REGISTER_CAPTION, .ret_hash=pwhash, .ret_hash_len=65
+		if (!ValidatePasswordConfirmData(playerid, pwhash)) {
+			showRegisterDialog playerid, .textoffset=0
 			#return 1
 		}
 		// TODO actually register
