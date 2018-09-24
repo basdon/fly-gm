@@ -98,7 +98,7 @@ hook OnPlayerRequestClass(playerid, classid)
 #endif
 	TogglePlayerClock playerid, 0
 	SetPlayerTime playerid, 12, 0
-	SetPlayerWeather playerid, 0
+	SetPlayerWeather playerid, 1
 }
 
 hook OnPlayerRequestSpawn(playerid)
