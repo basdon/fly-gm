@@ -169,6 +169,7 @@ err:
 
 //@summary Renames a player to give a guest name and spawns them as {@code LOGGED_GUEST}
 //@param playerid the player to spawn as guest
+//@remarks player will be kicked when the name {@code =playername} is already taken and it failed to give a random name 5 times
 renameAndSpawnAsGuest(playerid)
 {
 	new newname[MAX_PLAYER_NAME]
