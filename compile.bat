@@ -31,7 +31,7 @@ IF [%~1] EQU [prod] (
 "%_MAKE%" build
 IF %ERRORLEVEL% NEQ 0 EXIT
 ECHO.
-"%_PAWNCC%" -(- -;- -ivendor/ -Dp/ %_EXTRAFLAGS% basdon.p -r../out/basdon.xml -o../out/basdon.amx %_FLAGS%
+"%_PAWNCC%" -(- -;- -i"%CD%/vendor/" -Dp/ %_EXTRAFLAGS% basdon.p -r../out/basdon.xml -o../out/basdon.amx %_FLAGS%
 IF %ERRORLEVEL% NEQ 0 EXIT
 ECHO.
 IF EXIST "out\basdon.xml" (
