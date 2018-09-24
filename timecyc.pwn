@@ -32,7 +32,9 @@ varinit
 	new Text:clocktext
 #endif
 	new lockedweather = 0, upcomingweather = 0, currentweather = 0
+	new playertimecycstate[MAX_PLAYERS]
 	#define SetWeather USE_setWeather_INSTEAD
+	#define TIMESIG(%0) ((lockedweather << 24) | (upcomingweather << 16) | (currentweather << 8) | (%0))
 }
 
 hook OnGameModeInit()
@@ -75,6 +77,11 @@ hook loop100()
 	}
 }
 
+hook OnPlayerConnect(playerid)
+{
+	playertimecycstate[playerid] = 0
+}
+
 hook OnPlayerRequestClass(playerid, classid)
 {
 #ifdef TIMECYC_OVERLAY_CLOCK
@@ -107,27 +114,29 @@ hook onPlayerWasAfk(playerid)
 	forceTimecycForPlayer playerid
 }
 
-//@summary Delegate for {@link SetPlayerWeather} to call using a timer
-//@param playerid see {@link SetPlayerWeather}
-//@param weather see {@link SetPlayerWeather}
-//@remarks PUB_SETPLAYERWEATHER
-export PUB_SETPLAYERWEATHER(playerid, weather)
+hook OnPlayerUpdate(playerid)
 {
-	SetPlayerWeather playerid, weather
-}
-
-//@summary Delegate for {@link SetPlayerTime} to call using a timer
-//@param playerid player to set time for
-//@param hour hour to set
-//@param minute minute to set
-//@remarks If {@param hour} or {@param minute} is {@code -1}, the current time will be used
-//@remarks PUB_SETPLAYERTIME
-export PUB_SETPLAYERTIME(playerid, hour, minute)
-{
-	if (hour == -1 || minute == -1) {
-		SetPlayerTime playerid, time_h, time_s
-	} else {
-		SetPlayerTime playerid, hour, minute
+	if (playertimecycstate[playerid]) {
+		switch ((playertimecycstate[playerid] & 0xFF)) {
+		case 1: {
+			SetPlayerTime playerid, time_h, 0
+			playertimecycstate[playerid]++
+		}
+		case 2: {
+			SetPlayerTime playerid, time_h, time_s
+			if (playertimecycstate[playerid] != TIMESIG(2)) {
+				// weather changed while we were syncing, force it again...
+				// this should be rare, if it even happens at all
+				printf "[timecyc] it happened"
+				forceTimecycForPlayer playerid
+			} else {
+				if (lockedweather != upcomingweather) {
+					SetPlayerWeather playerid, lockedweather
+				}
+				playertimecycstate[playerid] = 0
+			}
+		}
+		}
 	}
 }
 
@@ -156,36 +165,26 @@ forceTimecycForPlayer(playerid)
 	SetPlayerWeather playerid, currentweather
 	// no delay needed there ^
 
-	// set time right
-	SetPlayerTime playerid, time_h, time_s
-	TogglePlayerClock playerid, 1
-
 	if (currentweather == upcomingweather) {
+		// set time right
+		SetPlayerTime playerid, time_h, time_s
+		TogglePlayerClock playerid, 1
 		if (lockedweather != upcomingweather) {
 			SetPlayerWeather playerid, lockedweather
 			// no delay needed there ^
 		}
+		playertimecycstate[playerid] = 0
 		return
 	}
 
 	// need to change upcomingweather, so force a transition cycle
-	new delay = 70
-	new timeback = time_s - 2
-	if (time_s <= 1) {
-		delay += 2200
-		timeback += 2
-	}
-
+	SetPlayerTime playerid, time_h, 30
+	TogglePlayerClock playerid, 1
 	SetPlayerWeather playerid, upcomingweather
 	// this sets lockedweather
-	SetTimerEx #PUB_SETPLAYERTIME, delay, 0, "iii", playerid, time_h, timeback
-	// sets upcomingweather to lockedweather
-	SetTimerEx #PUB_SETPLAYERTIME, delay + 70, 0, "iii", playerid, -1, -1
-	// reset time back as it should
-	if (lockedweather != upcomingweather) {
-		// finally set lockedweather if it's not the same as upcoming
-		SetTimerEx #PUB_SETPLAYERWEATHER, delay + 40, 0, "ii", playerid, lockedweather
-	}
+
+	// rest is done in OnPlayerUpdate
+	playertimecycstate[playerid] = TIMESIG(1)
 }
 
 #printhookguards

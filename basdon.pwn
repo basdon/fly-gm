@@ -40,8 +40,6 @@
 #define PUB_LOOP25 a // main
 #define PUB_LOGIN_USERCHECK_CB b // login
 #define PUB_KICKEX c // main
-#define PUB_SETPLAYERWEATHER d // timecyc
-#define PUB_SETPLAYERTIME e // timecyc
 
 //@summary Public function to kick a player.
 //@param playerid the player to kick
@@ -121,6 +119,7 @@ public OnPlayerConnect(playerid)
 ###include "dialog"
 ###include "panel"
 ###include "spawn"
+###include "timecyc"
 ##endsection
 
 	return 1
@@ -270,6 +269,7 @@ public OnPlayerUpdate(playerid)
 {
 ##section OnPlayerUpdate
 ###include "afk"
+###include "timecyc"
 ##endsection
 	return 1
 }
