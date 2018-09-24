@@ -13,8 +13,18 @@ varinit
 	#define isRegistered(%0) (loggedstatus[%0] == LOGGED_IN)
 	#define isGuest(%0) (loggedstatus[%0] == LOGGED_GUEST)
 
-	//@summary Logged in status, either {@code LOGGED_NO}, {@code LOGGED_IN} or {@code LOGGED_GUEST}
 	new loggedstatus[MAX_PLAYERS];
+
+	new REGISTER_CAPTION[] = "Register"
+	new REGISTER_TEXT[] =
+		""ECOL_WARN"Passwords do not match!\n\n"\
+		""ECOL_DIALOG_TEXT"Welcome! Register your account or continue as a guest.\n\n"\
+		""ECOL_DIALOG_TEXT"* choose a password <<<<\n"\
+		""ECOL_DIALOG_TEXT"* confirm your password <<<<"
+	#define REGISTER_TEXT_OFFSET 33
+	#define MOD_REGTEXT(%0,%1,%2,%3,%4) memcpy(REGISTER_TEXT,%1,4*%0,4*%4);memcpy(REGISTER_TEXT,%3,4*%2,4*%4)
+	#define PREP_REGTEXT1 MOD_REGTEXT(125,"<<<<",162,"    ",4);MOD_REGTEXT(97,ECOL_INFO,130,ECOL_DIALOG_TEXT,8)
+	#define PREP_REGTEXT2 MOD_REGTEXT(162,"<<<<",125,"    ",4);MOD_REGTEXT(130,ECOL_INFO,97,ECOL_DIALOG_TEXT,8)
 }
 
 hook OnPlayerDisconnect(playerid)
@@ -42,15 +52,14 @@ hook OnPlayerConnect(playerid)
 	data[0] = 'u'
 	data[1] = '='
 	Urlencode(NAMEOF(playerid), NAMELEN(playerid), data[2])
-	HTTP(playerid, HTTP_POST, #API_URL"/api-usercheck.php", data, #PUB_LOGIN_USERCHECK_CB)
+	HTTP(playerid, HTTP_POST, #API_URL"/api-user-exists.php", data, #PUB_LOGIN_USERCHECK_CB)
 }
 
 hook OnPlayerRequestSpawn(playerid)
 {
 	if (!isPlaying(playerid)) {
 		SendClientMessage playerid, COL_WARN, WARN"Log in first."
-		#allowreturn
-		return 0
+		#return 0
 	}
 }
 
@@ -58,8 +67,7 @@ hook OnPlayerCommandText(playerid, cmdtext[])
 {
 	if (!isPlaying(playerid)) {
 		SendClientMessage playerid, COL_WARN, WARN"Log in first."
-		#allowreturn
-		return 1
+		#return 1
 	}
 }
 
@@ -67,9 +75,51 @@ hook OnPlayerText(playerid, text[])
 {
 	if (!isPlaying(playerid)) {
 		SendClientMessage playerid, COL_WARN, WARN"Log in first."
-		#allowreturn
-		return 0
+		#return 0
 	}
+}
+
+hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
+{
+	case DIALOG_REGISTER1: {
+		if (!response) {
+			renameAndSpawnAsGuest playerid
+			#return 1
+		}
+		// TODO password
+		PREP_REGTEXT2
+		ShowPlayerDialog playerid,
+			DIALOG_REGISTER2,
+			DIALOG_STYLE_INPUT,
+			REGISTER_CAPTION,
+			REGISTER_TEXT[REGISTER_TEXT_OFFSET],
+			"Confirm",
+			""
+		#return 1
+	}
+	case DIALOG_REGISTER2: {
+		if (!response) {
+			showRegisterDialog playerid, .textoffset=0
+			#return 1
+		}
+		// TODO actually register
+		#return 1
+	}
+}
+
+//@summary Shows register dialog for player
+//@param playerid player to show register dialog for
+//@param textoffset textoffset in register string, should be {@code REGISTER_TEXT_OFFSET} or {@code 0}
+showRegisterDialog(playerid, textoffset)
+{
+	PREP_REGTEXT1
+	ShowPlayerDialog playerid,
+		DIALOG_REGISTER1,
+		DIALOG_STYLE_INPUT,
+		REGISTER_CAPTION,
+		REGISTER_TEXT[textoffset],
+		"Next",
+		"Play as guest"
 }
 
 //@summary Callback for usercheck done in {@link OnPlayerConnect}.
@@ -82,9 +132,7 @@ export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 	hideGameTextForPlayer(playerid)
 	if (response_code != 200) {
 		// printf can crash server if formatstr or output len is > 1024
-		if (strlen(data) > 500) {
-			data[499] = 0
-		}
+		data[499] = 0
 		printf "[ERROR][LOGIN] usercheck api call returned code %d, data: '%s'", response_code, data
 		goto err
 	}
@@ -96,18 +144,23 @@ export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 	}
 
 	if (data[0] == 'f') {
-		printf("does not exist")
-		// TODO ask register
+		showRegisterDialog playerid, .textoffset=REGISTER_TEXT_OFFSET
 		return
 	}
 
 	// printf can crash server if formatstr or output len is > 1024
-	if (strlen(data) > 500) {
-		data[499] = 0
-	}
+	data[499] = 0
 	printf "[ERROR][LOGIN] usercheck api call returned unknown status: '%s'", data
 err:
 	SendClientMessage playerid, COL_WARN, WARN"An error occured while contacting the login server."
+	SendClientMessage playerid, COL_SAMP_GREEN, "You will be spawned as a guest."
+	renameAndSpawnAsGuest playerid
+}
+
+//@summary Renames a player to give a guest name and spawns them as {@code LOGGED_GUEST}
+//@param playerid the player to spawn as guest
+renameAndSpawnAsGuest(playerid)
+{
 	new newname[MAX_PLAYER_NAME]
 	newname[0] = '='
 	memcpy(newname, NAMEOF(playerid), 4, NAMELEN(playerid) * 4 + 4)
@@ -123,12 +176,11 @@ err:
 			goto spawnasguest
 		}
 	}
-	print "[ERROR][LOGIN] failed to give player a guest name after err, player will be kicked!!"
+	print "[ERROR][LOGIN] failed to give player a guest name, player will be kicked!!"
 	SendClientMessage playerid, COL_WARN, WARN"Fatal error, you will be kicked (sorry!), please reconnect"
 	KickDelayed playerid
 	goto @@return // just returning here gives 'unreachable code' warning for next line so yeah...
 spawnasguest:
-	SendClientMessage playerid, COL_SAMP_GREEN, "You will be spawned as a guest."
 	loginPlayer playerid, LOGGED_GUEST
 @@return:
 }

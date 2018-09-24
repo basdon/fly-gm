@@ -292,6 +292,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 ##section OnDialogResponse
 ###include "dialog"
 ##endsection
+
+##section OnDialogResponseCase
+	switch (dialogid) {
+###include "login"
+	}
+##endsection
 	return 0
 }
 

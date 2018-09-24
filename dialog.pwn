@@ -3,6 +3,9 @@
 
 #namespace "dialog"
 
+#define DIALOG_REGISTER1 520
+#define DIALOG_REGISTER2 521
+
 varinit
 {
 #define ShowPlayerDialog ShowPlayerDialogSafe

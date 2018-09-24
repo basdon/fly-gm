@@ -8,7 +8,15 @@
 #define COL_WARN 0xe84c3dff
 #define COL_SUCC 0x2cc36bff
 
+#define ECOL_INFO "{3498db}"
+#define ECOL_WARN "{e84c3d}"
+#define ECOL_SUCC "{2cc36b}"
+
 #define WARN "! "
 #define INFO "* "
 #define SUCC "+ "
+
+#define ECOL_DIALOG_CAPTION "{d2d2d2}"
+#define ECOL_DIALOG_TEXT "{a9c4e4}"
+#define ECOL_DIALOG_BUTTON "{c8c8c8}"
 
