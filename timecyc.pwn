@@ -23,6 +23,7 @@
 // if player dies, cycle goes
 
 //#define TIMECYC_OVERLAY_CLOCK
+#define TIMECYC_TEMP_MINUTES 30
 
 varinit
 {
@@ -65,6 +66,14 @@ hook loop100()
 			upcomingweather = lockedweather
 			if (++time_h >= 24) {
 				time_h = 0
+			}
+		} else if (currentweather == upcomingweather && time_s == TIMECYC_TEMP_MINUTES) {
+			// sync everyone every minutes if no transition is going on, just in case
+			for (new _i : players) {
+				new playerid = iter_access(players, _i)
+				if (isSpawned(playerid) && !isAfk(playerid)) {
+					forceTimecycForPlayer playerid
+				}
 			}
 		}
 #ifdef TIMECYC_OVERLAY_CLOCK
@@ -178,7 +187,7 @@ forceTimecycForPlayer(playerid)
 	}
 
 	// need to change upcomingweather, so force a transition cycle
-	SetPlayerTime playerid, time_h, 30
+	SetPlayerTime playerid, time_h, TIMECYC_TEMP_MINUTES
 	TogglePlayerClock playerid, 1
 	SetPlayerWeather playerid, upcomingweather
 	// this sets lockedweather
