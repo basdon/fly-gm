@@ -32,17 +32,10 @@
 
 varinit
 {
-	//@summary Shared panel textdraws
 	new Text:pnltxt[PNLTXT_G_TOTAL]
-	//@summary Per-player panel textdraws
 	new PlayerText:playerpnltxt[MAX_PLAYERS][PNLTXT_P_TOTAL]
-	//@summary Vertical Speed Indicator playertext
 	new PlayerText:pnltxtvai[MAX_PLAYERS]
-	//@summary Players that should get panel updates
 	new Iter:panelplayers[MAX_PLAYERS]
-
-	//@summary Empty text to size background textdraw boxes
-	new PANEL_BGTEXT[] = "~n~~n~~n~"
 }
 
 hook loop100()
@@ -266,7 +259,7 @@ hook OnGameModeInit()
 #undef TDVAR
 
 #define TDVAR pnltxt[PNLTXT_BG_SPD]
-	TDVAR = TextDrawCreate(203.0, 383.0, PANEL_BGTEXT);
+	TDVAR = TextDrawCreate(203.0, 383.0, "~n~~n~~n~");
 	TextDrawAlignment(TDVAR, 2);
 	TextDrawFont(TDVAR, 1);
 	TextDrawLetterSize(TDVAR, 0.3, 1.0);
@@ -277,7 +270,7 @@ hook OnGameModeInit()
 #undef TDVAR
 
 #define TDVAR pnltxt[PNLTXT_BG_ALT]
-	TDVAR = TextDrawCreate(436.0, 383.0, PANEL_BGTEXT);
+	TDVAR = TextDrawCreate(436.0, 383.0, "~n~~n~~n~");
 	TextDrawAlignment(TDVAR, 2);
 	TextDrawFont(TDVAR, 1);
 	TextDrawLetterSize(TDVAR, 0.3, 1.0);
