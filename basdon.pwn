@@ -41,6 +41,7 @@
 #define PUB_LOGIN_USERCHECK_CB b // login
 #define PUB_KICKEX c // main
 
+/*
 //@summary Public function to kick a player.
 //@param playerid the player to kick
 //@remarks Calls to {@link KickDelayed} gets replaced with a non-repeating timer to this function.
@@ -49,6 +50,7 @@ export PUB_KICKEX(playerid)
 {
 	Kick playerid
 }
+*/
 
 //@summary Iter that contains {@b logged in (or guest)} players
 new Iter:players[MAX_PLAYERS]
@@ -72,6 +74,7 @@ stock const TXT_EMPTY_CONST[] = "_"
 ###include "login"
 ###include "spawn"
 ###include "timecyc"
+###include "anticheat"
 ##endsection
 
 main()
@@ -120,6 +123,7 @@ public OnPlayerConnect(playerid)
 ###include "panel"
 ###include "spawn"
 ###include "timecyc"
+###include "anticheat"
 ##endsection
 
 	return 1
@@ -204,6 +208,11 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		SetPlayerTime playerid, atoi(cmdtext[7]), atoi(cmdtext[9])
 		return 1
 	}
+	if (strcicmp("/kickme", cmdtext, .length=7) == 0) {
+		SendClientMessage playerid, -1, "you're kicked, bye"
+		KickDelayed playerid
+		return 1
+	}
 #endif
 
 ##section OnPlayerCommandText
@@ -270,6 +279,7 @@ public OnPlayerUpdate(playerid)
 ##section OnPlayerUpdate
 ###include "afk"
 ###include "timecyc"
+###include "anticheat"
 ##endsection
 	return 1
 }
@@ -301,6 +311,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	return 0
 }
 
+#include "anticheat"
 #include "playername"
 #include "panel"
 #include "timecyc"
