@@ -142,7 +142,9 @@ export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 	hideGameTextForPlayer(playerid)
 	if (response_code != 200) {
 		// printf can crash server if formatstr or output len is > 1024
-		data[499] = 0
+		if (strlen(data) > 500) {
+			data[499] = 0
+		}
 		printf "[ERROR][LOGIN] usercheck api call returned code %d, data: '%s'", response_code, data
 		goto err
 	}
@@ -159,7 +161,9 @@ export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 	}
 
 	// printf can crash server if formatstr or output len is > 1024
-	data[499] = 0
+	if (strlen(data) > 500) {
+		data[499] = 0
+	}
 	printf "[ERROR][LOGIN] usercheck api call returned unknown status: '%s'", data
 err:
 	SendClientMessage playerid, COL_WARN, WARN"An error occured while contacting the login server."
