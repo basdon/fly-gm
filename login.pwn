@@ -13,7 +13,8 @@ varinit
 	#define isRegistered(%0) (loggedstatus[%0] == LOGGED_IN)
 	#define isGuest(%0) (loggedstatus[%0] == LOGGED_GUEST)
 
-	new loggedstatus[MAX_PLAYERS];
+	new loggedstatus[MAX_PLAYERS]
+	new userid[MAX_PLAYERS]
 
 	new REGISTER_CAPTION[] = "Register"
 	new REGISTER_TEXT[] =
@@ -35,6 +36,7 @@ hook OnPlayerDisconnect(playerid)
 
 hook OnPlayerConnect(playerid)
 {
+	userid[playerid] = -1
 	#assert PLAYERNAMEVER == 1
 	while (playernames[playerid][1] == '=') {
 		SendClientMessage playerid, COL_SAMP_GREEN, "Names starting with '=' are reserved for guest players."
@@ -93,7 +95,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		PREP_REGTEXT2
 		ShowPlayerDialog playerid,
 			DIALOG_REGISTER2,
-			DIALOG_STYLE_INPUT,
+			DIALOG_STYLE_PASSWORD,
 			REGISTER_CAPTION,
 			REGISTER_TEXT[REGISTER_TEXT_OFFSET],
 			"Confirm",
@@ -112,7 +114,20 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			showRegisterDialog playerid, .textoffset=0
 			#return 1
 		}
-		// TODO actually register
+		GameTextForPlayer playerid, "~b~Making your account...", 0x800000, 3
+		// max inputtext len seems to be 128
+		new inputlen = strlen(inputtext)
+		if (inputlen > 128) {
+			inputtext[128] = 0
+			inputlen = 128
+		}
+		new data[2 + (MAX_PLAYER_NAME * 3) + 3 + (128 * 3) + 1]
+		data[0] = 'u'
+		data[1] = '='
+		new idx = 2 + Urlencode(NAMEOF(playerid), NAMELEN(playerid), data[2])
+		memcpy data, "&p=", idx * 4, 3 * 4
+		Urlencode(inputtext, inputlen, data[idx + 3])
+		HTTP(playerid, HTTP_POST, #API_URL"/api-register.php", data, #PUB_LOGIN_REGISTER_CB)
 		#return 1
 	}
 }
@@ -125,7 +140,7 @@ showRegisterDialog(playerid, textoffset)
 	PREP_REGTEXT1
 	ShowPlayerDialog playerid,
 		DIALOG_REGISTER1,
-		DIALOG_STYLE_INPUT,
+		DIALOG_STYLE_PASSWORD,
 		REGISTER_CAPTION,
 		REGISTER_TEXT[textoffset],
 		"Next",
@@ -167,6 +182,58 @@ export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 	printf "[ERROR][LOGIN] usercheck api call returned unknown status: '%s'", data
 err:
 	SendClientMessage playerid, COL_WARN, WARN"An error occured while contacting the login server."
+	SendClientMessage playerid, COL_SAMP_GREEN, "You will be spawned as a guest."
+	renameAndSpawnAsGuest playerid
+}
+
+//@summary Callback for register call done in {@link OnDialogResponse}.
+//@param playerid player that wanted to register
+//@param response_code http response code or one of the {@code HTTP_*} macros
+//@param data response data
+//@remarks PUB_LOGIN_REGISTER_CB
+export PUB_LOGIN_REGISTER_CB(playerid, response_code, data[])
+{
+	hideGameTextForPlayer(playerid)
+	if (response_code != 200) {
+		// printf can crash server if formatstr or output len is > 1024
+		if (strlen(data) > 500) {
+			data[499] = 0
+		}
+		printf "[ERROR][LOGIN] register api call returned code %d, data: '%s'", response_code, data
+		goto err
+	}
+
+	if (data[0] == 's') {
+		if (strlen(data) < 5) {
+			printf "[ERROR][LOGIN] register api call returned success ('s')"\
+				"but response length is not 5: %d", strlen(data)
+			goto err
+		}
+		userid[playerid] = (data[1] & 0x7F) | ((data[2] & 0x7F) << 7) |
+					((data[3] & 0x7F) << 14) | ((data[4] & 0x7F) << 21)
+		loginPlayer playerid, LOGGED_IN
+		new str[MAX_PLAYER_NAME + 6 + 37 + 1]
+		format str, sizeof(str), "%s[%d] just registered an account, welcome!", NAMEOF(playerid), playerid
+		SendClientMessageToAll COL_JOINQUIT, str
+		return
+	}
+
+	if (data[0] == 'e') {
+		// printf can crash server if formatstr or output len is > 1024
+		if (strlen(data) > 500) {
+			data[499] = 0
+		}
+		printf "[ERROR][LOGIN] register api call returned error, code: '%s'", data[1]
+		goto err
+	}
+
+	// printf can crash server if formatstr or output len is > 1024
+	if (strlen(data) > 500) {
+		data[499] = 0
+	}
+	printf "[ERROR][LOGIN] register api call returned unknown status: '%s'", data
+err:
+	SendClientMessage playerid, COL_WARN, WARN"An error occured while registering."
 	SendClientMessage playerid, COL_SAMP_GREEN, "You will be spawned as a guest."
 	renameAndSpawnAsGuest playerid
 }

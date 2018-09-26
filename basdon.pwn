@@ -39,6 +39,7 @@
 // public symbols
 #define PUB_LOOP25 a // main
 #define PUB_LOGIN_USERCHECK_CB b // login
+#define PUB_LOGIN_REGISTER_CB c // login
 
 //@summary Iter that contains {@b logged in (or guest)} players
 new Iter:players[MAX_PLAYERS]
