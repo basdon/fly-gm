@@ -202,14 +202,13 @@ export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 	hideGameTextForPlayer(playerid)
 	if (response_code != 200) {
 		LIMITSTRLEN(data, 500)
-		printf "[ERROR][LOGIN] usercheck api call returned code %d, data: '%s'", response_code, data
+		printf "E-U01: %d, %s", response_code, data
 		goto err
 	}
 
 	if (data[0] == 't') {
 		if (strlen(data) < 5) {
-			printf "[ERROR][LOGIN] user exist api call returned success ('s')"\
-				"but response length is not 5: %d", strlen(data)
+			printf "E-U02: %d", strlen(data)
 			goto err
 		}
 		userid[playerid] = PARSEID(data, 1)
@@ -223,7 +222,7 @@ export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 	}
 
 	LIMITSTRLEN(data, 500)
-	printf "[ERROR][LOGIN] usercheck api call returned unknown status: '%s'", data
+	printf "E-U03: %s", data
 err:
 	// TODO: show this as dialog
 	SendClientMessage playerid, COL_WARN, WARN"An error occured while contacting the login server."
@@ -241,14 +240,13 @@ export PUB_LOGIN_REGISTER_CB(playerid, response_code, data[])
 	hideGameTextForPlayer(playerid)
 	if (response_code != 200) {
 		LIMITSTRLEN(data, 500)
-		printf "[ERROR][LOGIN] register api call returned code %d, data: '%s'", response_code, data
+		printf "E-U04: %d, %s", response_code, data
 		goto err
 	}
 
 	if (data[0] == 's') {
 		if (strlen(data) < 5) {
-			printf "[ERROR][LOGIN] register api call returned success ('s')"\
-				"but response length is not 5: %d", strlen(data)
+			printf "E-U05: %d", strlen(data)
 			goto err
 		}
 		userid[playerid] = PARSEID(data, 1)
@@ -260,16 +258,13 @@ export PUB_LOGIN_REGISTER_CB(playerid, response_code, data[])
 	}
 
 	if (data[0] == 'e') {
-		// printf can crash server if formatstr or output len is > 1024
-		if (strlen(data) > 500) {
-			data[499] = 0
-		}
-		printf "[ERROR][LOGIN] register api call returned error, code: '%s'", data[1]
+		LIMITSTRLEN(data, 500)
+		printf "E-U06: %s", data[1]
 		goto err
 	}
 
 	LIMITSTRLEN(data, 500)
-	printf "[ERROR][LOGIN] register api call returned unknown status: '%s'", data
+	printf "E-U07: %s", data
 err:
 	// TODO: show this as dialog
 	SendClientMessage playerid, COL_WARN, WARN"An error occured while registering."
@@ -287,14 +282,13 @@ export PUB_LOGIN_LOGIN_CB(playerid, response_code, data[])
 	hideGameTextForPlayer(playerid)
 	if (response_code != 200) {
 		LIMITSTRLEN(data, 500)
-		printf "[ERROR][LOGIN] login api call returned code %d, data: '%s'", response_code, data
+		printf "E-U08: %d, %s", response_code, data
 		goto err
 	}
 
 	if (data[0] == 's') {
 		if (strlen(data) < 5) {
-			printf "[ERROR][LOGIN] login api call returned success ('s')"\
-				"but response length is not 5: %d", strlen(data)
+			printf "E-U09: %d", strlen(data)
 			goto err
 		}
 		loginPlayer playerid, LOGGED_IN
@@ -305,16 +299,13 @@ export PUB_LOGIN_LOGIN_CB(playerid, response_code, data[])
 	}
 
 	if (data[0] == 'e') {
-		// printf can crash server if formatstr or output len is > 1024
-		if (strlen(data) > 500) {
-			data[499] = 0
-		}
-		printf "[ERROR][LOGIN] login api call returned error, code: '%s'", data[1]
+		LIMITSTRLEN(data, 500)
+		printf "E-U0A: %s", data[1]
 		goto err
 	}
 
 	LIMITSTRLEN(data, 500)
-	printf "[ERROR][LOGIN] register api call returned unknown status: '%s'", data
+	printf "E-U0B: %s", data
 err:
 	// TODO: reshow login dialog? dialog inbetween first?
 }
@@ -339,7 +330,7 @@ renameAndSpawnAsGuest(playerid)
 			goto spawnasguest
 		}
 	}
-	print "[ERROR][LOGIN] failed to give player a guest name, player will be kicked!!"
+	print "F-U0C"
 	SendClientMessage playerid, COL_WARN, WARN"Fatal error, you will be kicked (sorry!), please reconnect"
 	KickDelayed playerid
 	goto @@return // just returning here gives 'unreachable code' warning for next line so yeah...
