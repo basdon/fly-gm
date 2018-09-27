@@ -16,15 +16,18 @@ hook OnPlayerConnect(playerid)
 hook OnPlayerUpdate(playerid)
 {
 	if (kickprogress[playerid]) {
-		Kick playerid
+		if (kickprogress[playerid]-- == 1) {
+			Kick playerid
+		}
 	}
 }
 
 //@summary Kicks a player after they received next stream of packets
 //@param playerid the player to kick
-KickDelayed(playerid) {
+//@param delay the delay, in how many times a client should be synced before kicking (optional={@code 1})
+KickDelayed(playerid, delay=1) {
 	if (!kickprogress[playerid]) {
-		kickprogress[playerid] = 1
+		kickprogress[playerid] = delay
 	}
 }
 
