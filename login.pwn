@@ -7,6 +7,9 @@
 #define LOGGED_IN 1
 #define LOGGED_GUEST 2
 
+#define PARSEID(%0,%1) userid[playerid] = ((%0[%1] & 0x7F) | ((%0[%1+1] & 0x7F) << 7) |\
+					((%0[%1+2] & 0x7F) << 14) | ((%0[%1+3] & 0x7F) << 21))
+
 varinit
 {
 	#define isPlaying(%0) (loggedstatus[%0])
@@ -26,6 +29,13 @@ varinit
 	#define MOD_REGTEXT(%0,%1,%2,%3,%4) memcpy(REGISTER_TEXT,%1,4*%0,4*%4);memcpy(REGISTER_TEXT,%3,4*%2,4*%4)
 	#define PREP_REGTEXT1 MOD_REGTEXT(125,"<<<<",162,"    ",4);MOD_REGTEXT(97,ECOL_INFO,130,ECOL_DIALOG_TEXT,8)
 	#define PREP_REGTEXT2 MOD_REGTEXT(162,"<<<<",125,"    ",4);MOD_REGTEXT(130,ECOL_INFO,97,ECOL_DIALOG_TEXT,8)
+
+	new LOGIN_CAPTION[] = "Login"
+	new LOGIN_TEXT[] =
+		""ECOL_WARN"Incorrect password!\n\n"ECOL_DIALOG_TEXT""\
+		"Welcome! This account is registered.\n"\
+		"Please sign in or change your name."
+	#define LOGIN_TEXT_OFFSET 37
 }
 
 hook OnPlayerDisconnect(playerid)
@@ -111,7 +121,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		new pwhash[PW_HASH_LENGTH]
 		SHA256_PassHash inputtext, /*salt*/REGISTER_CAPTION, pwhash, PW_HASH_LENGTH
 		if (!ValidatePasswordConfirmData(playerid, pwhash)) {
-			showRegisterDialog playerid, .textoffset=0
+			showRegisterDialog playerid
 			#return 1
 		}
 		GameTextForPlayer playerid, "~b~Making your account...", 0x800000, 3
@@ -130,12 +140,33 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		HTTP(playerid, HTTP_POST, #API_URL"/api-register.php", data, #PUB_LOGIN_REGISTER_CB)
 		#return 1
 	}
+	case DIALOG_LOGIN1: {
+		if (!response) {
+			// TODO: change name
+			#return 1
+		}
+		GameTextForPlayer playerid, "~b~Logging in...", 0x800000, 3
+		// max inputtext len seems to be 128
+		new inputlen = strlen(inputtext)
+		if (inputlen > 128) {
+			inputtext[128] = 0
+			inputlen = 128
+		}
+		new data[2 + 8 + 3 + (128 * 3) + 1]
+		data[0] = 'i'
+		data[1] = '='
+		format data[2], 9, "%08x", userid[playerid]
+		memcpy data, "&p=", 10 * 4, 3 * 4
+		Urlencode(inputtext, inputlen, data[13])
+		HTTP(playerid, HTTP_POST, #API_URL"/api-login.php", data, #PUB_LOGIN_LOGIN_CB)
+		#return 1
+	}
 }
 
 //@summary Shows register dialog for player
 //@param playerid player to show register dialog for
 //@param textoffset textoffset in register string, should be {@code REGISTER_TEXT_OFFSET} or {@code 0}
-showRegisterDialog(playerid, textoffset)
+showRegisterDialog(playerid, textoffset=0)
 {
 	PREP_REGTEXT1
 	ShowPlayerDialog playerid,
@@ -145,6 +176,20 @@ showRegisterDialog(playerid, textoffset)
 		REGISTER_TEXT[textoffset],
 		"Next",
 		"Play as guest"
+}
+
+//@summary Shows login dialog for player
+//@param playerid player to show login dialog for
+//@param textoffset textoffset in login string, should be {@code LOGIN_TEXT_OFFSET} or {@code 0}
+showLoginDialog(playerid, textoffset=0)
+{
+	ShowPlayerDialog playerid,
+		DIALOG_LOGIN1,
+		DIALOG_STYLE_PASSWORD,
+		LOGIN_CAPTION,
+		LOGIN_TEXT[textoffset],
+		"Login",
+		"Change name"
 }
 
 //@summary Callback for usercheck done in {@link OnPlayerConnect}.
@@ -165,8 +210,13 @@ export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 	}
 
 	if (data[0] == 't') {
-		printf("does exist")
-		// TODO ask pw
+		if (strlen(data) < 5) {
+			printf "[ERROR][LOGIN] user exist api call returned success ('s')"\
+				"but response length is not 5: %d", strlen(data)
+			goto err
+		}
+		userid[playerid] = PARSEID(data, 1)
+		showLoginDialog playerid, .textoffset=LOGIN_TEXT_OFFSET
 		return
 	}
 
@@ -181,12 +231,13 @@ export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 	}
 	printf "[ERROR][LOGIN] usercheck api call returned unknown status: '%s'", data
 err:
+	// TODO: show this as dialog
 	SendClientMessage playerid, COL_WARN, WARN"An error occured while contacting the login server."
 	SendClientMessage playerid, COL_SAMP_GREEN, "You will be spawned as a guest."
 	renameAndSpawnAsGuest playerid
 }
 
-//@summary Callback for register call done in {@link OnDialogResponse}.
+//@summary Callback for register call
 //@param playerid player that wanted to register
 //@param response_code http response code or one of the {@code HTTP_*} macros
 //@param data response data
@@ -209,8 +260,7 @@ export PUB_LOGIN_REGISTER_CB(playerid, response_code, data[])
 				"but response length is not 5: %d", strlen(data)
 			goto err
 		}
-		userid[playerid] = (data[1] & 0x7F) | ((data[2] & 0x7F) << 7) |
-					((data[3] & 0x7F) << 14) | ((data[4] & 0x7F) << 21)
+		userid[playerid] = PARSEID(data, 1)
 		loginPlayer playerid, LOGGED_IN
 		new str[MAX_PLAYER_NAME + 6 + 37 + 1]
 		format str, sizeof(str), "%s[%d] just registered an account, welcome!", NAMEOF(playerid), playerid
@@ -233,9 +283,58 @@ export PUB_LOGIN_REGISTER_CB(playerid, response_code, data[])
 	}
 	printf "[ERROR][LOGIN] register api call returned unknown status: '%s'", data
 err:
+	// TODO: show this as dialog
 	SendClientMessage playerid, COL_WARN, WARN"An error occured while registering."
 	SendClientMessage playerid, COL_SAMP_GREEN, "You will be spawned as a guest."
 	renameAndSpawnAsGuest playerid
+}
+
+//@summary Callback for login call
+//@param playerid player that wanted to login
+//@param response_code http response code or one of the {@code HTTP_*} macros
+//@param data response data
+//@remarks PUB_LOGIN_LOGIN_CB
+export PUB_LOGIN_LOGIN_CB(playerid, response_code, data[])
+{
+	hideGameTextForPlayer(playerid)
+	if (response_code != 200) {
+		// printf can crash server if formatstr or output len is > 1024
+		if (strlen(data) > 500) {
+			data[499] = 0
+		}
+		printf "[ERROR][LOGIN] login api call returned code %d, data: '%s'", response_code, data
+		goto err
+	}
+
+	if (data[0] == 's') {
+		if (strlen(data) < 5) {
+			printf "[ERROR][LOGIN] login api call returned success ('s')"\
+				"but response length is not 5: %d", strlen(data)
+			goto err
+		}
+		loginPlayer playerid, LOGGED_IN
+		new str[MAX_PLAYER_NAME + 6 + 30 + 1]
+		format str, sizeof(str), "%s[%d] just logged in, welcome back!", NAMEOF(playerid), playerid
+		SendClientMessageToAll COL_JOINQUIT, str
+		return
+	}
+
+	if (data[0] == 'e') {
+		// printf can crash server if formatstr or output len is > 1024
+		if (strlen(data) > 500) {
+			data[499] = 0
+		}
+		printf "[ERROR][LOGIN] login api call returned error, code: '%s'", data[1]
+		goto err
+	}
+
+	// printf can crash server if formatstr or output len is > 1024
+	if (strlen(data) > 500) {
+		data[499] = 0
+	}
+	printf "[ERROR][LOGIN] register api call returned unknown status: '%s'", data
+err:
+	// TODO: reshow login dialog? dialog inbetween first?
 }
 
 //@summary Renames a player to give a guest name and spawns them as {@code LOGGED_GUEST}
