@@ -38,8 +38,8 @@ hook OnPlayerConnect(playerid)
 {
 	userid[playerid] = -1
 	#assert PLAYERNAMEVER == 1
-	while (playernames[playerid][1] == '=') {
-		SendClientMessage playerid, COL_SAMP_GREEN, "Names starting with '=' are reserved for guest players."
+	while (playernames[playerid][1] == '@') {
+		SendClientMessage playerid, COL_SAMP_GREEN, "Names starting with '@' are reserved for guest players."
 		// wiki states that SetPlayerName does not propagate for the user
 		// if used in OnPlayerConnect, but tests have proven otherwise.
 		if (NAMELEN(playerid) <= 3 || SetPlayerName(playerid, playernames[playerid][2]) != 1) {
@@ -244,7 +244,7 @@ err:
 renameAndSpawnAsGuest(playerid)
 {
 	new newname[MAX_PLAYER_NAME]
-	newname[0] = '='
+	newname[0] = '@'
 	memcpy(newname, NAMEOF(playerid), 4, NAMELEN(playerid) * 4 + 4)
 	if (SetPlayerName(playerid, newname) == 1) {
 		goto spawnasguest
