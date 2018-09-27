@@ -9,3 +9,5 @@ stock hideGameTextForPlayer(playerid) {
 }
 #define hideGameTextForPlayer(%0) GameTextForPlayer(%0, TXT_EMPTY_CONST, 2, 3)
 
+#define LIMITSTRLEN(%0,%1) if(strlen(%0)>%1)%0[%1-1]=0
+

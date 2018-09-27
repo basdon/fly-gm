@@ -201,10 +201,7 @@ export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 {
 	hideGameTextForPlayer(playerid)
 	if (response_code != 200) {
-		// printf can crash server if formatstr or output len is > 1024
-		if (strlen(data) > 500) {
-			data[499] = 0
-		}
+		LIMITSTRLEN(data, 500)
 		printf "[ERROR][LOGIN] usercheck api call returned code %d, data: '%s'", response_code, data
 		goto err
 	}
@@ -225,10 +222,7 @@ export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 		return
 	}
 
-	// printf can crash server if formatstr or output len is > 1024
-	if (strlen(data) > 500) {
-		data[499] = 0
-	}
+	LIMITSTRLEN(data, 500)
 	printf "[ERROR][LOGIN] usercheck api call returned unknown status: '%s'", data
 err:
 	// TODO: show this as dialog
@@ -246,10 +240,7 @@ export PUB_LOGIN_REGISTER_CB(playerid, response_code, data[])
 {
 	hideGameTextForPlayer(playerid)
 	if (response_code != 200) {
-		// printf can crash server if formatstr or output len is > 1024
-		if (strlen(data) > 500) {
-			data[499] = 0
-		}
+		LIMITSTRLEN(data, 500)
 		printf "[ERROR][LOGIN] register api call returned code %d, data: '%s'", response_code, data
 		goto err
 	}
@@ -277,10 +268,7 @@ export PUB_LOGIN_REGISTER_CB(playerid, response_code, data[])
 		goto err
 	}
 
-	// printf can crash server if formatstr or output len is > 1024
-	if (strlen(data) > 500) {
-		data[499] = 0
-	}
+	LIMITSTRLEN(data, 500)
 	printf "[ERROR][LOGIN] register api call returned unknown status: '%s'", data
 err:
 	// TODO: show this as dialog
@@ -298,10 +286,7 @@ export PUB_LOGIN_LOGIN_CB(playerid, response_code, data[])
 {
 	hideGameTextForPlayer(playerid)
 	if (response_code != 200) {
-		// printf can crash server if formatstr or output len is > 1024
-		if (strlen(data) > 500) {
-			data[499] = 0
-		}
+		LIMITSTRLEN(data, 500)
 		printf "[ERROR][LOGIN] login api call returned code %d, data: '%s'", response_code, data
 		goto err
 	}
@@ -328,10 +313,7 @@ export PUB_LOGIN_LOGIN_CB(playerid, response_code, data[])
 		goto err
 	}
 
-	// printf can crash server if formatstr or output len is > 1024
-	if (strlen(data) > 500) {
-		data[499] = 0
-	}
+	LIMITSTRLEN(data, 500)
 	printf "[ERROR][LOGIN] register api call returned unknown status: '%s'", data
 err:
 	// TODO: reshow login dialog? dialog inbetween first?
