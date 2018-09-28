@@ -38,6 +38,13 @@ varinit
 		"Welcome! This account is registered.\n"\
 		"Please sign in or change your name."
 	#define LOGIN_TEXT_OFFSET 37
+
+	new NAMECHANGE_CAPTION[] = "Change name"
+	new NAMECHANGE_TEXT[] =
+		""ECOL_WARN"Invalid name.\n\n"ECOL_DIALOG_TEXT""\
+		"Enter your new name (3-20 length, 0-9a-zA-Z=()[]$@._).\n"\
+		"Names starting with @ are reserved for guests."
+	#define NAMECHANGE_TEXT_OFFSET 31
 }
 
 hook OnPlayerDisconnect(playerid)
@@ -63,12 +70,7 @@ hook OnPlayerConnect(playerid)
 			return 0
 		}
 	}
-	GameTextForPlayer playerid, "~b~Contacting login server...", 0x800000, 3
-	new data[MAX_PLAYER_NAME * 3 + 4]
-	data[0] = 'u'
-	data[1] = '='
-	Urlencode(NAMEOF(playerid), NAMELEN(playerid), data[2])
-	HTTP(playerid, HTTP_POST, #API_URL"/api-user-exists.php", data, #PUB_LOGIN_USERCHECK_CB)
+	checkUserExist playerid
 }
 
 hook OnPlayerRequestSpawn(playerid)
@@ -145,7 +147,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 	}
 	case DIALOG_LOGIN1: {
 		if (!response) {
-			// TODO: change name
+			showNamechangeDialog playerid, .textoffset=NAMECHANGE_TEXT_OFFSET
 			#return 1
 		}
 		GameTextForPlayer playerid, "~b~Logging in...", 0x800000, 3
@@ -171,6 +173,32 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		showLoginDialog playerid, .textoffset=LOGIN_TEXT_OFFSET
 		#return 1
 	}
+	case DIALOG_NAMECHANGE: {
+		if (!response) {
+			showRegisterDialog playerid, .textoffset=REGISTER_TEXT_OFFSET
+			#return 1
+		}
+		new len = strlen(inputtext)
+		if (len < 3 || 20 < len || inputtext[0] == '@' || !SetPlayerName(playerid, inputtext)) {
+			showNamechangeDialog playerid, .textoffset=0
+		} else {
+			userid[playerid] = -1
+			checkUserExist playerid
+		}
+		#return 1
+	}
+}
+
+//@summary Check if a user with username of {@param playerid} exists
+//@param playerid the player to check if their username is registered
+checkUserExist(playerid)
+{
+	GameTextForPlayer playerid, "~b~Contacting login server...", 0x800000, 3
+	new data[MAX_PLAYER_NAME * 3 + 4]
+	data[0] = 'u'
+	data[1] = '='
+	Urlencode(NAMEOF(playerid), NAMELEN(playerid), data[2])
+	HTTP(playerid, HTTP_POST, #API_URL"/api-user-exists.php", data, #PUB_LOGIN_USERCHECK_CB)
 }
 
 //@summary Shows register dialog for player
@@ -200,6 +228,20 @@ showLoginDialog(playerid, textoffset=0)
 		LOGIN_TEXT[textoffset],
 		"Login",
 		"Change name"
+}
+
+//@summary Shows namechange dialog for player (during login phase)
+//@param playerid player to show namechange dialog for
+//@param textoffset textoffset in login string, should be {@code NAMECHANGE_TEXT_OFFSET} or {@code 0}
+showNamechangeDialog(playerid, textoffset=0)
+{
+	ShowPlayerDialog playerid,
+		DIALOG_NAMECHANGE,
+		DIALOG_STYLE_INPUT,
+		NAMECHANGE_CAPTION,
+		NAMECHANGE_TEXT[textoffset],
+		"Change",
+		"Cancel"
 }
 
 //@summary Callback for usercheck done in {@link OnPlayerConnect}.

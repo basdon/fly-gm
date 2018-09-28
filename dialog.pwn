@@ -8,6 +8,7 @@
 #define DIALOG_REGISTER2 521
 #define DIALOG_LOGIN1 522
 #define DIALOG_LOGIN_ERROR 523
+#define DIALOG_NAMECHANGE 524
 
 varinit
 {
