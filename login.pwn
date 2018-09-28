@@ -7,6 +7,7 @@
 #define LOGGED_IN 1
 #define LOGGED_GUEST 2
 
+#define MAX_LOGIN_ATTEMPTS 4
 #define PARSEID(%0,%1) userid[playerid] = ((%0[%1] & 0x7F) | ((%0[%1+1] & 0x7F) << 7) |\
 					((%0[%1+2] & 0x7F) << 14) | ((%0[%1+3] & 0x7F) << 21))
 
@@ -17,6 +18,7 @@ varinit
 	#define isGuest(%0) (loggedstatus[%0] == LOGGED_GUEST)
 
 	new loggedstatus[MAX_PLAYERS]
+	new failedlogins[MAX_PLAYERS char]
 	new userid[MAX_PLAYERS]
 
 	new REGISTER_CAPTION[] = "Register"
@@ -47,6 +49,7 @@ hook OnPlayerDisconnect(playerid)
 hook OnPlayerConnect(playerid)
 {
 	userid[playerid] = -1
+	failedlogins{playerid} = 0
 	#assert PLAYERNAMEVER == 1
 	while (playernames[playerid][1] == '@') {
 		SendClientMessage playerid, COL_SAMP_GREEN, "Names starting with '@' are reserved for guest players."
@@ -158,6 +161,9 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		format data[2], 9, "%08x", userid[playerid]
 		memcpy data, "&p=", 10 * 4, 3 * 4
 		Urlencode(inputtext, inputlen, data[13])
+		if (failedlogins{playerid} == (MAX_LOGIN_ATTEMPTS - 1) * 2) {
+			SendClientMessage playerid, COL_WARN, #WARN"You will be kicked if this login attempt is unsuccessful!"
+		}
 		HTTP(playerid, HTTP_POST, #API_URL"/api-login.php", data, #PUB_LOGIN_LOGIN_CB)
 		#return 1
 	}
@@ -298,14 +304,25 @@ export PUB_LOGIN_LOGIN_CB(playerid, response_code, data[])
 		return
 	}
 
-	if (data[0] == 'e') {
-		LIMITSTRLEN(data, 500)
-		printf "E-U0A: %s", data[1]
-		goto err
+	if (data[0] == 'f') {
+		if ((failedlogins{playerid} += 2) > (MAX_LOGIN_ATTEMPTS - 1) * 2) {
+			// no KickDelayed because no OnPlayerUpdate in class select
+			// a warning message was sent before pwcheck saying player will be kicked so it's ok
+			Kick playerid
+			return
+		}
+		showLoginDialog playerid, .textoffset=0
+		return
 	}
 
 	LIMITSTRLEN(data, 500)
-	printf "E-U0B: %s", data
+	if (data[0] == 'e') {
+		printf "E-U0A: %s", data[1]
+	} else {
+		printf "E-U0B: %s", data
+	}
+
+	showLoginDialog playerid, .textoffset=LOGIN_TEXT_OFFSET
 err:
 	// TODO: reshow login dialog? dialog inbetween first?
 }
