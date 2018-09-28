@@ -355,7 +355,7 @@ renameAndSpawnAsGuest(playerid)
 		}
 	}
 	print "F-U0C"
-	SendClientMessage playerid, COL_WARN, WARN"Fatal error, you will be kicked (sorry!), please reconnect"
+	SendClientMessage playerid, COL_WARN, WARN"Fatal error, please reconnect!"
 	KickDelayed playerid
 	goto @@return // just returning here gives 'unreachable code' warning for next line so yeah...
 spawnasguest:
