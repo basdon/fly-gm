@@ -3,6 +3,7 @@
 
 #namespace "dialog"
 
+#define DIALOG_DUMMY 127
 #define DIALOG_REGISTER1 520
 #define DIALOG_REGISTER2 521
 #define DIALOG_LOGIN1 522

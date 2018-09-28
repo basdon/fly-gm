@@ -295,6 +295,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 ##section OnDialogResponseCase
 	switch (dialogid) {
+	case DIALOG_DUMMY: return 1
 ###include "login"
 	}
 ##endsection

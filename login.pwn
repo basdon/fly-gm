@@ -167,6 +167,10 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		HTTP(playerid, HTTP_POST, #API_URL"/api-login.php", data, #PUB_LOGIN_LOGIN_CB)
 		#return 1
 	}
+	case DIALOG_LOGIN_ERROR: {
+		showLoginDialog playerid, .textoffset=LOGIN_TEXT_OFFSET
+		#return 1
+	}
 }
 
 //@summary Shows register dialog for player
@@ -230,7 +234,8 @@ export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 	LIMITSTRLEN(data, 500)
 	printf "E-U03: %s", data
 err:
-	// TODO: show this as dialog
+	ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
+		""#ECOL_WARN"An occurred, you will be spawned as a guest", "Ok", ""
 	SendClientMessage playerid, COL_WARN, WARN"An error occured while contacting the login server."
 	SendClientMessage playerid, COL_SAMP_GREEN, "You will be spawned as a guest."
 	renameAndSpawnAsGuest playerid
@@ -272,7 +277,8 @@ export PUB_LOGIN_REGISTER_CB(playerid, response_code, data[])
 	LIMITSTRLEN(data, 500)
 	printf "E-U07: %s", data
 err:
-	// TODO: show this as dialog
+	ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
+		""#ECOL_WARN"An occurred, you will be spawned as a guest", "Ok", ""
 	SendClientMessage playerid, COL_WARN, WARN"An error occured while registering."
 	SendClientMessage playerid, COL_SAMP_GREEN, "You will be spawned as a guest."
 	renameAndSpawnAsGuest playerid
@@ -323,9 +329,9 @@ export PUB_LOGIN_LOGIN_CB(playerid, response_code, data[])
 		printf "E-U0B: %s", data
 	}
 
-	showLoginDialog playerid, .textoffset=LOGIN_TEXT_OFFSET
 err:
-	// TODO: reshow login dialog? dialog inbetween first?
+	ShowPlayerDialog playerid, DIALOG_LOGIN_ERROR, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
+		""#ECOL_WARN"An error occurred, please try again", "Ok", ""
 }
 
 //@summary Renames a player to give a guest name and spawns them as {@code LOGGED_GUEST}
