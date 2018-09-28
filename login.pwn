@@ -8,7 +8,7 @@
 #define LOGGED_GUEST 2
 
 #define MAX_LOGIN_ATTEMPTS 4
-#define PARSEID(%0,%1) userid[playerid] = ((%0[%1] & 0x7F) | ((%0[%1+1] & 0x7F) << 7) |\
+#define PARSE28BITNUM(%0,%1) userid[playerid] = ((%0[%1] & 0x7F) | ((%0[%1+1] & 0x7F) << 7) |\
 					((%0[%1+2] & 0x7F) << 14) | ((%0[%1+3] & 0x7F) << 21))
 
 varinit
@@ -217,7 +217,7 @@ export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 			printf "E-U02: %d", strlen(data)
 			goto err
 		}
-		userid[playerid] = PARSEID(data, 1)
+		userid[playerid] = PARSE28BITNUM(data, 1)
 		showLoginDialog playerid, .textoffset=LOGIN_TEXT_OFFSET
 		return
 	}
@@ -255,7 +255,7 @@ export PUB_LOGIN_REGISTER_CB(playerid, response_code, data[])
 			printf "E-U05: %d", strlen(data)
 			goto err
 		}
-		userid[playerid] = PARSEID(data, 1)
+		userid[playerid] = PARSE28BITNUM(data, 1)
 		loginPlayer playerid, LOGGED_IN
 		new str[MAX_PLAYER_NAME + 6 + 37 + 1]
 		format str, sizeof(str), "%s[%d] just registered an account, welcome!", NAMEOF(playerid), playerid
@@ -297,6 +297,7 @@ export PUB_LOGIN_LOGIN_CB(playerid, response_code, data[])
 			printf "E-U09: %d", strlen(data)
 			goto err
 		}
+		SetPlayerScore playerid, PARSE28BITNUM(data, 1)
 		loginPlayer playerid, LOGGED_IN
 		new str[MAX_PLAYER_NAME + 6 + 30 + 1]
 		format str, sizeof(str), "%s[%d] just logged in, welcome back!", NAMEOF(playerid), playerid
