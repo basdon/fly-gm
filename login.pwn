@@ -51,13 +51,13 @@ varinit
 hook loop30s()
 {
 	foreach (new playerid : players) {
-		updatePlayerLastseen playerid
+		updatePlayerLastseen playerid, .isdisconnect=0
 	}
 }
 
 hook OnPlayerDisconnect(playerid)
 {
-	updatePlayerLastseen playerid
+	updatePlayerLastseen playerid, .isdisconnect=1
 	loggedstatus[playerid] = LOGGED_NO
 	ResetPasswordConfirmData playerid
 }
@@ -428,18 +428,30 @@ spawnasguest:
 @@return:
 }
 
-//@summary Updates a player's last seen value in db (usr and ses)
+//@summary Updates a player's last seen (usr and ses) and total time value in db
 //@param playerid playerid to update
+//@param isdisconnect is this call made from {@link OnPlayerDisconnect}?
 //@remarks This function first checks if the player has a valid userid and sessionid
-updatePlayerLastseen(playerid)
+//@remarks If {@param isdisconnect} is {@code 0}, {@code 30} gets added to player's total time (inaccurate), \
+otherwise player's totaltime is set to sum of session times (accurate)
+updatePlayerLastseen(playerid, isdisconnect)
 {
-	static sessionquery1[] = "UPDATE usr SET l=UNIX_TIMESTAMP() WHERE i=__________"
+	static sessionquery1[] = "UPDATE usr SET l=UNIX_TIMESTAMP(),t=t+30 WHERE i=__________"
 	static sessionquery2[] = "UPDATE ses SET e=UNIX_TIMESTAMP() WHERE i=__________"
+	static sessionquery3[] = "UPDATE usr SET t=(SELECT SUM(e-s) FROM ses WHERE u=         ) WHERE i=_________"
 	if (userid[playerid] != -1 && sessionid[playerid] != -1) {
-		format sessionquery1[42], 10, "%d", userid[playerid]
+		if (isdisconnect) {
+			format sessionquery3[70], 10, "%d", userid[playerid]
+			new len = strlen(sessionquery3[70])
+			memcpy sessionquery3[51], sessionquery3[70], 0, len * 4
+			mysql_tquery 1, sessionquery3
+			sessionquery1[38] = '0'
+		}
+		format sessionquery1[49], 10, "%d", userid[playerid]
 		format sessionquery2[42], 10, "%d", sessionid[playerid]
 		mysql_tquery 1, sessionquery1
 		mysql_tquery 1, sessionquery2
+		sessionquery1[38] = '3'
 	}
 }
 

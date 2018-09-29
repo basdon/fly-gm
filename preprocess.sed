@@ -32,6 +32,11 @@
 
 # custom doc comment formats
 /^\s*\/\/@/ {
+        /\\$/ {
+                N
+                s/\\\n//
+                a//(concatted line)
+        }
 	s-^\s*//@summary \(.*\)$-/// <summary>\1</summary>-
 	s-^\s*//@param \([^ \t]\+\) \(.*\)$-/// <param name="\1">\2</param>-
 	s-^\s*//@remarks \(.*\)$-/// <remarks>\1</remarks>-
