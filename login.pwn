@@ -500,6 +500,7 @@ updatePlayerLastseen(playerid, isdisconnect)
 		if (isdisconnect) {
 			format sessionquery3[70], 10, "%d", userid[playerid]
 			new len = strlen(sessionquery3[70])
+			memcpy sessionquery3[52], "        ", .numbytes=8 * 4
 			memcpy sessionquery3[51], sessionquery3[70], 0, len * 4
 			mysql_tquery 1, sessionquery3
 			sessionquery1[38] = '0'
