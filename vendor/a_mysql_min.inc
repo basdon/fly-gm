@@ -83,22 +83,38 @@ native mysql_option(E_MYSQL_OPTION:type, value);
 
 native mysql_errno(connectionHandle = 1);
 native mysql_escape_string(const source[], destination[], connectionHandle = 1, max_len = sizeof(destination));
+/// <remarks>
+///   <b>Format Specifiers:</b><p/>
+///   <ul>
+///     <li><b><c>%%</c></b> - literal %</li>
+///     <li><b><c>%i/%d</c></b> - integer</li>
+///     <li><b><c>%u</c></b> - unsigned integer</li>
+///     <li><b><c>%o</c></b> - octal number</li>
+///     <li><b><c>%x/%X</c></b> - hexadecimal number (lowercase/uppercase)</li>
+///     <li><b><c>%b</c></b> - binary number</li>
+///     <li><b><c>%f</c></b> - floating-point number (will print <c><b>inf</b></c> and <c><b>nan</b></c>)</li>
+///     <li><b><c>%a/%A</c></b> - hexadecimal floating-point number (lowercase/uppercase)</li>
+///     <li><b><c>%g/%G</c></b> - floating-point number, scientific notation</li>
+///     <li><b><c>%s</c></b> - string</li>
+///     <li><b><c>%e</c></b> - escaped string</li>
+///   </ul>
+/// </remarks>
+/// <returns><b><c>1</c></b> if the query was successfully queued</returns>
 native mysql_format(connectionHandle, output[], len, format[], {Float,_}:...);
 native mysql_pquery(connectionHandle, query[], callback[] = "", format[] = "", {Float,_}:...);
 /// <remarks>
 ///   <b>Format Specifiers:</b><p/>
 ///   <ul>
-///     <li><b><c>%i</c></b> - integer (whole number)</li>
-///     <li><b><c>%d</c></b> - integer (whole number).</li>
+///     <li><b><c>%i/%d</c></b> - integer (whole number)</li>
 ///     <li><b><c>%s</c></b> - string</li>
-///     <li><b><c>%e</c></b> - escaped string</li>
 ///     <li><b><c>%f</c></b> - floating-point number (Float: tag)</li>
 ///     <li><b><c>%b</c></b> - boolean</li>
 ///     <li><b><c>%r</c></b> - reference</li>
 ///     <li><b><c>%a</c></b> - array, has to be followed by d/i with array length as argument</li>
 ///   </ul>
 /// </remarks>
-///<returns><b><c>1</c></b> if the query was successfully queued</returns>
+/// <returns><b><c>1</c></b> if the query was successfully queued</returns>
+/// <seealso name="mysql_format" />
 native mysql_tquery(connectionHandle, query[], callback[] = "", format[] = "", {Float,_}:...);
 native Cache:mysql_query(conhandle, query[], bool:use_cache = true);
 
