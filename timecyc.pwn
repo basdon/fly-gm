@@ -67,14 +67,22 @@ hook loop100()
 			if (++time_h >= 24) {
 				time_h = 0
 			}
-		} else if (currentweather == upcomingweather && time_s == TIMECYC_TEMP_MINUTES) {
-			// sync everyone every minutes if no transition is going on, just in case
-			for (new _i : players) {
-				new playerid = iter_access(players, _i)
-				if (isSpawned(playerid) && !isAfk(playerid)) {
-					forceTimecycForPlayer playerid
+			goto loop30s
+#assert TIMECYC_TEMP_MINUTES == 30
+		} else if (time_s == TIMECYC_TEMP_MINUTES) {
+			if (currentweather == upcomingweather && time_s == TIMECYC_TEMP_MINUTES) {
+				// sync everyone every minutes if no transition is going on, just in case
+				for (new _i : players) {
+					new playerid = iter_access(players, _i)
+					if (isSpawned(playerid) && !isAfk(playerid)) {
+						forceTimecycForPlayer playerid
+					}
 				}
 			}
+loop30s:
+##section loop30s
+###include "login"
+##endsection
 		}
 #ifdef TIMECYC_OVERLAY_CLOCK
 		new buf[6]

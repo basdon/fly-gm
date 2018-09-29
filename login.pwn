@@ -48,8 +48,16 @@ varinit
 	#define NAMECHANGE_TEXT_OFFSET 31
 }
 
+hook loop30s()
+{
+	foreach (new playerid : players) {
+		updatePlayerLastseen playerid
+	}
+}
+
 hook OnPlayerDisconnect(playerid)
 {
+	updatePlayerLastseen playerid
 	loggedstatus[playerid] = LOGGED_NO
 	ResetPasswordConfirmData playerid
 }
@@ -418,6 +426,21 @@ renameAndSpawnAsGuest(playerid)
 spawnasguest:
 	loginPlayer playerid, LOGGED_GUEST
 @@return:
+}
+
+//@summary Updates a player's last seen value in db (usr and ses)
+//@param playerid playerid to update
+//@remarks This function first checks if the player has a valid userid and sessionid
+updatePlayerLastseen(playerid)
+{
+	static sessionquery1[] = "UPDATE usr SET l=UNIX_TIMESTAMP() WHERE i=__________"
+	static sessionquery2[] = "UPDATE ses SET e=UNIX_TIMESTAMP() WHERE i=__________"
+	if (userid[playerid] != -1 && sessionid[playerid] != -1) {
+		format sessionquery1[42], 10, "%d", userid[playerid]
+		format sessionquery2[42], 10, "%d", sessionid[playerid]
+		mysql_tquery 1, sessionquery1
+		mysql_tquery 1, sessionquery2
+	}
 }
 
 //@summary Sets a player's logged status and triggers class selection for them

@@ -94,8 +94,8 @@ export PUB_LOOP25()
 ###include "afk"
 ###include "timecyc"
 ##endsection
-		// 1s loop is inside timecyc
-		if (invoc >= 120) {
+		// 1s,30s,1m loop is inside timecyc
+		if (invoc >= 340) {
 			// 3000ms
 			invoc = 0
 		}
