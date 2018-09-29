@@ -205,6 +205,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		KickDelayed playerid
 		return 1
 	}
+	if (strcicmp("/crashme", cmdtext, .length=8) == 0) {
+		GameTextForPlayer playerid, "Wasted~~k~SWITCH_DEBUG_CAM_ON~~k~~TOGGLE_DPAD~~k~~NETWORK_TALK~~k~~SHOW_MOUSE_POINTER_TOGGLE~", 5, 5
+		return 1
+	}
 #endif
 
 ##section OnPlayerCommandText

@@ -8,7 +8,8 @@
 #define COL_WARN 0xe84c3dff
 #define COL_SUCC 0x2cc36bff
 
-#define COL_JOINQUIT 0x1b8ae4ff
+#define COL_JOIN 0x1b8ae4ff
+#define COL_QUIT 0x1674Bcff
 
 #define ECOL_INFO "{3498db}"
 #define ECOL_WARN "{e84c3d}"

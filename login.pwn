@@ -55,8 +55,14 @@ hook loop30s()
 	}
 }
 
-hook OnPlayerDisconnect(playerid)
+hook OnPlayerDisconnect(playerid, reason)
 {
+	if (isPlaying(playerid)) {
+		new reasons[] = "\3\11\16timeout\0quit\0kicked"
+		new str[MAX_PLAYER_NAME + 6 + 21 + 8 + 1]
+		format str, sizeof(str), "%s[%d] left the server (%s)", NAMEOF(playerid), playerid, reasons[reasons[reason]]
+		SendClientMessageToAll COL_QUIT, str
+	}
 	updatePlayerLastseen playerid, .isdisconnect=1
 	loggedstatus[playerid] = LOGGED_NO
 	ResetPasswordConfirmData playerid
@@ -328,7 +334,7 @@ export PUB_LOGIN_REGISTER_CB(playerid, response_code, data[])
 		loginPlayer playerid, LOGGED_IN
 		new str[MAX_PLAYER_NAME + 6 + 37 + 1]
 		format str, sizeof(str), "%s[%d] just registered an account, welcome!", NAMEOF(playerid), playerid
-		SendClientMessageToAll COL_JOINQUIT, str
+		SendClientMessageToAll COL_JOIN, str
 		return
 	}
 
@@ -372,7 +378,7 @@ export PUB_LOGIN_LOGIN_CB(playerid, response_code, data[])
 		loginPlayer playerid, LOGGED_IN
 		new str[MAX_PLAYER_NAME + 6 + 30 + 1]
 		format str, sizeof(str), "%s[%d] just logged in, welcome back!", NAMEOF(playerid), playerid
-		SendClientMessageToAll COL_JOINQUIT, str
+		SendClientMessageToAll COL_JOIN, str
 		return
 	}
 
