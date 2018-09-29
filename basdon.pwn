@@ -3,6 +3,7 @@
 
 #include <a_samp>
 #include <a_http>
+#include <a_mysql_min>
 #include "simpleiter"
 #include "util"
 #include "settings"
@@ -246,6 +247,22 @@ onPlayerWasAfk(playerid)
 
 public OnGameModeInit()
 {
+	new File:mysqlfile = fopen("mysql.dat", io_read)
+	if (!mysqlfile) {
+		printf "file mysql.dat not found"
+		SendRconCommand "exit"
+	}
+	new creds[100]
+	fblockread mysqlfile, creds
+	fclose mysqlfile
+
+	mysql_log LOG_ERROR | LOG_WARNING
+	if (!mysql_connect("127.0.0.1", creds[creds[0]], creds[creds[1]], creds[creds[2]])) {
+		printf "no db connection"
+		SendRconCommand "exit"
+	}
+	//mysql_set_charset "Windows-1252"
+
 	SetGameModeText VERSION
 
 	UsePlayerPedAnims
@@ -276,6 +293,7 @@ public OnPlayerUpdate(playerid)
 
 public OnGameModeExit()
 {
+	mysql_close()
 	return 1
 }
 
