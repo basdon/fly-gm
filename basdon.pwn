@@ -308,6 +308,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 ##section OnDialogResponse
+###include "anticheat"
 ###include "dialog"
 ##endsection
 
