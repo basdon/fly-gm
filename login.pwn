@@ -188,7 +188,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 	}
 	case DIALOG_NAMECHANGE: {
 		if (!response) {
-			showRegisterDialog playerid, .textoffset=REGISTER_TEXT_OFFSET
+			showLoginDialog playerid, .textoffset=LOGIN_TEXT_OFFSET
 			#return 1
 		}
 		new len = strlen(inputtext)
