@@ -294,6 +294,19 @@ public OnPlayerUpdate(playerid)
 
 public OnGameModeExit()
 {
+	if (mysql_unprocessed_queries() > 0) {
+		new starttime = gettime()
+		do {
+			if (gettime() - starttime > 10) {
+				print "queries are taking > 10s, exiting anyways"
+				goto fuckit
+			}
+			print "waiting on queries before exiting"
+			for (new i = 0; i < 80_000_000; i++) {}
+		} while (mysql_unprocessed_queries() > 0)
+		print "done"
+	}
+fuckit:
 	mysql_close()
 	return 1
 }
