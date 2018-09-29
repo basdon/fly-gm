@@ -405,6 +405,48 @@ err:
 		""#ECOL_WARN"An error occurred, please try again", "Ok", ""
 }
 
+//@summary Callback for guest call
+//@param playerid player that needed a guest account
+//@param response_code http response code or one of the {@code HTTP_*} macros
+//@param data response data
+//@remarks PUB_LOGIN_GUEST_CB
+export PUB_LOGIN_GUEST_CB(playerid, response_code, data[])
+{
+	hideGameTextForPlayer(playerid)
+	loginPlayer playerid, LOGGED_GUEST
+	if (response_code != 200) {
+		LIMITSTRLEN(data, 500)
+		printf "E-U0E: %d, %s", response_code, data
+		goto err
+	}
+
+	if (data[0] == 's') {
+		if (strlen(data) < 11) {
+			printf "E-U0F: %d", strlen(data)
+			goto err
+		}
+		userid[playerid] = PARSE5BYTENONNULL(data, 1)
+		sessionid[playerid] = PARSE5BYTENONNULL(data, 6)
+		new str[MAX_PLAYER_NAME + 6 + 28 + 1]
+		format str, sizeof(str), "%s[%d] joined as a guest, welcome!", NAMEOF(playerid), playerid
+		SendClientMessageToAll COL_JOIN, str
+		SendClientMessage playerid, COL_INFO,
+			""#INFO"You are now playing as a guest. You can use /register at any time to save your stats."
+		return
+	}
+
+	LIMITSTRLEN(data, 500)
+	if (data[0] == 'e') {
+		printf "E-U10: %s", data[1]
+	} else {
+		printf "E-U11: %s", data
+	}
+
+err:
+	SendClientMessage playerid, COL_WARN, #WARN"An error occurred while creating a guest session."
+	SendClientMessage playerid, COL_WARN, #WARN"You can play, but you won't be able to save your stats later."
+}
+
 //@summary Renames a player to give a guest name and spawns them as {@code LOGGED_GUEST}
 //@param playerid the player to spawn as guest
 //@remarks player will be kicked when the name {@code =playername} is already taken and it failed to give a random name 5 times
@@ -430,7 +472,16 @@ renameAndSpawnAsGuest(playerid)
 	KickDelayed playerid
 	goto @@return // just returning here gives 'unreachable code' warning for next line so yeah...
 spawnasguest:
-	loginPlayer playerid, LOGGED_GUEST
+	GameTextForPlayer playerid, "~b~Creating guest session...", 0x800000, 3
+	new data[2 + (MAX_PLAYER_NAME * 3) + 3 + (128 * 3) + 3 + 15 + 1]
+	data[0] = 'u'
+	data[1] = '='
+	new idx = 2 + Urlencode(NAMEOF(playerid), NAMELEN(playerid), data[2])
+	data[idx++] = '&'
+	data[idx++] = 'j'
+	data[idx++] = '='
+	GetPlayerIp playerid, data[idx], 16
+	HTTP(playerid, HTTP_POST, #API_URL"/api-guest.php", data, #PUB_LOGIN_GUEST_CB)
 @@return:
 }
 
