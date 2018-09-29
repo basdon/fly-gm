@@ -8,8 +8,8 @@
 #define LOGGED_GUEST 2
 
 #define MAX_LOGIN_ATTEMPTS 4
-#define PARSE28BITNUM(%0,%1) userid[playerid] = ((%0[%1] & 0x7F) | ((%0[%1+1] & 0x7F) << 7) |\
-					((%0[%1+2] & 0x7F) << 14) | ((%0[%1+3] & 0x7F) << 21))
+#define PARSE28BITNUM(%0,%1) ((%0[%1] & 0x7F) | ((%0[%1+1] & 0x7F) << 7) |\
+				((%0[%1+2] & 0x7F) << 14) | ((%0[%1+3] & 0x7F) << 21))
 
 varinit
 {
@@ -20,6 +20,7 @@ varinit
 	new loggedstatus[MAX_PLAYERS]
 	new failedlogins[MAX_PLAYERS char]
 	new userid[MAX_PLAYERS]
+	new sessionid[MAX_PLAYERS]
 
 	new REGISTER_CAPTION[] = "Register"
 	new REGISTER_TEXT[] =
@@ -56,6 +57,7 @@ hook OnPlayerDisconnect(playerid)
 hook OnPlayerConnect(playerid)
 {
 	userid[playerid] = -1
+	sessionid[playerid] = -1
 	failedlogins{playerid} = 0
 	#assert PLAYERNAMEVER == 1
 	while (playernames[playerid][1] == '@') {
@@ -136,12 +138,17 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			inputtext[128] = 0
 			inputlen = 128
 		}
-		new data[2 + (MAX_PLAYER_NAME * 3) + 3 + (128 * 3) + 1]
+		new data[2 + (MAX_PLAYER_NAME * 3) + 3 + (128 * 3) + 3 + 15 + 1]
 		data[0] = 'u'
 		data[1] = '='
 		new idx = 2 + Urlencode(NAMEOF(playerid), NAMELEN(playerid), data[2])
 		memcpy data, "&p=", idx * 4, 3 * 4
-		Urlencode(inputtext, inputlen, data[idx + 3])
+		idx += 3
+		idx += Urlencode(inputtext, inputlen, data[idx])
+		data[idx++] = '&'
+		data[idx++] = 'j'
+		data[idx++] = '='
+		GetPlayerIp playerid, data[idx], 16
 		HTTP(playerid, HTTP_POST, #API_URL"/api-register.php", data, #PUB_LOGIN_REGISTER_CB)
 		#return 1
 	}
@@ -157,12 +164,18 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			inputtext[128] = 0
 			inputlen = 128
 		}
-		new data[2 + 8 + 3 + (128 * 3) + 1]
+		new data[2 + 8 + 3 + (128 * 3) + 3 + 15 + 1]
 		data[0] = 'i'
 		data[1] = '='
 		format data[2], 9, "%08x", userid[playerid]
-		memcpy data, "&p=", 10 * 4, 3 * 4
-		Urlencode(inputtext, inputlen, data[13])
+		data[10] = '&'
+		data[11] = 'p'
+		data[12] = '='
+		new idx = 13 + Urlencode(inputtext, inputlen, data[13])
+		data[idx++] = '&'
+		data[idx++] = 'j'
+		data[idx++] = '='
+		GetPlayerIp playerid, data[idx], 16
 		if (failedlogins{playerid} == (MAX_LOGIN_ATTEMPTS - 1) * 2) {
 			SendClientMessage playerid, COL_WARN, #WARN"You will be kicked if this login attempt is unsuccessful!"
 		}
@@ -298,11 +311,12 @@ export PUB_LOGIN_REGISTER_CB(playerid, response_code, data[])
 	}
 
 	if (data[0] == 's') {
-		if (strlen(data) < 5) {
+		if (strlen(data) < 9) {
 			printf "E-U05: %d", strlen(data)
 			goto err
 		}
 		userid[playerid] = PARSE28BITNUM(data, 1)
+		sessionid[playerid] = PARSE28BITNUM(data, 5)
 		loginPlayer playerid, LOGGED_IN
 		new str[MAX_PLAYER_NAME + 6 + 37 + 1]
 		format str, sizeof(str), "%s[%d] just registered an account, welcome!", NAMEOF(playerid), playerid
@@ -341,11 +355,12 @@ export PUB_LOGIN_LOGIN_CB(playerid, response_code, data[])
 	}
 
 	if (data[0] == 's') {
-		if (strlen(data) < 5) {
+		if (strlen(data) < 9) {
 			printf "E-U09: %d", strlen(data)
 			goto err
 		}
 		SetPlayerScore playerid, PARSE28BITNUM(data, 1)
+		sessionid[playerid] = PARSE28BITNUM(data, 5)
 		loginPlayer playerid, LOGGED_IN
 		new str[MAX_PLAYER_NAME + 6 + 30 + 1]
 		format str, sizeof(str), "%s[%d] just logged in, welcome back!", NAMEOF(playerid), playerid
