@@ -162,3 +162,6 @@ s/^varinit$/hook varinit()/
 s/^\(\s*\)#ifdef/\1#if defined/
 s/^\(\s*\)#ifndef/\1#if !defined/
 
+# foreach syntactic sugar
+s/foreach \?(new \(.*\): \?\(.*\)) \?{/for (new iv@\1 : \2) {new \1=iter_access(\2,iv@\1)/
+
