@@ -9,6 +9,7 @@
 #include "settings"
 #include "colors"
 #include "natives"
+#include "dummies"
 
 #pragma tabsize 0 // it does not go well with some macros and preprocess
 
@@ -326,7 +327,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 #include "panel"
 #include "timecyc"
 #include "dialog"
-// try to keep these last
 #include "login"
 #include "game_sa"
 #include "afk"

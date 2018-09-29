@@ -20,11 +20,12 @@ pp = $(sed) -f $(ppfile)
 #FILE spawn
 #FILE timecyc
 #FILE anticheat
+#FILE dummies
 
 #START
 #S2
 
-build: p/sharedsymbols.p p/anticheat.p p/timecyc.p p/spawn.p p/dialog.p p/colors.p p/settings.p p/util.p p/login.p p/playername.p p/afk.p p/game_sa.p p/simpleiter.p p/panel.p p/natives.p p/basdon.p
+build: p/sharedsymbols.p p/dummies.p p/anticheat.p p/timecyc.p p/spawn.p p/dialog.p p/colors.p p/settings.p p/util.p p/login.p p/playername.p p/afk.p p/game_sa.p p/simpleiter.p p/panel.p p/natives.p p/basdon.p
 	@echo.
 
 p/basdon.p: basdon.pwn $(ppfile)
@@ -71,6 +72,9 @@ p/timecyc.p: timecyc.pwn $(ppfile)
 
 p/anticheat.p: anticheat.pwn $(ppfile)
 	$(pp) anticheat.pwn>p/anticheat.p
+
+p/dummies.p: dummies.pwn $(ppfile)
+	$(pp) dummies.pwn>p/dummies.p
 
 #S3
 #STOP

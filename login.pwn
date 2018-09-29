@@ -453,39 +453,5 @@ loginPlayer(playerid, status)
 	OnPlayerRequestClassImpl playerid
 }
 
-#undef isPlaying
-//@summary Check if a player is playing (=past the login screen, can be guest)
-//@param playerid the playerid to check
-//@remarks Is implemented as a preprocessor replacement.
-//@seealso isSpawned
-//@seealso isGuest
-//@seealso isRegistered
-//@returns {@code 0} if the player is not playing
-stock isPlaying(playerid) {
-	this_function _ should_not _ be_called
-}
-
-#undef isRegistered
-//@summary Check if a player has an account (=is not a guest)
-//@param playerid the playerid to check
-//@remarks Is implemented as a preprocessor replacement.
-//@seealso isPlaying
-//@seealso isGuest
-//@returns {@code 0} if the player is not registered
-stock isRegistered(playerid) {
-	this_function _ should_not _ be_called
-}
-
-#undef isGuest
-//@summary Check if a player is playing as a guest
-//@param playerid the playerid to check
-//@remarks Is implemented as a preprocessor replacement.
-//@seealso isPlaying
-//@seealso isRegistered
-//@returns {@code 0} if the player is not logged in
-stock isGuest(playerid) {
-	this_function _ should_not _ be_called
-}
-
 #printhookguards
 

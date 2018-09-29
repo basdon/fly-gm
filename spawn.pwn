@@ -116,24 +116,5 @@ OnPlayerRequestClassImpl(playerid, classid = -1)
 	SetPlayerColor playerid, CLASS_COLORS[classid]
 }
 
-#undef isSpawned
-//@summary Check if a player is spawned.
-//@param playerid the playerid to check
-//@remarks Is implemented as a preprocessor replacement.
-//@returns {@code 0} if the player is not spawned
-//@seealso isPlaying
-stock isSpawned(playerid) {
-	this_function _ should_not _ be_called
-}
-
-#undef getPlayerClass
-//@summary Gets a player's class
-//@param playerid the player to check
-//@remarks Is implemented as a preprocessor replacement.
-//@returns The player's class, should be one of the {@code CLASS_*} constants.
-stock getPlayerClass(playerid) {
-	this_function _ should_not _ be_called
-}
-
 #printhookguards
 
