@@ -20,10 +20,9 @@ hook OnPlayerUpdate(playerid)
 	lastupdate[playerid] = gettime()
 }
 
-hook loop100(playerid)
+hook loop100()
 {
-	for (new _i : players) {
-		new playerid = iter_access(players, _i)
+	foreach (new playerid : players) {
 		if (!iter_has(afkplayers, playerid) && lastupdate[playerid] < gettime() - 1) {
 			iter_add(afkplayers, playerid)
 			onPlayerNowAfk playerid
