@@ -40,9 +40,9 @@ varinit
 
 hook loop100()
 {
-	new buf4[5] // value (spd, alt)
-	new buf13[14] // small meter (spd, alt)
-	new buf44[45] // large meter (spd, alt)
+	static buf4[5] // value (spd, alt)
+	static buf13[14] // small meter (spd, alt)
+	static buf44[45] // large meter (spd, alt)
 
 	for (new _i : panelplayers) {
 		new playerid = iter_access(panelplayers, _i)
