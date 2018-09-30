@@ -1,5 +1,14 @@
 #
 
+# prevent memcpy mistakes that are expected to work but don't
+/^\s*#allowmemcpywitharrayindexer$/ {
+	N
+	s/^.*\n//
+	bskipmemcpycheck
+}
+s/^\s*\(memcpy[ \|(]\?[^,]\+\[\)/#error possible memcpy bug (#allowmemcpywitharrayindexer to suppress): \1/
+:skipmemcpycheck
+
 # include with include guard removal
 /^##include/ {
 	s/^.*"\(.*\)"$/#include "\1"/

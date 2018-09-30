@@ -31,6 +31,7 @@ SetPlayerNameHook(playerid, const name[])
 	if (res == 1) {
 		new len = strlen(name)
 		playernames[playerid][0] = len
+		#allowmemcpywitharrayindexer
 		memcpy(playernames[playerid], name, 4, ++len * 4)
 		new s[34 + MAX_PLAYER_NAME + 1]
 		format s, sizeof(s), "Your name has been changed to '%s'", NAMEOF(playerid)
