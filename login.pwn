@@ -226,9 +226,6 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		data[idx++] = 'j'
 		data[idx++] = '='
 		GetPlayerIp playerid, data[idx], 16
-		if (failedlogins{playerid} == (MAX_LOGIN_ATTEMPTS - 1) * 2) {
-			SendClientMessage playerid, COL_WARN, #WARN"You will be kicked if this login attempt is unsuccessful!"
-		}
 		HTTP(playerid, HTTP_POST, #API_URL"/api-login.php", data, #PUB_LOGIN_LOGIN_CB)
 		#return 1
 	}
@@ -504,9 +501,8 @@ export PUB_LOGIN_LOGIN_CB(playerid, response_code, data[])
 	}
 	if (data[0] == 'f') {
 		if ((failedlogins{playerid} += 2) > (MAX_LOGIN_ATTEMPTS - 1) * 2) {
-			// no KickDelayed because no OnPlayerUpdate in class select
-			// a warning message was sent before pwcheck saying player will be kicked so it's ok
-			Kick playerid
+			SendClientMessage playerid, COL_WARN, #WARN"Too many failed login attempts!"
+			KickDelayed playerid
 			return
 		}
 		showLoginDialog playerid, .textoffset=0
