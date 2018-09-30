@@ -28,8 +28,19 @@ hook OnPlayerUpdate(playerid)
 			Kick playerid
 		}
 	}
-	if (floodcount[playerid] > 0) {
-		floodcount[playerid] -= FLOOD_DECLINE
+}
+
+hook loop100(playerid)
+{
+	foreach (new playerid : allplayers) {
+		if (isAfk(playerid) && kickprogress[playerid]) {
+			if ((kickprogress[playerid] -= 3) <= 0) {
+				Kick playerid
+			}
+		}
+		if (floodcount[playerid] > 0) {
+			floodcount[playerid] = clamp(floodcount[playerid] - FLOOD_DECLINE, 0, cellmax)
+		}
 	}
 }
 
@@ -44,11 +55,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 flood(playerid, amount)
 {
 	if ((floodcount[playerid] += amount) >= FLOOD_LIMIT) {
-		if (isPlaying(playerid)) {
-			new msg[38 + MAX_PLAYER_NAME + 2 + 4 + 1]
-			format msg, sizeof(msg), "%s[%d] was kicked by system (excess flood)", NAMEOF(playerid), playerid
-			SendClientMessageToAll COL_WARN, msg
-		}
+		new msg[38 + MAX_PLAYER_NAME + 2 + 4 + 1]
+		format msg, sizeof(msg), "%s[%d] was kicked by system (excess flood)", NAMEOF(playerid), playerid
+		SendClientMessageToAll COL_WARN, msg
 		KickDelayed playerid
 	}
 }
@@ -56,11 +65,15 @@ flood(playerid, amount)
 //@summary Kicks a player after they received next stream of packets
 //@param playerid the player to kick
 //@param delay the delay, in how many times a client should be synced before kicking (optional={@code 1})
-//@remarks if KickDelayed was called previously or player is in login phase, player will be kicked immediately
+//@remarks if KickDelayed was called previously, player will be kicked immediately
+//@remarks is player is afk, {@param delay} will be clamped to {@code [3,cellmax]} for use in 100loop instead of OnPlayerUpdate
 KickDelayed(playerid, delay=1) {
-	if (kickprogress[playerid] || !isPlaying(playerid)) {
+	if (kickprogress[playerid]) {
 		Kick playerid
 		return
+	}
+	if (isAfk(playerid)) {
+		delay = clamp(delay, 4, cellmax)
 	}
 	kickprogress[playerid] = delay
 }

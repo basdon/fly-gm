@@ -48,6 +48,9 @@
 //@summary Iter that contains {@b logged in (or guest)} players
 new Iter:players[MAX_PLAYERS]
 
+//@summary Iter that contains {@b all} players
+new Iter:allplayers[MAX_PLAYERS]
+
 //@summary Just an underscore used as empty text for dialogs, textdraws, ...
 //@remarks normal variable
 //@seealso TXT_EMPTY_CONST
@@ -95,6 +98,7 @@ export PUB_LOOP25()
 ###include "panel"
 ###include "afk"
 ###include "timecyc"
+###include "anticheat"
 ##endsection
 		// 1s,30s,1m loop is inside timecyc
 		if (invoc >= 340) {
@@ -108,6 +112,8 @@ public OnPlayerConnect(playerid)
 {
 	DisablePlayerCheckpoint(playerid)
 	DisablePlayerRaceCheckpoint(playerid)
+
+	iter_add(allplayers, playerid)
 
 ##section OnPlayerConnect
 ###include "playername"
@@ -131,6 +137,7 @@ public OnPlayerDisconnect(playerid, reason)
 ###include "afk"
 ##endsection
 	iter_remove(players, playerid)
+	iter_remove(allplayers, playerid)
 
 	return 1
 }
