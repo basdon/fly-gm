@@ -61,6 +61,9 @@ new TXT_EMPTY[] = "_"
 //@seealso TXT_EMPTY
 stock const TXT_EMPTY_CONST[] = "_"
 
+//@summary {@code "%d"}
+new _pd[] = "%d"
+
 ##section varinit
 ###include "dialog"
 ###include "playername"

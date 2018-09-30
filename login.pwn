@@ -496,21 +496,21 @@ updatePlayerLastseen(playerid, isdisconnect)
 	static sessionquery1[] = "UPDATE usr SET l=UNIX_TIMESTAMP(),t=t+30,a=a+__________ WHERE i=__________"
 	static sessionquery2[] = "UPDATE ses SET e=UNIX_TIMESTAMP() WHERE i=__________"
 	static sessionquery3[] = "UPDATE usr SET t=(SELECT SUM(e-s) FROM ses WHERE u=__________) WHERE i=__________"
+	static spaces[] = "         "
 	if (userid[playerid] != -1 && sessionid[playerid] != -1) {
 		if (isdisconnect) {
-			format sessionquery3[71], 10, "%d", userid[playerid]
+			format sessionquery3[71], 10, _pd, userid[playerid]
 			new len = strlen(sessionquery3[71])
-			memcpy sessionquery3, "         ", 52 * 4, 9 * 4
+			memcpy sessionquery3, spaces, 52 * 4, 9 * 4
 			memcpy sessionquery3, sessionquery3[71], 51 * 4, len * 4
 			mysql_tquery 1, sessionquery3
 			sessionquery1[38] = '0'
 		}
-		memcpy sessionquery1, "         ", 46 * 4, 9 * 4
-		new playtime = getAndClearUncommittedPlaytime(playerid)
-		format sessionquery1[45], 10, "%d", playtime
+		memcpy sessionquery1, spaces, 46 * 4, 9 * 4
+		format sessionquery1[45], 10, _pd, getAndClearUncommittedPlaytime(playerid)
 		sessionquery1[45 + strlen(sessionquery1[45])] = ' '
-		format sessionquery1[64], 10, "%d", userid[playerid]
-		format sessionquery2[42], 10, "%d", sessionid[playerid]
+		format sessionquery1[64], 10, _pd, userid[playerid]
+		format sessionquery2[42], 10, _pd, sessionid[playerid]
 		mysql_tquery 1, sessionquery1
 		mysql_tquery 1, sessionquery2
 		sessionquery1[38] = '3'
