@@ -124,6 +124,7 @@ public OnPlayerConnect(playerid)
 ###include "spawn"
 ###include "timecyc"
 ###include "anticheat"
+###include "afk"
 ##endsection
 
 	return 1
@@ -246,6 +247,7 @@ public OnPlayerText(playerid, text[])
 onPlayerNowAfk(playerid)
 {
 ##section onPlayerNowAfk
+###include "afk"
 ###include "panel"
 ##endsection
 }
@@ -258,6 +260,7 @@ onPlayerNowAfk(playerid)
 onPlayerWasAfk(playerid)
 {
 ##section onPlayerWasAfk
+###include "afk"
 ###include "panel"
 ###include "timecyc"
 ##endsection
