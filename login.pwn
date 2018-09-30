@@ -308,6 +308,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 				""#ECOL_WARN"Passwords do not match, please try again", "Ok", ""
 			#return 1
 		}
+		GameTextForPlayer playerid, "~b~Making your account...", 0x800000, 3
 		new inputlen = strlen(inputtext)
 		if (inputlen > 128) {
 			inputtext[128] = 0
@@ -342,6 +343,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		if (!response) {
 			#return 1
 		}
+		GameTextForPlayer playerid, "~b~Verifying...", 0x800000, 3
 		new inputlen = strlen(inputtext)
 		if (inputlen > 128) {
 			inputtext[128] = 0
@@ -382,6 +384,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 				""#ECOL_WARN"Passwords do not match, please try again", "Ok", ""
 			#return 1
 		}
+		GameTextForPlayer playerid, "~b~Updating...", 0x800000, 3
 		new inputlen = strlen(inputtext)
 		if (inputlen > 128) {
 			inputtext[128] = 0
