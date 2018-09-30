@@ -30,8 +30,8 @@ varinit
 		""ECOL_DIALOG_TEXT"* confirm your password <<<<"
 	#define REGISTER_TEXT_OFFSET 33
 	#define MOD_REGTEXT(%0,%1,%2,%3,%4) memcpy(REGISTER_TEXT,%1,4*%0,4*%4);memcpy(REGISTER_TEXT,%3,4*%2,4*%4)
-	#define PREP_REGTEXT1 MOD_REGTEXT(125,"<<<<",162,"    ",4);MOD_REGTEXT(97,ECOL_INFO,130,ECOL_DIALOG_TEXT,8)
-	#define PREP_REGTEXT2 MOD_REGTEXT(162,"<<<<",125,"    ",4);MOD_REGTEXT(130,ECOL_INFO,97,ECOL_DIALOG_TEXT,8)
+	#define PREP_REGTEXT1 MOD_REGTEXT(125,fourleft,162,ninespaces,4);MOD_REGTEXT(97,ecol_info,130,ecol_dialog_text,8)
+	#define PREP_REGTEXT2 MOD_REGTEXT(162,fourleft,125,ninespaces,4);MOD_REGTEXT(130,ecol_info,97,ecol_dialog_text,8)
 
 	new LOGIN_CAPTION[] = "Login"
 	new LOGIN_TEXT[] =
@@ -52,12 +52,12 @@ varinit
 		""ECOL_DIALOG_TEXT"* choose a password <<<<\n"\
 		""ECOL_DIALOG_TEXT"* confirm your password <<<<"
 	#define PREP_GUESTREGTEXT(%0,%1,%2,%3,%4,%5) \
-		memcpy(GUESTREGISTER_TEXT,"<<<<",4*%0,16);\
-		memcpy(GUESTREGISTER_TEXT,"    ",4*%1,16);\
-		memcpy(GUESTREGISTER_TEXT,"    ",4*%2,16);\
-		memcpy(GUESTREGISTER_TEXT,ECOL_INFO,4*%3,32);\
-		memcpy(GUESTREGISTER_TEXT,ECOL_DIALOG_TEXT,4*%4,32);\
-		memcpy(GUESTREGISTER_TEXT,ECOL_DIALOG_TEXT,4*%5,32)
+		memcpy(GUESTREGISTER_TEXT,fourleft,4*%0,16);\
+		memcpy(GUESTREGISTER_TEXT,ninespaces,4*%1,16);\
+		memcpy(GUESTREGISTER_TEXT,ninespaces,4*%2,16);\
+		memcpy(GUESTREGISTER_TEXT,ecol_info,4*%3,32);\
+		memcpy(GUESTREGISTER_TEXT,ecol_dialog_text,4*%4,32);\
+		memcpy(GUESTREGISTER_TEXT,ecol_dialog_text,4*%5,32)
 	#define PREP_GUESTREGTEXT1 PREP_GUESTREGTEXT(59,92,129,0,64,97)
 	#define PREP_GUESTREGTEXT2 PREP_GUESTREGTEXT(92,59,129,64,0,97)
 	#define PREP_GUESTREGTEXT3 PREP_GUESTREGTEXT(129,92,59,97,64,0)
@@ -68,17 +68,18 @@ varinit
 		""ECOL_DIALOG_TEXT"* choose a new password <<<<\n"\
 		""ECOL_DIALOG_TEXT"* confirm your password <<<<"
 	#define PREP_CPTEXT(%0,%1,%2,%3,%4,%5) \
-		memcpy(CHANGEPASS_TEXT,"<<<<",4*%0,16);\
-		memcpy(CHANGEPASS_TEXT,"    ",4*%1,16);\
-		memcpy(CHANGEPASS_TEXT,"    ",4*%2,16);\
-		memcpy(CHANGEPASS_TEXT,ECOL_INFO,4*%3,32);\
-		memcpy(CHANGEPASS_TEXT,ECOL_DIALOG_TEXT,4*%4,32);\
-		memcpy(CHANGEPASS_TEXT,ECOL_DIALOG_TEXT,4*%5,32)
+		memcpy(CHANGEPASS_TEXT,fourleft,4*%0,16);\
+		memcpy(CHANGEPASS_TEXT,ninespaces,4*%1,16);\
+		memcpy(CHANGEPASS_TEXT,ninespaces,4*%2,16);\
+		memcpy(CHANGEPASS_TEXT,ecol_info,4*%3,32);\
+		memcpy(CHANGEPASS_TEXT,ecol_dialog_text,4*%4,32);\
+		memcpy(CHANGEPASS_TEXT,ecol_dialog_text,4*%5,32)
 	#define PREP_CHANGEPASSTEXT1 PREP_CPTEXT(38,75,112,0,43,80)
 	#define PREP_CHANGEPASSTEXT2 PREP_CPTEXT(75,38,112,43,0,80)
 	#define PREP_CHANGEPASSTEXT3 PREP_CPTEXT(112,75,38,80,43,0)
 
 	new ninespaces[] = "         "
+	new fourleft[] = "<<<<"
 }
 
 hook loop30s()
