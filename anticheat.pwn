@@ -5,6 +5,8 @@
 
 // see also dialog.pwn for dialog spoofing
 
+// TODO: check animation (swimming, parachute), in conjunction with z-coord and z-velocity
+
 #define FLOOD_DECLINE 3
 #define FLOOD_DIALOG 10
 #define FLOOD_LIMIT 100
