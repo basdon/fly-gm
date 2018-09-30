@@ -82,7 +82,7 @@ guests can register while playing:
 	[x] guest register message is broadcasted
 
 change password:
-	[ ] /changepassword is a working command for non-guest players only
+	[x] /changepassword is a working command for non-guest players only
 
 	-- first step
 	[x] correct caption
