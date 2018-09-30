@@ -7,6 +7,7 @@ pp = $(sed) -f $(ppfile)
 
 #FILE basdon
 #FILE natives
+#FILE sharedsymbols
 #FILE panel
 #FILE simpleiter
 #FILE game_sa
@@ -25,7 +26,7 @@ pp = $(sed) -f $(ppfile)
 #START
 #S2
 
-build: p/sharedsymbols.p p/dummies.p p/anticheat.p p/timecyc.p p/spawn.p p/dialog.p p/colors.p p/settings.p p/util.p p/login.p p/playername.p p/afk.p p/game_sa.p p/simpleiter.p p/panel.p p/natives.p p/basdon.p
+build: p/sharedsymbols.p p/dummies.p p/anticheat.p p/timecyc.p p/spawn.p p/dialog.p p/colors.p p/settings.p p/util.p p/login.p p/playername.p p/afk.p p/game_sa.p p/simpleiter.p p/panel.p p/sharedsymbols.p p/natives.p p/basdon.p
 	@echo.
 
 p/basdon.p: basdon.pwn $(ppfile)
@@ -33,6 +34,9 @@ p/basdon.p: basdon.pwn $(ppfile)
 
 p/natives.p: natives.pwn $(ppfile)
 	$(pp) natives.pwn>p/natives.p
+
+p/sharedsymbols.p: sharedsymbols.pwn $(ppfile)
+	$(pp) sharedsymbols.pwn>p/sharedsymbols.p
 
 p/panel.p: panel.pwn $(ppfile)
 	$(pp) panel.pwn>p/panel.p
@@ -85,8 +89,8 @@ file: Makefile mkmakefile.sed
 natives.pwn: ../../plugin/basdonfly.pwn
 	COPY /Y ..\..\plugin\basdonfly.pwn natives.pwn
 
-p/sharedsymbols.p: ../../plugin/sharedsymbols.h
-	COPY /Y ..\..\plugin\sharedsymbols.h p\sharedsymbols.p
+sharedsymbols.pwn: ../../plugin/sharedsymbols.h
+	COPY /Y ..\..\plugin\sharedsymbols.h sharedsymbols.pwn
 
 clean:
 	DEL p
