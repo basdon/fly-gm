@@ -485,7 +485,7 @@ spawnasguest:
 @@return:
 }
 
-//@summary Updates a player's last seen (usr and ses) and total time value in db
+//@summary Updates a player's last seen (usr and ses) and total/actual time value in db
 //@param playerid playerid to update
 //@param isdisconnect is this call made from {@link OnPlayerDisconnect}?
 //@remarks This function first checks if the player has a valid userid and sessionid
