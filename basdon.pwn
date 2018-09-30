@@ -77,6 +77,7 @@ main()
 {
 	if (!ValidateMaxPlayers(MAX_PLAYERS)) {
 		SendRconCommand "exit"
+		return
 	}
 
 	print "  Loaded gamemode basdon-fly "#VERSION"\n"
@@ -268,6 +269,7 @@ public OnGameModeInit()
 	if (!mysqlfile) {
 		printf "file mysql.dat not found"
 		SendRconCommand "exit"
+		return 1
 	}
 	new creds[100]
 	fblockread mysqlfile, creds
@@ -277,6 +279,7 @@ public OnGameModeInit()
 	if (!mysql_connect("127.0.0.1", creds[creds[0]], creds[creds[1]], creds[creds[2]])) {
 		printf "no db connection"
 		SendRconCommand "exit"
+		return 1
 	}
 	//mysql_set_charset "Windows-1252"
 
