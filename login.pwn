@@ -495,18 +495,14 @@ updatePlayerLastseen(playerid, isdisconnect)
 {
 	static sessionquery1[] = "UPDATE usr SET l=UNIX_TIMESTAMP(),t=t+30,a=a+__________ WHERE i=__________"
 	static sessionquery2[] = "UPDATE ses SET e=UNIX_TIMESTAMP() WHERE i=__________"
-	static sessionquery3[] = "UPDATE usr SET t=(SELECT SUM(e-s) FROM ses WHERE u=__________) WHERE i=__________"
-	static spaces[] = "         "
+	static sessionquery3[] = "UPDATE usr SET t=(SELECT SUM(e-s) FROM ses WHERE u=usr.i) WHERE i=__________"
 	if (userid[playerid] != -1 && sessionid[playerid] != -1) {
 		if (isdisconnect) {
-			format sessionquery3[71], 10, _pd, userid[playerid]
-			new len = strlen(sessionquery3[71])
-			memcpy sessionquery3, spaces, 52 * 4, 9 * 4
-			memcpy sessionquery3, sessionquery3[71], 51 * 4, len * 4
+			format sessionquery3[66], 10, _pd, userid[playerid]
 			mysql_tquery 1, sessionquery3
 			sessionquery1[38] = '0'
 		}
-		memcpy sessionquery1, spaces, 46 * 4, 9 * 4
+		memcpy sessionquery1, "         ", 46 * 4, 9 * 4
 		format sessionquery1[45], 10, _pd, getAndClearUncommittedPlaytime(playerid)
 		sessionquery1[45 + strlen(sessionquery1[45])] = ' '
 		format sessionquery1[64], 10, _pd, userid[playerid]
