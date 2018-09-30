@@ -37,6 +37,9 @@
 #define strcicmp(%0) strcmp(%0, .ignorecase=true)
 #define strcscmp(%0) strcmp(%0, .ignorecase=false)
 #define atoi strval
+#define FLOAT_PINF (Float:0x7F800000)
+#define FLOAT_NINF (Float:0xFF800000)
+#define FLOAT_NAN (Float:0xFF800001)
 
 // public symbols
 #define PUB_LOOP25 a // main
