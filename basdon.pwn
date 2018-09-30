@@ -47,6 +47,8 @@
 #define PUB_LOGIN_REGISTER_CB c // login
 #define PUB_LOGIN_LOGIN_CB d // login
 #define PUB_LOGIN_GUEST_CB e // login
+#define PUB_LOGIN_GUESTREGISTERUSERCHECK_CB f // login
+#define PUB_LOGIN_GUESTREGISTER_CB g // login
 
 //@summary Iter that contains {@b logged in (or guest)} players
 new Iter:players[MAX_PLAYERS]
@@ -230,6 +232,12 @@ public OnPlayerCommandText(playerid, cmdtext[])
 ##section OnPlayerCommandText
 ###include "login" // login needs to be first! (to block if not logged)
 ##endsection
+
+	switch (CommandHash(cmdtext)) {
+##section OnPlayerCommandTextCase
+###include "login"
+##endsection
+	}
 
 #ifndef PROD
 	printf "command '%s' hash: %d", cmdtext, CommandHash(cmdtext)

@@ -42,10 +42,27 @@ varinit
 
 	new NAMECHANGE_CAPTION[] = "Change name"
 	new NAMECHANGE_TEXT[] =
-		""ECOL_WARN"Invalid name.\n\n"ECOL_DIALOG_TEXT""\
+		""ECOL_WARN"Invalid name or name is taken (press tab).\n\n"ECOL_DIALOG_TEXT""\
 		"Enter your new name (3-20 length, 0-9a-zA-Z=()[]$@._).\n"\
 		"Names starting with @ are reserved for guests."
-	#define NAMECHANGE_TEXT_OFFSET 31
+	#define NAMECHANGE_TEXT_OFFSET 60
+
+	new GUESTREGISTER_TEXT[] =
+		""ECOL_DIALOG_TEXT"* choose a name (3-20 length, 0-9a-zA-Z=()[]$@._). <<<<\n"\
+		""ECOL_DIALOG_TEXT"* choose a password <<<<\n"\
+		""ECOL_DIALOG_TEXT"* confirm your password <<<<"
+	#define PREP_GUESTREGTEXT(%0,%1,%2,%3,%4,%5) \
+		memcpy(GUESTREGISTER_TEXT,"<<<<",4*%0,16);\
+		memcpy(GUESTREGISTER_TEXT,"    ",4*%1,16);\
+		memcpy(GUESTREGISTER_TEXT,"    ",4*%2,16);\
+		memcpy(GUESTREGISTER_TEXT,ECOL_INFO,4*%3,32);\
+		memcpy(GUESTREGISTER_TEXT,ECOL_DIALOG_TEXT,4*%4,32);\
+		memcpy(GUESTREGISTER_TEXT,ECOL_DIALOG_TEXT,4*%5,32)
+	#define PREP_GUESTREGTEXT1 PREP_GUESTREGTEXT(59,92,129,0,64,97)
+	#define PREP_GUESTREGTEXT2 PREP_GUESTREGTEXT(92,59,129,64,0,97)
+	#define PREP_GUESTREGTEXT3 PREP_GUESTREGTEXT(129,92,59,97,64,0)
+
+	new ninespaces[] = "         "
 }
 
 hook loop30s()
@@ -86,7 +103,7 @@ hook OnPlayerConnect(playerid)
 			return 0
 		}
 	}
-	checkUserExist playerid
+	checkUserExist playerid, ""#PUB_LOGIN_USERCHECK_CB""
 }
 
 hook OnPlayerRequestSpawn(playerid)
@@ -113,11 +130,30 @@ hook OnPlayerText(playerid, text[])
 	}
 }
 
+hook OnPlayerCommandTextCase(playerid)
+{
+	case 258772946: if (IsCommand(cmdtext, "/register")) if (isGuest(playerid)) {
+		if (sessionid[playerid] == -1 || userid[playerid] == -1) {
+			ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, REGISTER_CAPTION,
+				""#ECOL_WARN"You are not on an active guest session. Please reconnect if you want to register.", "Ok", ""
+			#return 1
+		}
+		PREP_GUESTREGTEXT1
+		ShowPlayerDialog playerid, DIALOG_GUESTREGISTER1, DIALOG_STYLE_INPUT, REGISTER_CAPTION, GUESTREGISTER_TEXT, "Next", "Cancel"
+		#return 1
+	} else {
+		SendClientMessage playerid, COL_WARN, #WARN"You're already registered!"
+		#return 1
+	}
+}
+
 hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 {
 	case DIALOG_REGISTER1: {
 		if (!response) {
-			renameAndSpawnAsGuest playerid
+			if (giveGuestName(playerid)) {
+				spawnAsGuest playerid
+			}
 			#return 1
 		}
 		new pwhash[PW_HASH_LENGTH]
@@ -205,27 +241,109 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			showLoginDialog playerid, .textoffset=LOGIN_TEXT_OFFSET
 			#return 1
 		}
-		new len = strlen(inputtext)
-		if (len < 3 || 20 < len || inputtext[0] == '@' || !SetPlayerName(playerid, inputtext)) {
+		if (!changePlayerNameFromInput(playerid, inputtext)) {
 			showNamechangeDialog playerid, .textoffset=0
-		} else {
-			userid[playerid] = -1
-			checkUserExist playerid
+			#return 1
 		}
+		userid[playerid] = -1
+		checkUserExist playerid, ""#PUB_LOGIN_USERCHECK_CB""
+		#return 1
+	}
+	case DIALOG_GUESTREGISTER1: {
+		if (!response) {
+			#return 1
+		}
+		if (!changePlayerNameFromInput(playerid, inputtext)) {
+			ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, REGISTER_CAPTION,
+				""#ECOL_WARN"Name rejected, it is either not valid or already taken (press tab). Try again.", "Ok", ""
+			#return 1
+		}
+		checkUserExist playerid, ""#PUB_LOGIN_GUESTREGISTERUSERCHECK_CB""
+		#return 1
+	}
+	case DIALOG_GUESTREGISTER2: {
+		if (!response) {
+			if (giveGuestName(playerid)) {
+				savePlayerName playerid
+			}
+			#return 1
+		}
+		new pwhash[PW_HASH_LENGTH]
+		SHA256_PassHash inputtext, /*salt*/REGISTER_CAPTION, pwhash, PW_HASH_LENGTH
+		SetPasswordConfirmData playerid, pwhash
+		PREP_GUESTREGTEXT3
+		ShowPlayerDialog playerid, DIALOG_GUESTREGISTER3, DIALOG_STYLE_PASSWORD, REGISTER_CAPTION, GUESTREGISTER_TEXT, "Next", "Cancel"
+		#return 1
+	}
+	case DIALOG_GUESTREGISTER3: {
+		if (!response) {
+			if (giveGuestName(playerid)) {
+				savePlayerName playerid
+			}
+			ResetPasswordConfirmData playerid
+			#return 1
+		}
+		new pwhash[PW_HASH_LENGTH]
+		SHA256_PassHash inputtext, /*salt*/REGISTER_CAPTION, pwhash, PW_HASH_LENGTH
+		if (!ValidatePasswordConfirmData(playerid, pwhash)) {
+			ShowPlayerDialog playerid, DIALOG_GUESTREGISTER4, DIALOG_STYLE_MSGBOX, REGISTER_CAPTION,
+				""#ECOL_WARN"Passwords do not match, please try again", "Ok", ""
+			#return 1
+		}
+		// max inputtext len seems to be 128
+		new inputlen = strlen(inputtext)
+		if (inputlen > 128) {
+			inputtext[128] = 0
+			inputlen = 128
+		}
+		new data[2 + 8 + 3 + (MAX_PLAYER_NAME * 3) + 3 + (128 * 3) + 4 + 1]
+		data[0] = 'i'
+		data[1] = '='
+		format data[2], 9, "%08x", userid[playerid]
+		data[10] = '&'
+		data[11] = 'n'
+		data[12] = '='
+		new idx = 13 + Urlencode(NAMEOF(playerid), NAMELEN(playerid), data[13])
+		data[idx++] = '&'
+		data[idx++] = 'p'
+		data[idx++] = '='
+		idx += Urlencode(inputtext, inputlen, data[idx])
+		data[idx++] = '&'
+		data[idx++] = 'g'
+		data[idx++] = '='
+		data[idx++] = '4'
+		data[idx++] = 0
+		HTTP(playerid, HTTP_POST, #API_URL"/api-change.php", data, #PUB_LOGIN_GUESTREGISTER_CB)
+		#return 1
+	}
+	case DIALOG_GUESTREGISTER4: {
+		PREP_GUESTREGTEXT2
+		ShowPlayerDialog playerid, DIALOG_GUESTREGISTER2, DIALOG_STYLE_PASSWORD, REGISTER_CAPTION, GUESTREGISTER_TEXT, "Next", "Cancel"
 		#return 1
 	}
 }
 
+//@summary Changes a player's name to the specified string, checking for validity (length, guest symbol) first
+//@param playerid the playerid that needs the new name
+//@param inputtext the name to change to
+//@returns {@code 0} if the input was not valid or name is already taken by a player
+changePlayerNameFromInput(playerid, inputtext[])
+{
+	new len = strlen(inputtext)
+	return 2 < len && len < 21 && inputtext[0] != '@' && SetPlayerName(playerid, inputtext);
+}
+
 //@summary Check if a user with username of {@param playerid} exists
 //@param playerid the player to check if their username is registered
-checkUserExist(playerid)
+//@param callback the callback that will be notified when api call reponds
+checkUserExist(playerid, callback[])
 {
 	GameTextForPlayer playerid, "~b~Contacting login server...", 0x800000, 3
 	new data[MAX_PLAYER_NAME * 3 + 4]
 	data[0] = 'u'
 	data[1] = '='
 	Urlencode(NAMEOF(playerid), NAMELEN(playerid), data[2])
-	HTTP(playerid, HTTP_POST, #API_URL"/api-user-exists.php", data, #PUB_LOGIN_USERCHECK_CB)
+	HTTP(playerid, HTTP_POST, #API_URL"/api-user-exists.php", data, callback)
 }
 
 //@summary Shows register dialog for player
@@ -271,6 +389,29 @@ showNamechangeDialog(playerid, textoffset=0)
 		"Cancel"
 }
 
+//@summary Report api err response to console
+//@param response_code response code from HTTP callback
+//@param data data from HTTP callback
+//@param errcode the errorcode associated with this error
+report_api_err(response_code, data[], errcode[])
+{
+	LIMITSTRLEN(data, 500)
+	printf "%s: %d, %s", errcode, response_code, data
+}
+
+//@summary Report api unknown response to console
+//@param data data from HTTP callback
+//@param errcode the errorcode associated with this error
+report_api_unknown_response(data[], errcode[])
+{
+	LIMITSTRLEN(data, 500)
+	printf "%s: %s", errcode, data
+}
+
+#define COMMON_CHECKRESPONSECODE(%0) \
+	hideGameTextForPlayer(playerid);if (response_code!=200){report_api_err(response_code,data,%0);goto err;}
+#define COMMON_UNKNOWNRESPONSE(%0) report_api_unknown_response(data,%0)
+
 //@summary Callback for usercheck done in {@link OnPlayerConnect}.
 //@param playerid player that has been checked
 //@param response_code http response code or one of the {@code HTTP_*} macros
@@ -278,13 +419,7 @@ showNamechangeDialog(playerid, textoffset=0)
 //@remarks PUB_LOGIN_USERCHECK_CB
 export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 {
-	hideGameTextForPlayer(playerid)
-	if (response_code != 200) {
-		LIMITSTRLEN(data, 500)
-		printf "E-U01: %d, %s", response_code, data
-		goto err
-	}
-
+	COMMON_CHECKRESPONSECODE("E-U01")
 	if (data[0] == 't') {
 		if (strlen(data) < 6) {
 			printf "E-U02: %d", strlen(data)
@@ -294,20 +429,19 @@ export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 		showLoginDialog playerid, .textoffset=LOGIN_TEXT_OFFSET
 		return
 	}
-
 	if (data[0] == 'f') {
 		showRegisterDialog playerid, .textoffset=REGISTER_TEXT_OFFSET
 		return
 	}
-
-	LIMITSTRLEN(data, 500)
-	printf "E-U03: %s", data
+	COMMON_UNKNOWNRESPONSE("E-U03")
 err:
 	ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
 		""#ECOL_WARN"An occurred, you will be spawned as a guest", "Ok", ""
 	SendClientMessage playerid, COL_WARN, WARN"An error occured while contacting the login server."
 	SendClientMessage playerid, COL_SAMP_GREEN, "You will be spawned as a guest."
-	renameAndSpawnAsGuest playerid
+	if (giveGuestName(playerid)) {
+		spawnAsGuest playerid
+	}
 }
 
 //@summary Callback for register call
@@ -317,13 +451,7 @@ err:
 //@remarks PUB_LOGIN_REGISTER_CB
 export PUB_LOGIN_REGISTER_CB(playerid, response_code, data[])
 {
-	hideGameTextForPlayer(playerid)
-	if (response_code != 200) {
-		LIMITSTRLEN(data, 500)
-		printf "E-U04: %d, %s", response_code, data
-		goto err
-	}
-
+	COMMON_CHECKRESPONSECODE("E-U04")
 	if (data[0] == 's') {
 		if (strlen(data) < 11) {
 			printf "E-U05: %d", strlen(data)
@@ -337,21 +465,20 @@ export PUB_LOGIN_REGISTER_CB(playerid, response_code, data[])
 		SendClientMessageToAll COL_JOIN, str
 		return
 	}
-
 	if (data[0] == 'e') {
 		LIMITSTRLEN(data, 500)
 		printf "E-U06: %s", data[1]
 		goto err
 	}
-
-	LIMITSTRLEN(data, 500)
-	printf "E-U07: %s", data
+	COMMON_UNKNOWNRESPONSE("E-U07")
 err:
 	ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
 		""#ECOL_WARN"An occurred, you will be spawned as a guest", "Ok", ""
 	SendClientMessage playerid, COL_WARN, WARN"An error occured while registering."
 	SendClientMessage playerid, COL_SAMP_GREEN, "You will be spawned as a guest."
-	renameAndSpawnAsGuest playerid
+	if (giveGuestName(playerid)) {
+		spawnAsGuest playerid
+	}
 }
 
 //@summary Callback for login call
@@ -361,13 +488,7 @@ err:
 //@remarks PUB_LOGIN_LOGIN_CB
 export PUB_LOGIN_LOGIN_CB(playerid, response_code, data[])
 {
-	hideGameTextForPlayer(playerid)
-	if (response_code != 200) {
-		LIMITSTRLEN(data, 500)
-		printf "E-U08: %d, %s", response_code, data
-		goto err
-	}
-
+	COMMON_CHECKRESPONSECODE("E-U08")
 	if (data[0] == 's') {
 		if (strlen(data) < 11) {
 			printf "E-U09: %d", strlen(data)
@@ -381,7 +502,6 @@ export PUB_LOGIN_LOGIN_CB(playerid, response_code, data[])
 		SendClientMessageToAll COL_JOIN, str
 		return
 	}
-
 	if (data[0] == 'f') {
 		if ((failedlogins{playerid} += 2) > (MAX_LOGIN_ATTEMPTS - 1) * 2) {
 			// no KickDelayed because no OnPlayerUpdate in class select
@@ -392,14 +512,12 @@ export PUB_LOGIN_LOGIN_CB(playerid, response_code, data[])
 		showLoginDialog playerid, .textoffset=0
 		return
 	}
-
 	LIMITSTRLEN(data, 500)
 	if (data[0] == 'e') {
 		printf "E-U0A: %s", data[1]
 	} else {
 		printf "E-U0B: %s", data
 	}
-
 err:
 	ShowPlayerDialog playerid, DIALOG_LOGIN_ERROR, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
 		""#ECOL_WARN"An error occurred, please try again", "Ok", ""
@@ -412,14 +530,8 @@ err:
 //@remarks PUB_LOGIN_GUEST_CB
 export PUB_LOGIN_GUEST_CB(playerid, response_code, data[])
 {
-	hideGameTextForPlayer(playerid)
 	loginPlayer playerid, LOGGED_GUEST
-	if (response_code != 200) {
-		LIMITSTRLEN(data, 500)
-		printf "E-U0E: %d, %s", response_code, data
-		goto err
-	}
-
+	COMMON_CHECKRESPONSECODE("E-U0E")
 	if (data[0] == 's') {
 		if (strlen(data) < 11) {
 			printf "E-U0F: %d", strlen(data)
@@ -434,29 +546,96 @@ export PUB_LOGIN_GUEST_CB(playerid, response_code, data[])
 			""#INFO"You are now playing as a guest. You can use /register at any time to save your stats."
 		return
 	}
-
 	LIMITSTRLEN(data, 500)
 	if (data[0] == 'e') {
 		printf "E-U10: %s", data[1]
 	} else {
 		printf "E-U11: %s", data
 	}
-
 err:
 	SendClientMessage playerid, COL_WARN, #WARN"An error occurred while creating a guest session."
 	SendClientMessage playerid, COL_WARN, #WARN"You can play, but you won't be able to save your stats later."
 }
 
-//@summary Renames a player to give a guest name and spawns them as {@code LOGGED_GUEST}
-//@param playerid the player to spawn as guest
+//@summary Callback for usercheck done after renaming while guest is registering from existing guest session.
+//@param playerid player that has been checked
+//@param response_code http response code or one of the {@code HTTP_*} macros
+//@param data response data
+//@remarks PUB_LOGIN_GUESTREGISTERUSERCHECK_CB
+export PUB_LOGIN_GUESTREGISTERUSERCHECK_CB(playerid, response_code, data[])
+{
+	COMMON_CHECKRESPONSECODE("E-U12")
+	if (data[0] == 't') {
+		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
+			""#ECOL_WARN"This name is registered, please retry with a different name.", "Ok", ""
+		goto giveguestname
+	}
+	if (data[0] == 'f') {
+		PREP_GUESTREGTEXT2
+		ShowPlayerDialog playerid, DIALOG_GUESTREGISTER2, DIALOG_STYLE_PASSWORD, REGISTER_CAPTION, GUESTREGISTER_TEXT, "Next", "Cancel"
+		return
+	}
+	COMMON_UNKNOWNRESPONSE("E-U13")
+err:
+	ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
+		""#ECOL_WARN"An occurred, please try again later.", "Ok", ""
+giveguestname:
+	if (giveGuestName(playerid)) {
+		savePlayerName playerid
+	}
+}
+
+//@summary Callback after guest registers from a guest session
+//@param playerid player that wanted to register
+//@param response_code http response code or one of the {@code HTTP_*} macros
+//@param data response data
+//@remarks PUB_LOGIN_GUESTREGISTER_CB
+export PUB_LOGIN_GUESTREGISTER_CB(playerid, response_code, data[])
+{
+	COMMON_CHECKRESPONSECODE("E-U14")
+	if (data[0] == 's') {
+		loggedstatus[playerid] = LOGGED_IN
+		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
+			"Your account has been registered and your stats are saved, welcome!", "Ok", ""
+		new str[MAX_PLAYER_NAME + 6 + 46 + 1]
+		format str, sizeof(str), "Guest %s[%d] just registered their account, welcome!", NAMEOF(playerid), playerid
+		SendClientMessageToAll COL_JOIN, str
+		return
+	}
+	COMMON_UNKNOWNRESPONSE("E-U15")
+err:
+	ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
+		""#ECOL_WARN"An occurred, please try again later.", "Ok", ""
+	if (giveGuestName(playerid)) {
+		savePlayerName playerid
+	}
+}
+
+//@summary Saves a player's name in db
+//@param playerid player to save the name of
+savePlayerName(playerid)
+{
+	#assert MAX_PLAYER_NAME == 24
+	static query[] = "UPDATE usr SET n='_________________________ WHERE i=__________"
+	memcpy query, ninespaces, 53 * 4, 9 * 4
+	format query[52], 10, _pd, userid[playerid]
+	memcpy query, "                       ", 20 * 4, 23 * 4
+	memcpy query, NAMEOF(playerid), 18 * 4, NAMELEN(playerid) * 4
+	query[18 + NAMELEN(playerid)] = '\'';
+	mysql_tquery 1, query
+}
+
+//@summary Renames a player to a guest name
+//@param playerid the player to give a guest name to
+//@returns {@code 0} if it was unsuccessful, which means the player is getting kicked
 //@remarks player will be kicked when the name {@code =playername} is already taken and it failed to give a random name 5 times
-renameAndSpawnAsGuest(playerid)
+giveGuestName(playerid)
 {
 	new newname[MAX_PLAYER_NAME]
 	newname[0] = '@'
 	memcpy(newname, NAMEOF(playerid), 4, NAMELEN(playerid) * 4 + 4)
 	if (SetPlayerName(playerid, newname) == 1) {
-		goto spawnasguest
+		return 1
 	}
 	new guard = 5;
 	while (guard-- > 0) {
@@ -464,14 +643,19 @@ renameAndSpawnAsGuest(playerid)
 			newname[i] = 'a' + random('z' - 'a' + 1)
 		}
 		if (SetPlayerName(playerid, newname) == 1) {
-			goto spawnasguest
+			return 1
 		}
 	}
 	print "F-U0C"
 	SendClientMessage playerid, COL_WARN, WARN"Fatal error, please reconnect!"
 	KickDelayed playerid
-	goto @@return // just returning here gives 'unreachable code' warning for next line so yeah...
-spawnasguest:
+	return 0
+}
+
+//@summary Creates a guest session for player and spawns them as guest.
+//@param playerid the player to spawn as guest
+spawnAsGuest(playerid)
+{
 	GameTextForPlayer playerid, "~b~Creating guest session...", 0x800000, 3
 	new data[2 + (MAX_PLAYER_NAME * 3) + 3 + (128 * 3) + 3 + 15 + 1]
 	data[0] = 'u'
@@ -482,7 +666,6 @@ spawnasguest:
 	data[idx++] = '='
 	GetPlayerIp playerid, data[idx], 16
 	HTTP(playerid, HTTP_POST, #API_URL"/api-guest.php", data, #PUB_LOGIN_GUEST_CB)
-@@return:
 }
 
 //@summary Updates a player's last seen (usr and ses) and total/actual time value in db
@@ -498,13 +681,15 @@ updatePlayerLastseen(playerid, isdisconnect)
 	static sessionquery3[] = "UPDATE usr SET t=(SELECT SUM(e-s) FROM ses WHERE u=usr.i) WHERE i=__________"
 	if (userid[playerid] != -1 && sessionid[playerid] != -1) {
 		if (isdisconnect) {
+			memcpy sessionquery3, ninespaces, 67 * 4, 9 * 4
 			format sessionquery3[66], 10, _pd, userid[playerid]
 			mysql_tquery 1, sessionquery3
 			sessionquery1[38] = '0'
 		}
-		memcpy sessionquery1, "         ", 46 * 4, 9 * 4
+		memcpy sessionquery1, ninespaces, 46 * 4, 9 * 4
 		format sessionquery1[45], 10, _pd, getAndClearUncommittedPlaytime(playerid)
 		sessionquery1[45 + strlen(sessionquery1[45])] = ' '
+		memcpy sessionquery1, ninespaces, 65 * 4, 9 * 4
 		format sessionquery1[64], 10, _pd, userid[playerid]
 		format sessionquery2[42], 10, _pd, sessionid[playerid]
 		mysql_tquery 1, sessionquery1
