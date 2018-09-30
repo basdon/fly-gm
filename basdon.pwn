@@ -215,6 +215,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 ##section OnPlayerCommandText
 ###include "login" // login needs to be first! (to block if not logged)
 ##endsection
+
+#ifndef PROD
+	printf "command '%s' hash: %d", cmdtext, CommandHash(cmdtext)
+#endif
 	return 0
 }
 
