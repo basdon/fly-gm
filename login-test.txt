@@ -1,0 +1,106 @@
+
+// vim: set ts=8 noexpandtab:
+
+onjoin:
+        --- check name
+	[x] api call to check if name is registered
+	[x] if api call fails, give user guest name >guest session
+	[x] if name registered >login box
+	[x] if not registered >register box
+
+	--- login box
+	[x] show pwbox to enter password
+	[x] cancel button is >change name
+	[x] confirm button does api call to check pw
+	[x] on api call failure, show error dialog and >login box
+	[x] if pw no match >login box
+	[x] after too many failed logins, kick
+	[x] if pw match, give userid sessionid and login player
+
+	--- register box
+	[x] show pwbox to enter pw to register
+	[x] cancel button is >guest session
+	[x] choosing password shows confirm password with correct hightlight
+	[x] confirm dialog has actual cancel button
+	[x] on cancel, go back to >register box
+	[x] on confirm, check if passwords are the same
+	[x] if not the same, show warning and >register box
+	[x] if same, perform create user api call
+	[x] if call fails >guest session
+	[x] if call works give user their id/session and log in
+
+	--- change name
+	[x] shows input box asking for new name
+	[x] cancel goes back to >login box
+	[x] confirm checks if valid name entered
+	[x] if not valid >change name (with error msg)
+	[x] if valid, change name and >check name
+
+	--- guest session
+	[x] api call to get guest account/session
+	[x] on fail, just spawn without valid session
+	[x] on success, show message saying user can /register
+	[x] on success, give user id and session and spawn
+
+guests can register while playing:
+	[x] /register is a working command for guests only IF they have successful guest session
+
+	--- ask name change
+	[x] is input box
+	[x] correct step highlighted
+	[x] pressing cancel aborts
+	[x] confirming checks if the entered username is valid
+	[x] if username not valid, show dialog and abort
+	[x] confirming changes player name and checks if username exists
+	[x] if entered username exists, user is given guest name, name saved to db, error dialog shows, abort
+	[x] if error happened on user check, user is given guest name, name saved to db, error dialog shown and abort
+	[x] proceed to next step if all checks are positive
+
+	--- ask password
+	[x] is password box
+	[x] correct step highlighted
+	[x] clicking cancel gives user guest name again, name saved to db
+	[x] proceed to next step works
+
+	--- ask confirm password
+	[x] is password box
+	[x] correct step highlighted
+	[x] clicking cancel gives user guest name again, name saved to db
+	[x] confirming checks if password matches with previously entered one
+	[x] if not match, show error dialog, then previous step again as pwbox with correct step highlighted
+	[x] if match, api call
+	[x] if upgrade fails, give user guest name, name saved to db, error dialog, abort
+	[x] if upgrade works, db user should have new name, password, group
+	[x] user is set to logged in
+	[x] guest register message is broadcasted
+
+change password:
+	[ ] /changepassword is a working command for non-guest players only
+
+	-- first step
+	[ ] asks for current password
+	[ ] is password box
+	[ ] correct step highlighted
+	[ ] on cancel, aborts
+	[ ] on confirm, do api call to check password validity
+	[ ] if password is not valid, show error dialog and abort
+	[ ] if password is valid, continue
+
+	--- second step
+	[ ] asks for new password
+	[ ] is password box
+	[ ] correct step highlighted
+	[ ] on cancel, aborts
+	[ ] on confirm, goes to next step
+
+	-- third step
+	[ ] ask to confirm password
+	[ ] is password box
+	[ ] correct step highlighted
+	[ ] on cancel, delete saved cache and aborts
+	[ ] on confirm, check if password matches with one from previous step
+	[ ] if no match, show error dialog and go back to second step again as pwbox with correct step highlighted
+	[ ] if match, api call to change pw
+	[ ] if api call fails, show error dialog and abort
+	[ ] if api call succeeds, show success dialog
+
