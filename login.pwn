@@ -62,6 +62,22 @@ varinit
 	#define PREP_GUESTREGTEXT2 PREP_GUESTREGTEXT(92,59,129,64,0,97)
 	#define PREP_GUESTREGTEXT3 PREP_GUESTREGTEXT(129,92,59,97,64,0)
 
+	new CHANGEPASS_CAPTION[] = "Change password"
+	new CHANGEPASS_TEXT[] =
+		""ECOL_DIALOG_TEXT"* enter your current password <<<<\n"\
+		""ECOL_DIALOG_TEXT"* choose a new password <<<<\n"\
+		""ECOL_DIALOG_TEXT"* confirm your password <<<<"
+	#define PREP_CPTEXT(%0,%1,%2,%3,%4,%5) \
+		memcpy(CHANGEPASS_TEXT,"<<<<",4*%0,16);\
+		memcpy(CHANGEPASS_TEXT,"    ",4*%1,16);\
+		memcpy(CHANGEPASS_TEXT,"    ",4*%2,16);\
+		memcpy(CHANGEPASS_TEXT,ECOL_INFO,4*%3,32);\
+		memcpy(CHANGEPASS_TEXT,ECOL_DIALOG_TEXT,4*%4,32);\
+		memcpy(CHANGEPASS_TEXT,ECOL_DIALOG_TEXT,4*%5,32)
+	#define PREP_CHANGEPASSTEXT1 PREP_CPTEXT(38,75,112,0,43,80)
+	#define PREP_CHANGEPASSTEXT2 PREP_CPTEXT(75,38,112,43,0,80)
+	#define PREP_CHANGEPASSTEXT3 PREP_CPTEXT(112,75,38,80,43,0)
+
 	new ninespaces[] = "         "
 }
 
@@ -145,12 +161,18 @@ hook OnPlayerCommandTextCase(playerid)
 		SendClientMessage playerid, COL_WARN, #WARN"You're already registered!"
 		#return 1
 	}
+	case -1292722118: if (!isGuest(playerid) && IsCommand(cmdtext, "/changepassword")) {
+		PREP_CHANGEPASSTEXT1
+		ShowPlayerDialog playerid, DIALOG_CHANGEPASS1, DIALOG_STYLE_PASSWORD, CHANGEPASS_CAPTION, CHANGEPASS_TEXT, "Next", "Cancel"
+		#return 1
+	}
 }
 
 hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 {
 	case DIALOG_REGISTER1: {
 		if (!response) {
+			ResetPasswordConfirmData playerid
 			if (giveGuestName(playerid)) {
 				spawnAsGuest playerid
 			}
@@ -182,7 +204,6 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			#return 1
 		}
 		GameTextForPlayer playerid, "~b~Making your account...", 0x800000, 3
-		// max inputtext len seems to be 128
 		new inputlen = strlen(inputtext)
 		if (inputlen > 128) {
 			inputtext[128] = 0
@@ -208,7 +229,6 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			#return 1
 		}
 		GameTextForPlayer playerid, "~b~Logging in...", 0x800000, 3
-		// max inputtext len seems to be 128
 		new inputlen = strlen(inputtext)
 		if (inputlen > 128) {
 			inputtext[128] = 0
@@ -260,6 +280,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 	}
 	case DIALOG_GUESTREGISTER2: {
 		if (!response) {
+			ResetPasswordConfirmData playerid
 			if (giveGuestName(playerid)) {
 				savePlayerName playerid
 			}
@@ -274,10 +295,10 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 	}
 	case DIALOG_GUESTREGISTER3: {
 		if (!response) {
+			ResetPasswordConfirmData playerid
 			if (giveGuestName(playerid)) {
 				savePlayerName playerid
 			}
-			ResetPasswordConfirmData playerid
 			#return 1
 		}
 		new pwhash[PW_HASH_LENGTH]
@@ -287,7 +308,6 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 				""#ECOL_WARN"Passwords do not match, please try again", "Ok", ""
 			#return 1
 		}
-		// max inputtext len seems to be 128
 		new inputlen = strlen(inputtext)
 		if (inputlen > 128) {
 			inputtext[128] = 0
@@ -316,6 +336,71 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 	case DIALOG_GUESTREGISTER4: {
 		PREP_GUESTREGTEXT2
 		ShowPlayerDialog playerid, DIALOG_GUESTREGISTER2, DIALOG_STYLE_PASSWORD, REGISTER_CAPTION, GUESTREGISTER_TEXT, "Next", "Cancel"
+		#return 1
+	}
+	case DIALOG_CHANGEPASS1: {
+		if (!response) {
+			#return 1
+		}
+		new inputlen = strlen(inputtext)
+		if (inputlen > 128) {
+			inputtext[128] = 0
+			inputlen = 128
+		}
+		new data[2 + 8 + 3 + (128 * 3) + 1]
+		data[0] = 'i'
+		data[1] = '='
+		format data[2], 9, "%08x", userid[playerid]
+		data[10] = '&'
+		data[11] = 'p'
+		data[12] = '='
+		Urlencode(inputtext, inputlen, data[13])
+		HTTP(playerid, HTTP_POST, #API_URL"/api-checkpass.php", data, #PUB_LOGIN_CHANGEPASS_CHECK_CB)
+		#return 1
+	}
+	case DIALOG_CHANGEPASS2: {
+		if (!response) {
+			ResetPasswordConfirmData playerid
+			#return 1
+		}
+		new pwhash[PW_HASH_LENGTH]
+		SHA256_PassHash inputtext, /*salt*/REGISTER_CAPTION, pwhash, PW_HASH_LENGTH
+		SetPasswordConfirmData playerid, pwhash
+		PREP_CHANGEPASSTEXT3
+		ShowPlayerDialog playerid, DIALOG_CHANGEPASS3, DIALOG_STYLE_PASSWORD, CHANGEPASS_CAPTION, CHANGEPASS_TEXT, "Next", "Cancel"
+		#return 1
+	}
+	case DIALOG_CHANGEPASS3: {
+		if (!response) {
+			ResetPasswordConfirmData playerid
+			#return 1
+		}
+		new pwhash[PW_HASH_LENGTH]
+		SHA256_PassHash inputtext, /*salt*/REGISTER_CAPTION, pwhash, PW_HASH_LENGTH
+		if (!ValidatePasswordConfirmData(playerid, pwhash)) {
+			ShowPlayerDialog playerid, DIALOG_CHANGEPASS4, DIALOG_STYLE_MSGBOX, REGISTER_CAPTION,
+				""#ECOL_WARN"Passwords do not match, please try again", "Ok", ""
+			#return 1
+		}
+		new inputlen = strlen(inputtext)
+		if (inputlen > 128) {
+			inputtext[128] = 0
+			inputlen = 128
+		}
+		new data[2 + 8 + 3 + (128 * 3) + 1]
+		data[0] = 'i'
+		data[1] = '='
+		format data[2], 9, "%08x", userid[playerid]
+		data[10] = '&'
+		data[11] = 'p'
+		data[12] = '='
+		Urlencode(inputtext, inputlen, data[13])
+		HTTP(playerid, HTTP_POST, #API_URL"/api-change.php", data, #PUB_LOGIN_CHANGEPASS_CHANGE_CB)
+		#return 1
+	}
+	case DIALOG_CHANGEPASS4: {
+		PREP_CHANGEPASSTEXT2
+		ShowPlayerDialog playerid, DIALOG_CHANGEPASS2, DIALOG_STYLE_PASSWORD, CHANGEPASS_CAPTION, CHANGEPASS_TEXT, "Next", "Cancel"
 		#return 1
 	}
 }
@@ -605,6 +690,48 @@ err:
 	if (giveGuestName(playerid)) {
 		savePlayerName playerid
 	}
+}
+
+//@summary Callback after checking a player's password during change password process
+//@param playerid player that wanted to change password
+//@param response_code http response code or one of the {@code HTTP_*} macros
+//@param data response data
+//@remarks PUB_LOGIN_CHANGEPASS_CHECK_CB
+export PUB_LOGIN_CHANGEPASS_CHECK_CB(playerid, response_code, data[])
+{
+	COMMON_CHECKRESPONSECODE("E-U16")
+	if (data[0] == 't') {
+		PREP_CHANGEPASSTEXT2
+		ShowPlayerDialog playerid, DIALOG_CHANGEPASS2, DIALOG_STYLE_PASSWORD, CHANGEPASS_CAPTION, CHANGEPASS_TEXT, "Next", "Cancel"
+		return
+	}
+	if (data[0] == 'f') {
+		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
+			""#ECOL_WARN"Incorrect password", "Ok", ""
+		return
+	}
+	COMMON_UNKNOWNRESPONSE("E-U17")
+err:
+	ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
+		""#ECOL_WARN"An occurred, please try again later.", "Ok", ""
+}
+
+//@summary Callback after call to change a player's password
+//@param playerid player that wanted to change password
+//@param response_code http response code or one of the {@code HTTP_*} macros
+//@param data response data
+//@remarks PUB_LOGIN_CHANGEPASS_CHANGE_CB
+export PUB_LOGIN_CHANGEPASS_CHANGE_CB(playerid, response_code, data[])
+{
+	COMMON_CHECKRESPONSECODE("E-U18")
+	if (data[0] == 's') {
+		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, CHANGEPASS_CAPTION, "Password changed!", "Ok", ""
+		return
+	}
+	COMMON_UNKNOWNRESPONSE("E-U19")
+err:
+	ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
+		""#ECOL_WARN"An occurred, please try again later.", "Ok", ""
 }
 
 //@summary Saves a player's name in db

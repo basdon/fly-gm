@@ -9,6 +9,7 @@ onjoin:
 	[x] if not registered >register box
 
 	--- login box
+	[x] correct caption
 	[x] show pwbox to enter password
 	[x] cancel button is >change name
 	[x] confirm button does api call to check pw
@@ -18,11 +19,12 @@ onjoin:
 	[x] if pw match, give userid sessionid and login player
 
 	--- register box
+	[x] correct caption
 	[x] show pwbox to enter pw to register
 	[x] cancel button is >guest session
 	[x] choosing password shows confirm password with correct hightlight
 	[x] confirm dialog has actual cancel button
-	[x] on cancel, go back to >register box
+	[x] on cancel, delete saved cache and go back to >register box
 	[x] on confirm, check if passwords are the same
 	[x] if not the same, show warning and >register box
 	[x] if same, perform create user api call
@@ -30,6 +32,7 @@ onjoin:
 	[x] if call works give user their id/session and log in
 
 	--- change name
+	[x] correct caption
 	[x] shows input box asking for new name
 	[x] cancel goes back to >login box
 	[x] confirm checks if valid name entered
@@ -46,6 +49,7 @@ guests can register while playing:
 	[x] /register is a working command for guests only IF they have successful guest session
 
 	--- ask name change
+	[x] correct caption
 	[x] is input box
 	[x] correct step highlighted
 	[x] pressing cancel aborts
@@ -57,12 +61,15 @@ guests can register while playing:
 	[x] proceed to next step if all checks are positive
 
 	--- ask password
+	[x] correct caption
 	[x] is password box
 	[x] correct step highlighted
+	[x] on cancel, delete saved cache and abort
 	[x] clicking cancel gives user guest name again, name saved to db
 	[x] proceed to next step works
 
 	--- ask confirm password
+	[x] correct caption
 	[x] is password box
 	[x] correct step highlighted
 	[x] clicking cancel gives user guest name again, name saved to db
@@ -78,29 +85,33 @@ change password:
 	[ ] /changepassword is a working command for non-guest players only
 
 	-- first step
-	[ ] asks for current password
-	[ ] is password box
-	[ ] correct step highlighted
-	[ ] on cancel, aborts
-	[ ] on confirm, do api call to check password validity
-	[ ] if password is not valid, show error dialog and abort
-	[ ] if password is valid, continue
+	[x] correct caption
+	[x] asks for current password
+	[x] is password box
+	[x] correct step highlighted
+	[x] on cancel, aborts
+	[x] on confirm, do api call to check password validity
+	[x] on api error, abort
+	[x] if password is not valid, show error dialog and abort
+	[x] if password is valid, continue
 
 	--- second step
-	[ ] asks for new password
-	[ ] is password box
-	[ ] correct step highlighted
-	[ ] on cancel, aborts
-	[ ] on confirm, goes to next step
+	[x] correct caption
+	[x] asks for new password
+	[x] is password box
+	[x] correct step highlighted
+	[x] on cancel, delete saved cache and aborts
+	[x] on confirm, goes to next step
 
 	-- third step
-	[ ] ask to confirm password
-	[ ] is password box
-	[ ] correct step highlighted
-	[ ] on cancel, delete saved cache and aborts
-	[ ] on confirm, check if password matches with one from previous step
-	[ ] if no match, show error dialog and go back to second step again as pwbox with correct step highlighted
-	[ ] if match, api call to change pw
-	[ ] if api call fails, show error dialog and abort
-	[ ] if api call succeeds, show success dialog
+	[x] correct caption
+	[x] ask to confirm password
+	[x] is password box
+	[x] correct step highlighted
+	[x] on cancel, delete saved cache and aborts
+	[x] on confirm, check if password matches with one from previous step
+	[x] if no match, show error dialog and go back to second step again as pwbox with correct step highlighted
+	[x] if match, api call to change pw
+	[x] if api call fails, show error dialog and abort
+	[x] if api call succeeds, show success dialog
 
