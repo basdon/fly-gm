@@ -4,6 +4,7 @@
 /^\s*#allowmemcpywitharrayindexer$/ {
 	N
 	s/^.*\n//
+	i
 	bskipmemcpycheck
 }
 s/^\s*\(memcpy[ \|(]\?[^,]\+\[\)/#error possible memcpy bug (#allowmemcpywitharrayindexer to suppress): \1/
