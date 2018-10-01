@@ -65,6 +65,10 @@ hook OnPlayerRequestClass(playerid, classid)
 
 hook OnPlayerRequestSpawn(playerid)
 {
+	if (playerclass[playerid] == CLASS_TRUCKER) {
+		SendClientMessage playerid, COL_WARN, WARN"Trucker class is not available yet."
+		#return 0
+	}
 	hideGameTextForPlayer(playerid)
 	#allowreturn
 	return 1
