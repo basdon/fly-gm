@@ -494,8 +494,8 @@ report_api_unknown_response(data[], errcode[])
 	printf "%s: %s", errcode, data
 }
 
-#define COMMON_CHECKRESPONSECODE(%0) \
-	hideGameTextForPlayer(playerid);if (response_code!=200){report_api_err(response_code,data,%0);goto err;}
+#define COMMON_CHECKRESPONSECODE_NOHIDETEXT(%0) if(response_code!=200){report_api_err(response_code,data,%0);goto err;}
+#define COMMON_CHECKRESPONSECODE(%0) hideGameTextForPlayer(playerid);COMMON_CHECKRESPONSECODE_NOHIDETEXT(%0)
 #define COMMON_UNKNOWNRESPONSE(%0) report_api_unknown_response(data,%0)
 
 //@summary Callback for usercheck done in {@link OnPlayerConnect}.
@@ -615,8 +615,9 @@ err:
 //@remarks PUB_LOGIN_GUEST_CB
 export PUB_LOGIN_GUEST_CB(playerid, response_code, data[])
 {
+	hideGameTextForPlayer(playerid)
 	loginPlayer playerid, LOGGED_GUEST
-	COMMON_CHECKRESPONSECODE("E-U0E")
+	COMMON_CHECKRESPONSECODE_NOHIDETEXT("E-U0E")
 	if (data[0] == 's') {
 		if (strlen(data) < 11) {
 			printf "E-U0F: %d", strlen(data)
