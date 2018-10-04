@@ -50,10 +50,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	showndialog[playerid] = -1
 }
 
+//@summary Sets the current dialog transaction for a player to {@param transactionid}
+//@param playerid the playerid that needs the dialogtransaction
+//@param transactionid the transactionid to set
+//@remarks Will log a warning (W-D01) if a previous, different dialog transaction was active
 ensureDialogTransaction(playerid, transactionid)
 {
-	if (dialogtransaction[playerid]) {
-		printf "E-D01: %d, %d", transactionid, dialogtransaction[playerid]
+	if (dialogtransaction[playerid] && dialogtransaction[playerid] != transactionid) {
+		printf "W-D01: %d, %d", transactionid, dialogtransaction[playerid]
 		return
 	}
 	dialogtransaction[playerid] = transactionid
@@ -70,6 +74,7 @@ ensureDialogTransaction(playerid, transactionid)
 //@param transactionid transaction id of this dialog (optional={@param dialogid}) (use {@code TRANSACTION_OVERRIDE} to override any running dialog transaction)
 //@returns info see {@link ShowPlayerDialog}
 //@remarks info see {@link ShowPlayerDialog}
+//@remarks A warning (W-D02) will be logged if {@code TRANSACTION_OVERRIDE} is used and it actually overrides current transaction for player
 ShowPlayerDialogSafe(playerid, dialogid, style, caption[], info[], button1[], button2[], transactionid=-1)
 {
 	if (transactionid == -1) {
@@ -82,6 +87,7 @@ ShowPlayerDialogSafe(playerid, dialogid, style, caption[], info[], button1[], bu
 		}
 		printf "W-D02: %d", dialogtransaction[playerid]
 	}
+	dialogtransaction[playerid] = transactionid
 	showndialog[playerid] = dialogid
 #undef ShowPlayerDialog
 	ShowPlayerDialog playerid, dialogid, style, caption, info, button1, button2
