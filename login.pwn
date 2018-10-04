@@ -156,7 +156,7 @@ hook OnPlayerCommandTextCase(playerid)
 			#return 1
 		}
 		PREP_GUESTREGTEXT1
-		ShowPlayerDialog playerid, DIALOG_GUESTREGISTER1, DIALOG_STYLE_INPUT, REGISTER_CAPTION, GUESTREGISTER_TEXT, "Next", "Cancel"
+		ShowPlayerDialog playerid, DIALOG_GUESTREGISTER1, DIALOG_STYLE_INPUT, REGISTER_CAPTION, GUESTREGISTER_TEXT, "Next", "Cancel", TRANSACTION_GUESTREGISTER
 		#return 1
 	} else {
 		SendClientMessage playerid, COL_WARN, #WARN"You're already registered!"
@@ -164,7 +164,7 @@ hook OnPlayerCommandTextCase(playerid)
 	}
 	case -1292722118: if (!isGuest(playerid) && IsCommand(cmdtext, "/changepassword")) {
 		PREP_CHANGEPASSTEXT1
-		ShowPlayerDialog playerid, DIALOG_CHANGEPASS1, DIALOG_STYLE_PASSWORD, CHANGEPASS_CAPTION, CHANGEPASS_TEXT, "Next", "Cancel"
+		ShowPlayerDialog playerid, DIALOG_CHANGEPASS1, DIALOG_STYLE_PASSWORD, CHANGEPASS_CAPTION, CHANGEPASS_TEXT, "Next", "Cancel", TRANSACTION_CHANGEPASS
 		#return 1
 	}
 }
@@ -189,7 +189,8 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			REGISTER_CAPTION,
 			REGISTER_TEXT[REGISTER_TEXT_OFFSET],
 			"Confirm",
-			"Cancel"
+			"Cancel",
+			TRANSACTION_LOGIN
 		#return 1
 	}
 	case DIALOG_REGISTER2: {
@@ -222,6 +223,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		data[idx++] = '='
 		GetPlayerIp playerid, data[idx], 16
 		HTTP(playerid, HTTP_POST, #API_URL"/api-register.php", data, #PUB_LOGIN_REGISTER_CB)
+		ensureDialogTransaction playerid, TRANSACTION_LOGIN
 		#return 1
 	}
 	case DIALOG_LOGIN1: {
@@ -248,6 +250,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		data[idx++] = '='
 		GetPlayerIp playerid, data[idx], 16
 		HTTP(playerid, HTTP_POST, #API_URL"/api-login.php", data, #PUB_LOGIN_LOGIN_CB)
+		ensureDialogTransaction playerid, TRANSACTION_LOGIN
 		#return 1
 	}
 	case DIALOG_LOGIN_ERROR: {
@@ -265,6 +268,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		}
 		userid[playerid] = -1
 		checkUserExist playerid, ""#PUB_LOGIN_USERCHECK_CB""
+		ensureDialogTransaction playerid, TRANSACTION_LOGIN
 		#return 1
 	}
 	case DIALOG_GUESTREGISTER1: {
@@ -273,10 +277,11 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		}
 		if (!changePlayerNameFromInput(playerid, inputtext)) {
 			ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, REGISTER_CAPTION,
-				""#ECOL_WARN"Name rejected, it is either not valid or already taken (press tab). Try again.", "Ok", ""
+				""#ECOL_WARN"Name rejected, it is either not valid or already taken (press tab). Try again.", "Ok", "", TRANSACTION_GUESTREGISTER
 			#return 1
 		}
 		checkUserExist playerid, ""#PUB_LOGIN_GUESTREGISTERUSERCHECK_CB""
+		ensureDialogTransaction playerid, TRANSACTION_GUESTREGISTER
 		#return 1
 	}
 	case DIALOG_GUESTREGISTER2: {
@@ -291,7 +296,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		SHA256_PassHash inputtext, /*salt*/REGISTER_CAPTION, pwhash, PW_HASH_LENGTH
 		SetPasswordConfirmData playerid, pwhash
 		PREP_GUESTREGTEXT3
-		ShowPlayerDialog playerid, DIALOG_GUESTREGISTER3, DIALOG_STYLE_PASSWORD, REGISTER_CAPTION, GUESTREGISTER_TEXT, "Next", "Cancel"
+		ShowPlayerDialog playerid, DIALOG_GUESTREGISTER3, DIALOG_STYLE_PASSWORD, REGISTER_CAPTION, GUESTREGISTER_TEXT, "Next", "Cancel", TRANSACTION_GUESTREGISTER
 		#return 1
 	}
 	case DIALOG_GUESTREGISTER3: {
@@ -306,7 +311,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		SHA256_PassHash inputtext, /*salt*/REGISTER_CAPTION, pwhash, PW_HASH_LENGTH
 		if (!ValidatePasswordConfirmData(playerid, pwhash)) {
 			ShowPlayerDialog playerid, DIALOG_GUESTREGISTER4, DIALOG_STYLE_MSGBOX, REGISTER_CAPTION,
-				""#ECOL_WARN"Passwords do not match, please try again", "Ok", ""
+				""#ECOL_WARN"Passwords do not match, please try again", "Ok", "", TRANSACTION_GUESTREGISTER
 			#return 1
 		}
 		GameTextForPlayer playerid, "~b~Making your account...", 0x800000, 3
@@ -333,11 +338,12 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		data[idx++] = '4'
 		data[idx++] = 0
 		HTTP(playerid, HTTP_POST, #API_URL"/api-change.php", data, #PUB_LOGIN_GUESTREGISTER_CB)
+		ensureDialogTransaction playerid, TRANSACTION_GUESTREGISTER
 		#return 1
 	}
 	case DIALOG_GUESTREGISTER4: {
 		PREP_GUESTREGTEXT2
-		ShowPlayerDialog playerid, DIALOG_GUESTREGISTER2, DIALOG_STYLE_PASSWORD, REGISTER_CAPTION, GUESTREGISTER_TEXT, "Next", "Cancel"
+		ShowPlayerDialog playerid, DIALOG_GUESTREGISTER2, DIALOG_STYLE_PASSWORD, REGISTER_CAPTION, GUESTREGISTER_TEXT, "Next", "Cancel", TRANSACTION_GUESTREGISTER
 		#return 1
 	}
 	case DIALOG_CHANGEPASS1: {
@@ -359,6 +365,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		data[12] = '='
 		Urlencode(inputtext, inputlen, data[13])
 		HTTP(playerid, HTTP_POST, #API_URL"/api-checkpass.php", data, #PUB_LOGIN_CHANGEPASS_CHECK_CB)
+		ensureDialogTransaction playerid, TRANSACTION_CHANGEPASS
 		#return 1
 	}
 	case DIALOG_CHANGEPASS2: {
@@ -370,7 +377,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		SHA256_PassHash inputtext, /*salt*/REGISTER_CAPTION, pwhash, PW_HASH_LENGTH
 		SetPasswordConfirmData playerid, pwhash
 		PREP_CHANGEPASSTEXT3
-		ShowPlayerDialog playerid, DIALOG_CHANGEPASS3, DIALOG_STYLE_PASSWORD, CHANGEPASS_CAPTION, CHANGEPASS_TEXT, "Next", "Cancel"
+		ShowPlayerDialog playerid, DIALOG_CHANGEPASS3, DIALOG_STYLE_PASSWORD, CHANGEPASS_CAPTION, CHANGEPASS_TEXT, "Next", "Cancel", TRANSACTION_CHANGEPASS
 		#return 1
 	}
 	case DIALOG_CHANGEPASS3: {
@@ -382,7 +389,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		SHA256_PassHash inputtext, /*salt*/REGISTER_CAPTION, pwhash, PW_HASH_LENGTH
 		if (!ValidatePasswordConfirmData(playerid, pwhash)) {
 			ShowPlayerDialog playerid, DIALOG_CHANGEPASS4, DIALOG_STYLE_MSGBOX, REGISTER_CAPTION,
-				""#ECOL_WARN"Passwords do not match, please try again", "Ok", ""
+				""#ECOL_WARN"Passwords do not match, please try again", "Ok", "", TRANSACTION_CHANGEPASS
 			#return 1
 		}
 		GameTextForPlayer playerid, "~b~Updating...", 0x800000, 3
@@ -400,11 +407,12 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		data[12] = '='
 		Urlencode(inputtext, inputlen, data[13])
 		HTTP(playerid, HTTP_POST, #API_URL"/api-change.php", data, #PUB_LOGIN_CHANGEPASS_CHANGE_CB)
+		ensureDialogTransaction playerid, TRANSACTION_CHANGEPASS
 		#return 1
 	}
 	case DIALOG_CHANGEPASS4: {
 		PREP_CHANGEPASSTEXT2
-		ShowPlayerDialog playerid, DIALOG_CHANGEPASS2, DIALOG_STYLE_PASSWORD, CHANGEPASS_CAPTION, CHANGEPASS_TEXT, "Next", "Cancel"
+		ShowPlayerDialog playerid, DIALOG_CHANGEPASS2, DIALOG_STYLE_PASSWORD, CHANGEPASS_CAPTION, CHANGEPASS_TEXT, "Next", "Cancel", TRANSACTION_CHANGEPASS
 		#return 1
 	}
 }
@@ -444,7 +452,8 @@ showRegisterDialog(playerid, textoffset=0)
 		REGISTER_CAPTION,
 		REGISTER_TEXT[textoffset],
 		"Next",
-		"Play as guest"
+		"Play as guest",
+		TRANSACTION_LOGIN
 }
 
 //@summary Shows login dialog for player
@@ -458,7 +467,8 @@ showLoginDialog(playerid, textoffset=0)
 		LOGIN_CAPTION,
 		LOGIN_TEXT[textoffset],
 		"Login",
-		"Change name"
+		"Change name",
+		TRANSACTION_LOGIN
 }
 
 //@summary Shows namechange dialog for player (during login phase)
@@ -472,7 +482,8 @@ showNamechangeDialog(playerid, textoffset=0)
 		NAMECHANGE_CAPTION,
 		NAMECHANGE_TEXT[textoffset],
 		"Change",
-		"Cancel"
+		"Cancel",
+		TRANSACTION_LOGIN
 }
 
 //@summary Report api err response to console
@@ -605,7 +616,7 @@ export PUB_LOGIN_LOGIN_CB(playerid, response_code, data[])
 	}
 err:
 	ShowPlayerDialog playerid, DIALOG_LOGIN_ERROR, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-		""#ECOL_WARN"An error occurred, please try again", "Ok", ""
+		""#ECOL_WARN"An error occurred, please try again", "Ok", "", TRANSACTION_LOGIN
 }
 
 //@summary Callback for guest call
@@ -653,18 +664,19 @@ export PUB_LOGIN_GUESTREGISTERUSERCHECK_CB(playerid, response_code, data[])
 	COMMON_CHECKRESPONSECODE("E-U12")
 	if (data[0] == 't') {
 		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-			""#ECOL_WARN"This name is registered, please retry with a different name.", "Ok", ""
+			""#ECOL_WARN"This name is registered, please retry with a different name.",
+			"Ok", "", TRANSACTION_GUESTREGISTER
 		goto giveguestname
 	}
 	if (data[0] == 'f') {
 		PREP_GUESTREGTEXT2
-		ShowPlayerDialog playerid, DIALOG_GUESTREGISTER2, DIALOG_STYLE_PASSWORD, REGISTER_CAPTION, GUESTREGISTER_TEXT, "Next", "Cancel"
+		ShowPlayerDialog playerid, DIALOG_GUESTREGISTER2, DIALOG_STYLE_PASSWORD, REGISTER_CAPTION, GUESTREGISTER_TEXT, "Next", "Cancel", TRANSACTION_GUESTREGISTER
 		return
 	}
 	COMMON_UNKNOWNRESPONSE("E-U13")
 err:
 	ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-		""#ECOL_WARN"An occurred, please try again later.", "Ok", ""
+		""#ECOL_WARN"An occurred, please try again later.", "Ok", "", TRANSACTION_GUESTREGISTER
 giveguestname:
 	if (giveGuestName(playerid)) {
 		savePlayerName playerid
@@ -682,7 +694,8 @@ export PUB_LOGIN_GUESTREGISTER_CB(playerid, response_code, data[])
 	if (data[0] == 's') {
 		loggedstatus[playerid] = LOGGED_IN
 		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-			"Your account has been registered and your stats are saved, welcome!", "Ok", ""
+			"Your account has been registered and your stats are saved, welcome!",
+			"Ok", "", TRANSACTION_GUESTREGISTER
 		new str[MAX_PLAYER_NAME + 6 + 46 + 1]
 		format str, sizeof(str), "Guest %s[%d] just registered their account, welcome!", NAMEOF(playerid), playerid
 		SendClientMessageToAll COL_JOIN, str
@@ -691,7 +704,7 @@ export PUB_LOGIN_GUESTREGISTER_CB(playerid, response_code, data[])
 	COMMON_UNKNOWNRESPONSE("E-U15")
 err:
 	ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-		""#ECOL_WARN"An occurred, please try again later.", "Ok", ""
+		""#ECOL_WARN"An occurred, please try again later.", "Ok", "", TRANSACTION_GUESTREGISTER
 	if (giveGuestName(playerid)) {
 		savePlayerName playerid
 	}
@@ -707,18 +720,18 @@ export PUB_LOGIN_CHANGEPASS_CHECK_CB(playerid, response_code, data[])
 	COMMON_CHECKRESPONSECODE("E-U16")
 	if (data[0] == 't') {
 		PREP_CHANGEPASSTEXT2
-		ShowPlayerDialog playerid, DIALOG_CHANGEPASS2, DIALOG_STYLE_PASSWORD, CHANGEPASS_CAPTION, CHANGEPASS_TEXT, "Next", "Cancel"
+		ShowPlayerDialog playerid, DIALOG_CHANGEPASS2, DIALOG_STYLE_PASSWORD, CHANGEPASS_CAPTION, CHANGEPASS_TEXT, "Next", "Cancel", TRANSACTION_CHANGEPASS
 		return
 	}
 	if (data[0] == 'f') {
 		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-			""#ECOL_WARN"Incorrect password", "Ok", ""
+			""#ECOL_WARN"Incorrect password", "Ok", "", TRANSACTION_CHANGEPASS
 		return
 	}
 	COMMON_UNKNOWNRESPONSE("E-U17")
 err:
 	ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-		""#ECOL_WARN"An occurred, please try again later.", "Ok", ""
+		""#ECOL_WARN"An occurred, please try again later.", "Ok", "", TRANSACTION_CHANGEPASS
 }
 
 //@summary Callback after call to change a player's password
@@ -730,13 +743,14 @@ export PUB_LOGIN_CHANGEPASS_CHANGE_CB(playerid, response_code, data[])
 {
 	COMMON_CHECKRESPONSECODE("E-U18")
 	if (data[0] == 's') {
-		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, CHANGEPASS_CAPTION, "Password changed!", "Ok", ""
+		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, CHANGEPASS_CAPTION,
+			"Password changed!", "Ok", "", TRANSACTION_CHANGEPASS
 		return
 	}
 	COMMON_UNKNOWNRESPONSE("E-U19")
 err:
 	ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-		""#ECOL_WARN"An occurred, please try again later.", "Ok", ""
+		""#ECOL_WARN"An occurred, please try again later.", "Ok", "", TRANSACTION_CHANGEPASS
 }
 
 //@summary Saves a player's name in db
