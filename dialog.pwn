@@ -34,7 +34,7 @@ varinit
 hook OnPlayerConnect(playerid)
 {
 	dialogtransaction[playerid] = TRANSACTION_NONE
-	ShowPlayerDialog playerid, -1, DIALOG_STYLE_MSGBOX, TXT_EMPTY, TXT_EMPTY, TXT_EMPTY, TXT_EMPTY
+	ShowPlayerDialog playerid, -1, DIALOG_STYLE_MSGBOX, TXT_EMPTY, TXT_EMPTY, TXT_EMPTY, TXT_EMPTY, TRANSACTION_NONE
 }
 
 hook OnPlayerDisconnect(playerid)
