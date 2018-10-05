@@ -147,6 +147,7 @@ public OnPlayerDisconnect(playerid, reason)
 ###include "spawn"
 ###include "panel"
 ###include "afk"
+###include "dialog"
 ##endsection
 	iter_remove(players, playerid)
 	iter_remove(allplayers, playerid)

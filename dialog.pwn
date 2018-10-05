@@ -37,6 +37,11 @@ hook OnPlayerConnect(playerid)
 	ShowPlayerDialog playerid, -1, DIALOG_STYLE_MSGBOX, TXT_EMPTY, TXT_EMPTY, TXT_EMPTY, TXT_EMPTY
 }
 
+hook OnPlayerDisconnect(playerid)
+{
+	DropDialogQueue playerid
+}
+
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	dialogtransaction[playerid] = TRANSACTION_NONE
@@ -82,7 +87,7 @@ ShowPlayerDialogSafe(playerid, dialogid, style, caption[], info[], button1[], bu
 	}
 	if (dialogtransaction[playerid] && dialogtransaction[playerid] != transactionid) {
 		if (transactionid != TRANSACTION_OVERRIDE) {
-			QueueDialog playerid, dialogid, style, caption, info, button1, button2
+			QueueDialog playerid, dialogid, style, caption, info, button1, button2, transactionid
 			return
 		}
 		printf "W-D02: %d", dialogtransaction[playerid]

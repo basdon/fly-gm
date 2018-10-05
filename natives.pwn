@@ -97,7 +97,12 @@ native IsCommand(cmdtext[], const cmd[])
 //@param info see {@link ShowPlayerDialog}
 //@param button1 see {@link ShowPlayerDialog}
 //@param button2 see {@link ShowPlayerDialog}
+//@param transactionid the transactionid for the dialog
 //@returns info see {@link ShowPlayerDialog}
 //@remarks info see {@link ShowPlayerDialog}
-native QueueDialog(playerid, dialogid, style, caption[], info[], button1[], button2[])
+native QueueDialog(playerid, dialogid, style, caption[], info[], button1[], button2[], transactionid)
+
+//@summary Drops the dialog queue for a player
+//@param playerid the playerid to drop the queue
+native DropDialogQueue(playerid)
 
