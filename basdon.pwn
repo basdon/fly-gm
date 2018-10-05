@@ -71,6 +71,8 @@ stock const TXT_EMPTY_CONST[] = "_"
 //@summary {@code "%d"}
 new _pd[] = "%d"
 
+new buf4096[4096], buf64[64], buf32[32], buf32_1[32]
+
 ##section varinit
 ###include "dialog"
 ###include "playername"
@@ -112,8 +114,11 @@ export PUB_LOOP25()
 ###include "anticheat"
 ##endsection
 		// 1s,30s,1m loop is inside timecyc
-		if (invoc >= 340) {
-			// 3000ms
+		if (invoc >= 168) {
+			// 5000ms (mostly ~5030-5040)
+##section loop5000
+###include "dialog"
+##endsection
 			invoc = 0
 		}
 	}

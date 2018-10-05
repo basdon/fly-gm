@@ -42,6 +42,17 @@ hook OnPlayerDisconnect(playerid)
 	DropDialogQueue playerid
 }
 
+hook loop5000()
+{
+	foreach (new playerid : allplayers) {
+		if (!dialogtransaction[playerid] && HasDialogsInQueue(playerid)) {
+			new dialogid, style, transactionid
+			PopDialogQueue playerid, dialogid, style, buf64, buf4096, buf32, buf32_1, transactionid
+			ShowPlayerDialogSafe playerid, dialogid, style, buf64, buf4096, buf32, buf32_1, transactionid
+		}
+	}
+}
+
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	dialogtransaction[playerid] = TRANSACTION_NONE
