@@ -120,6 +120,7 @@ hook OnPlayerConnect(playerid)
 			return 0
 		}
 	}
+	ensureDialogTransaction playerid, TRANSACTION_LOGIN
 	checkUserExist playerid, ""#PUB_LOGIN_USERCHECK_CB""
 }
 
@@ -509,13 +510,14 @@ report_api_unknown_response(data[], errcode[])
 #define COMMON_CHECKRESPONSECODE(%0) hideGameTextForPlayer(playerid);COMMON_CHECKRESPONSECODE_NOHIDETEXT(%0)
 #define COMMON_UNKNOWNRESPONSE(%0) report_api_unknown_response(data,%0)
 
-//@summary Callback for usercheck done in {@link OnPlayerConnect}.
+//@summary Callback for usercheck done in {@link OnPlayerConnect} and after changing name during login.
 //@param playerid player that has been checked
 //@param response_code http response code or one of the {@code HTTP_*} macros
 //@param data response data
 //@remarks PUB_LOGIN_USERCHECK_CB
 export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 {
+	endDialogTransaction playerid, TRANSACTION_LOGIN
 	COMMON_CHECKRESPONSECODE("E-U01")
 	if (data[0] == 't') {
 		if (strlen(data) < 6) {
@@ -548,6 +550,7 @@ err:
 //@remarks PUB_LOGIN_REGISTER_CB
 export PUB_LOGIN_REGISTER_CB(playerid, response_code, data[])
 {
+	endDialogTransaction playerid, TRANSACTION_LOGIN
 	COMMON_CHECKRESPONSECODE("E-U04")
 	if (data[0] == 's') {
 		if (strlen(data) < 11) {
@@ -585,6 +588,7 @@ err:
 //@remarks PUB_LOGIN_LOGIN_CB
 export PUB_LOGIN_LOGIN_CB(playerid, response_code, data[])
 {
+	endDialogTransaction playerid, TRANSACTION_LOGIN
 	COMMON_CHECKRESPONSECODE("E-U08")
 	if (data[0] == 's') {
 		if (strlen(data) < 11) {
@@ -626,6 +630,7 @@ err:
 //@remarks PUB_LOGIN_GUEST_CB
 export PUB_LOGIN_GUEST_CB(playerid, response_code, data[])
 {
+	endDialogTransaction playerid, TRANSACTION_LOGIN
 	hideGameTextForPlayer(playerid)
 	loginPlayer playerid, LOGGED_GUEST
 	COMMON_CHECKRESPONSECODE_NOHIDETEXT("E-U0E")
@@ -661,6 +666,7 @@ err:
 //@remarks PUB_LOGIN_GUESTREGISTERUSERCHECK_CB
 export PUB_LOGIN_GUESTREGISTERUSERCHECK_CB(playerid, response_code, data[])
 {
+	endDialogTransaction playerid, TRANSACTION_GUESTREGISTER
 	COMMON_CHECKRESPONSECODE("E-U12")
 	if (data[0] == 't') {
 		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
@@ -690,6 +696,7 @@ giveguestname:
 //@remarks PUB_LOGIN_GUESTREGISTER_CB
 export PUB_LOGIN_GUESTREGISTER_CB(playerid, response_code, data[])
 {
+	endDialogTransaction playerid, TRANSACTION_GUESTREGISTER
 	COMMON_CHECKRESPONSECODE("E-U14")
 	if (data[0] == 's') {
 		loggedstatus[playerid] = LOGGED_IN
@@ -717,6 +724,7 @@ err:
 //@remarks PUB_LOGIN_CHANGEPASS_CHECK_CB
 export PUB_LOGIN_CHANGEPASS_CHECK_CB(playerid, response_code, data[])
 {
+	endDialogTransaction playerid, TRANSACTION_CHANGEPASS
 	COMMON_CHECKRESPONSECODE("E-U16")
 	if (data[0] == 't') {
 		PREP_CHANGEPASSTEXT2
@@ -741,6 +749,7 @@ err:
 //@remarks PUB_LOGIN_CHANGEPASS_CHANGE_CB
 export PUB_LOGIN_CHANGEPASS_CHANGE_CB(playerid, response_code, data[])
 {
+	endDialogTransaction playerid, TRANSACTION_CHANGEPASS
 	COMMON_CHECKRESPONSECODE("E-U18")
 	if (data[0] == 's') {
 		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, CHANGEPASS_CAPTION,

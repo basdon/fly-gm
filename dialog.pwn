@@ -70,6 +70,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 //@param playerid the playerid that needs the dialogtransaction
 //@param transactionid the transactionid to set
 //@remarks Will log a warning (W-D01) if a previous, different dialog transaction was active
+//@seealso endDialogTransaction
 ensureDialogTransaction(playerid, transactionid)
 {
 	if (dialogtransaction[playerid] && dialogtransaction[playerid] != transactionid) {
@@ -77,6 +78,21 @@ ensureDialogTransaction(playerid, transactionid)
 		return
 	}
 	dialogtransaction[playerid] = transactionid
+}
+
+//@summary Ends a dialog transaction for a player
+//@param playerid the playerid to end the transaction for
+//@param transactionid the transaction to end
+//@remarks if {@param transactionid} does not match current player's transaction, nothing will happen
+//@remarks Will log a warning (W-D04) if current transaction does not match {@param transactionid}
+//@seealso ensureDialogTransaction
+endDialogTransaction(playerid, transactionid)
+{
+	if (dialogtransaction[playerid] != transactionid) {
+		printf "W-D04: %d, %d", transactionid, dialogtransaction[playerid]
+		return
+	}
+	dialogtransaction[playerid] = TRANSACTION_NONE
 }
 
 //@summary Hooks {@link ShowPlayerDialog} to save the shown id to validate in {@link OnDialogResponse}. Also adds transactions.
@@ -98,6 +114,7 @@ ShowPlayerDialogSafe(playerid, dialogid, style, caption[], info[], button1[], bu
 	}
 	if (dialogtransaction[playerid] && dialogtransaction[playerid] != transactionid) {
 		if (transactionid != TRANSACTION_OVERRIDE) {
+			printf "I-D03: %d, %d", dialogid, dialogtransaction[playerid]
 			QueueDialog playerid, dialogid, style, caption, info, button1, button2, transactionid
 			return
 		}

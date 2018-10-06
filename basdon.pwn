@@ -132,9 +132,9 @@ public OnPlayerConnect(playerid)
 	iter_add(allplayers, playerid)
 
 ##section OnPlayerConnect
+###include "dialog" // keep this first
 ###include "playername"
 ###include "login"
-###include "dialog"
 ###include "panel"
 ###include "spawn"
 ###include "timecyc"
