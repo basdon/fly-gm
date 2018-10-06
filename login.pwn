@@ -532,11 +532,17 @@ export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 		showRegisterDialog playerid, .textoffset=REGISTER_TEXT_OFFSET
 		return
 	}
+	if (data[0] == 'l') {
+		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
+			""#ECOL_WARN"You will be spawned as guest due to too many failed logins from your location", "Ok", ""
+		goto asguest
+	}
 	COMMON_UNKNOWNRESPONSE("E-U03")
 err:
 	ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
 		""#ECOL_WARN"An occurred, you will be spawned as a guest", "Ok", ""
 	SendClientMessage playerid, COL_WARN, WARN"An error occured while contacting the login server."
+asguest:
 	SendClientMessage playerid, COL_SAMP_GREEN, "You will be spawned as a guest."
 	if (giveGuestName(playerid)) {
 		spawnAsGuest playerid
@@ -678,6 +684,11 @@ export PUB_LOGIN_GUESTREGISTERUSERCHECK_CB(playerid, response_code, data[])
 		PREP_GUESTREGTEXT2
 		ShowPlayerDialog playerid, DIALOG_GUESTREGISTER2, DIALOG_STYLE_PASSWORD, REGISTER_CAPTION, GUESTREGISTER_TEXT, "Next", "Cancel", TRANSACTION_GUESTREGISTER
 		return
+	}
+	if (data[0] == 'l') {
+		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
+			""#ECOL_WARN"You cannot register right now because there are too many failed logins from your location", "Ok", ""
+		goto giveguestname
 	}
 	COMMON_UNKNOWNRESPONSE("E-U13")
 err:
