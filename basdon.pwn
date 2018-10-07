@@ -153,6 +153,7 @@ public OnPlayerDisconnect(playerid, reason)
 ###include "panel"
 ###include "afk"
 ###include "dialog"
+###include "airport"
 ##endsection
 	iter_remove(players, playerid)
 	iter_remove(allplayers, playerid)
@@ -380,6 +381,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	switch (dialogid) {
 	case DIALOG_DUMMY: return 1
 ###include "login"
+###include "airport"
 	}
 ##endsection
 	return 0
