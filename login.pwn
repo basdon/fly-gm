@@ -100,6 +100,7 @@ hook OnPlayerDisconnect(playerid, reason)
 	updatePlayerLastseen playerid, .isdisconnect=1
 	loggedstatus[playerid] = LOGGED_NO
 	ResetPasswordConfirmData playerid
+	ClearLoginData playerid
 }
 
 hook OnPlayerConnect(playerid)
@@ -120,8 +121,16 @@ hook OnPlayerConnect(playerid)
 			return 0
 		}
 	}
+	GetPlayerIp playerid, buf32, 16
+	SetLoginData playerid, buf32, NAMEOF(playerid), NAMELEN(playerid)
+
 	ensureDialogTransaction playerid, TRANSACTION_LOGIN
 	checkUserExist playerid, ""#PUB_LOGIN_USERCHECK_CB""
+}
+
+hook onPlayerNameChange(playerid)
+{
+	UpdateLoginData playerid, NAMEOF(playerid), NAMELEN(playerid)
 }
 
 hook OnPlayerRequestSpawn(playerid)
@@ -207,23 +216,8 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			#return 1
 		}
 		GameTextForPlayer playerid, "~b~Making your account...", 0x800000, 3
-		new inputlen = strlen(inputtext)
-		if (inputlen > 128) {
-			inputtext[128] = 0
-			inputlen = 128
-		}
-		new data[2 + (MAX_PLAYER_NAME * 3) + 3 + (128 * 3) + 3 + 15 + 1]
-		data[0] = 'u'
-		data[1] = '='
-		new idx = 2 + Urlencode(NAMEOF(playerid), NAMELEN(playerid), data[2])
-		memcpy data, "&p=", idx * 4, 3 * 4
-		idx += 3
-		idx += Urlencode(inputtext, inputlen, data[idx])
-		data[idx++] = '&'
-		data[idx++] = 'j'
-		data[idx++] = '='
-		GetPlayerIp playerid, data[idx], 16
-		HTTP(playerid, HTTP_POST, #API_URL"/api-register.php", data, #PUB_LOGIN_REGISTER_CB)
+		FormatLoginApiRegister playerid, inputtext, buf4096
+		HTTP(playerid, HTTP_POST, #API_URL"/api-register.php", buf4096, #PUB_LOGIN_REGISTER_CB)
 		ensureDialogTransaction playerid, TRANSACTION_LOGIN
 		#return 1
 	}
@@ -233,24 +227,8 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			#return 1
 		}
 		GameTextForPlayer playerid, "~b~Logging in...", 0x800000, 3
-		new inputlen = strlen(inputtext)
-		if (inputlen > 128) {
-			inputtext[128] = 0
-			inputlen = 128
-		}
-		new data[2 + 8 + 3 + (128 * 3) + 3 + 15 + 1]
-		data[0] = 'i'
-		data[1] = '='
-		format data[2], 9, "%08x", userid[playerid]
-		data[10] = '&'
-		data[11] = 'p'
-		data[12] = '='
-		new idx = 13 + Urlencode(inputtext, inputlen, data[13])
-		data[idx++] = '&'
-		data[idx++] = 'j'
-		data[idx++] = '='
-		GetPlayerIp playerid, data[idx], 16
-		HTTP(playerid, HTTP_POST, #API_URL"/api-login.php", data, #PUB_LOGIN_LOGIN_CB)
+		FormatLoginApiLogin playerid, userid[playerid], inputtext, buf4096
+		HTTP(playerid, HTTP_POST, #API_URL"/api-login.php", buf4096, #PUB_LOGIN_LOGIN_CB)
 		ensureDialogTransaction playerid, TRANSACTION_LOGIN
 		#return 1
 	}
@@ -316,29 +294,8 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			#return 1
 		}
 		GameTextForPlayer playerid, "~b~Making your account...", 0x800000, 3
-		new inputlen = strlen(inputtext)
-		if (inputlen > 128) {
-			inputtext[128] = 0
-			inputlen = 128
-		}
-		new data[2 + 8 + 3 + (MAX_PLAYER_NAME * 3) + 3 + (128 * 3) + 4 + 1]
-		data[0] = 'i'
-		data[1] = '='
-		format data[2], 9, "%08x", userid[playerid]
-		data[10] = '&'
-		data[11] = 'n'
-		data[12] = '='
-		new idx = 13 + Urlencode(NAMEOF(playerid), NAMELEN(playerid), data[13])
-		data[idx++] = '&'
-		data[idx++] = 'p'
-		data[idx++] = '='
-		idx += Urlencode(inputtext, inputlen, data[idx])
-		data[idx++] = '&'
-		data[idx++] = 'g'
-		data[idx++] = '='
-		data[idx++] = '4'
-		data[idx++] = 0
-		HTTP(playerid, HTTP_POST, #API_URL"/api-change.php", data, #PUB_LOGIN_GUESTREGISTER_CB)
+		FormatLoginApiGuestRegister playerid, userid[playerid], inputtext, buf4096
+		HTTP(playerid, HTTP_POST, #API_URL"/api-change.php", buf4096, #PUB_LOGIN_GUESTREGISTER_CB)
 		ensureDialogTransaction playerid, TRANSACTION_GUESTREGISTER
 		#return 1
 	}
@@ -352,20 +309,8 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			#return 1
 		}
 		GameTextForPlayer playerid, "~b~Verifying...", 0x800000, 3
-		new inputlen = strlen(inputtext)
-		if (inputlen > 128) {
-			inputtext[128] = 0
-			inputlen = 128
-		}
-		new data[2 + 8 + 3 + (128 * 3) + 1]
-		data[0] = 'i'
-		data[1] = '='
-		format data[2], 9, "%08x", userid[playerid]
-		data[10] = '&'
-		data[11] = 'p'
-		data[12] = '='
-		Urlencode(inputtext, inputlen, data[13])
-		HTTP(playerid, HTTP_POST, #API_URL"/api-checkpass.php", data, #PUB_LOGIN_CHANGEPASS_CHECK_CB)
+		FormatLoginApiCheckChangePass userid[playerid], inputtext, buf4096
+		HTTP(playerid, HTTP_POST, #API_URL"/api-checkpass.php", buf4096, #PUB_LOGIN_CHANGEPASS_CHECK_CB)
 		ensureDialogTransaction playerid, TRANSACTION_CHANGEPASS
 		#return 1
 	}
@@ -394,20 +339,8 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			#return 1
 		}
 		GameTextForPlayer playerid, "~b~Updating...", 0x800000, 3
-		new inputlen = strlen(inputtext)
-		if (inputlen > 128) {
-			inputtext[128] = 0
-			inputlen = 128
-		}
-		new data[2 + 8 + 3 + (128 * 3) + 1]
-		data[0] = 'i'
-		data[1] = '='
-		format data[2], 9, "%08x", userid[playerid]
-		data[10] = '&'
-		data[11] = 'p'
-		data[12] = '='
-		Urlencode(inputtext, inputlen, data[13])
-		HTTP(playerid, HTTP_POST, #API_URL"/api-change.php", data, #PUB_LOGIN_CHANGEPASS_CHANGE_CB)
+		FormatLoginApiCheckChangePass userid[playerid], inputtext, buf4096
+		HTTP(playerid, HTTP_POST, #API_URL"/api-change.php", buf4096, #PUB_LOGIN_CHANGEPASS_CHANGE_CB)
 		ensureDialogTransaction playerid, TRANSACTION_CHANGEPASS
 		#return 1
 	}
@@ -434,15 +367,8 @@ changePlayerNameFromInput(playerid, inputtext[])
 checkUserExist(playerid, callback[])
 {
 	GameTextForPlayer playerid, "~b~Contacting login server...", 0x800000, 3
-	new data[2 + MAX_PLAYER_NAME * 3 + 3 + 15 + 2]
-	data[0] = 'u'
-	data[1] = '='
-	new idx = 2 + Urlencode(NAMEOF(playerid), NAMELEN(playerid), data[2])
-	data[idx++] = '&'
-	data[idx++] = 'j'
-	data[idx++] = '='
-	GetPlayerIp playerid, data[idx], 16
-	HTTP(playerid, HTTP_POST, #API_URL"/api-user-exists.php", data, callback)
+	FormatLoginApiUserExistsGuest playerid, buf4096
+	HTTP(playerid, HTTP_POST, #API_URL"/api-user-exists.php", buf4096, callback)
 }
 
 //@summary Shows register dialog for player
@@ -827,15 +753,8 @@ giveGuestName(playerid)
 spawnAsGuest(playerid)
 {
 	GameTextForPlayer playerid, "~b~Creating guest session...", 0x800000, 3
-	new data[2 + (MAX_PLAYER_NAME * 3) + 3 + (128 * 3) + 3 + 15 + 1]
-	data[0] = 'u'
-	data[1] = '='
-	new idx = 2 + Urlencode(NAMEOF(playerid), NAMELEN(playerid), data[2])
-	data[idx++] = '&'
-	data[idx++] = 'j'
-	data[idx++] = '='
-	GetPlayerIp playerid, data[idx], 16
-	HTTP(playerid, HTTP_POST, #API_URL"/api-guest.php", data, #PUB_LOGIN_GUEST_CB)
+	FormatLoginApiUserExistsGuest playerid, buf4096
+	HTTP(playerid, HTTP_POST, #API_URL"/api-guest.php", buf4096, #PUB_LOGIN_GUEST_CB)
 }
 
 //@summary Updates a player's last seen (usr and ses) and total/actual time value in db

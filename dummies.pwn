@@ -60,6 +60,14 @@ stock isGuest(playerid) {
 
 /* playername.pwn */
 
+//@summary Gets called when a player's name changes
+//@param playerid the player that received a newname
+//@remarks Is a hooked section
+//@seealso NAMEOF
+stock onPlayerNameChange(playerid) {
+	this_function _ should_not _ be_called
+}
+
 //@summary Gets the cached name of a player
 //@param playerid the player to get the name of
 //@remarks Is implemented as a preprocessor replacement.

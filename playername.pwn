@@ -22,6 +22,7 @@ hook OnPlayerConnect(playerid)
 //@param name see {@link SetPlayerName}
 //@returns see {@link SetPlayerName}
 //@remarks see {@link SetPlayerName}
+//@remarks has {@code onPlayerNameChange} section
 //@seealso SetPlayerName
 SetPlayerNameHook(playerid, const name[])
 {
@@ -33,6 +34,9 @@ SetPlayerNameHook(playerid, const name[])
 		playernames[playerid][0] = len
 		#allowmemcpywitharrayindexer
 		memcpy(playernames[playerid], name, 4, ++len * 4)
+##section onPlayerNameChange
+###include "login"
+##endsection
 		new s[34 + MAX_PLAYER_NAME + 1]
 		format s, sizeof(s), "Your name has been changed to '%s'", NAMEOF(playerid)
 		SendClientMessage playerid, COL_SAMP_GREEN, s

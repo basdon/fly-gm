@@ -380,7 +380,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 }
 
 #include "anticheat"
-#include "playername"
+#include "playername" // try to keep this top-ish (for onPlayerNameChange section)
 #include "panel"
 #include "timecyc"
 #include "dialog"
