@@ -434,10 +434,14 @@ changePlayerNameFromInput(playerid, inputtext[])
 checkUserExist(playerid, callback[])
 {
 	GameTextForPlayer playerid, "~b~Contacting login server...", 0x800000, 3
-	new data[MAX_PLAYER_NAME * 3 + 4]
+	new data[2 + MAX_PLAYER_NAME * 3 + 3 + 15 + 2]
 	data[0] = 'u'
 	data[1] = '='
-	Urlencode(NAMEOF(playerid), NAMELEN(playerid), data[2])
+	new idx = 2 + Urlencode(NAMEOF(playerid), NAMELEN(playerid), data[2])
+	data[idx++] = '&'
+	data[idx++] = 'j'
+	data[idx++] = '='
+	GetPlayerIp playerid, data[idx], 16
 	HTTP(playerid, HTTP_POST, #API_URL"/api-user-exists.php", data, callback)
 }
 
@@ -618,6 +622,11 @@ export PUB_LOGIN_LOGIN_CB(playerid, response_code, data[])
 		showLoginDialog playerid, .textoffset=0
 		return
 	}
+	if (data[0] == 'l') {
+		ShowPlayerDialog playerid, DIALOG_LOGIN_ERROR, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
+			""#ECOL_WARN"This account is temporary locked due to too many failed logins", "Ok", ""
+		return
+	}
 	LIMITSTRLEN(data, 500)
 	if (data[0] == 'e') {
 		printf "E-U0A: %s", data[1]
@@ -636,7 +645,6 @@ err:
 //@remarks PUB_LOGIN_GUEST_CB
 export PUB_LOGIN_GUEST_CB(playerid, response_code, data[])
 {
-	endDialogTransaction playerid, TRANSACTION_LOGIN
 	hideGameTextForPlayer(playerid)
 	loginPlayer playerid, LOGGED_GUEST
 	COMMON_CHECKRESPONSECODE_NOHIDETEXT("E-U0E")
