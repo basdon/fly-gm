@@ -244,6 +244,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 	switch (CommandHash(cmdtext)) {
 ##section OnPlayerCommandTextCase
 ###include "login"
+###include "airport"
 ##endsection
 	}
 

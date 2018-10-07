@@ -1,7 +1,7 @@
 
 // vim: set filetype=c ts=8 noexpandtab:
 
-#namespace "airport"
+#namespace "apt"
 
 hook OnGameModeInit()
 {
@@ -38,6 +38,18 @@ hook OnGameModeInit()
 hook OnGameModeExit()
 {
 	APT_Destroy
+}
+
+hook OnPlayerCommandTextCase(playerid, cmdtext[])
+{
+	case 2133486927: if (IsCommand(cmdtext, "/nearest")) {
+		new Float: x, Float: y, Float:z;
+		GetPlayerPos playerid, x, y, z
+		APT_FormatNearestAirportsList x, y, buf4096
+		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_TABLIST, "Nearest airports", buf4096, "Close", ""
+		// TODO: show airport info when clicking through
+		#return 1
+	}
 }
 
 #printhookguards

@@ -157,7 +157,7 @@ hook OnPlayerText(playerid, text[])
 	}
 }
 
-hook OnPlayerCommandTextCase(playerid)
+hook OnPlayerCommandTextCase(playerid, cmdtext[])
 {
 	case 258772946: if (IsCommand(cmdtext, "/register")) if (isGuest(playerid)) {
 		if (sessionid[playerid] == -1 || userid[playerid] == -1) {
