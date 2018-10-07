@@ -54,7 +54,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		if (!response) {
 			#return 1;
 		}
-		APT_FormatInfoList playerid, aptidx, buf4096
+		APT_FormatInfo aptidx, buf4096
 		APT_FormatCodeAndName aptidx, buf64
 		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, buf64, buf4096, "Close", ""
 		#return 1;

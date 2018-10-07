@@ -220,8 +220,9 @@ native APT_Add(index, code[], enabled, name[], beacon[], Float:x, Float:y, Float
 //@param x beacon's x position
 //@param y beacon's y position
 //@param z beacon's z position
+//@param vor {@code 1} if the runway has VOR abilities
 //@seealso APT_Add
-native APT_AddRunway(aptindex, specifier, Float:heading, Float:x, Float:y, Float:z)
+native APT_AddRunway(aptindex, specifier, Float:heading, Float:x, Float:y, Float:z, vor)
 
 //@summary Clear the airport table and free the used memory
 //@seealso APT_Init
@@ -242,12 +243,11 @@ native APT_FormatNearestList(playerid, Float:x, Float:y, buf[])
 //@remarks Call this even when it's not needed, it frees memory.
 native APT_MapIndexFromListDialog(playerid, listitem=0)
 
-//@summary Format an airport's info in list form
-//@param playerid player that wants a list (used to store order for follow-up)
+//@summary Format an airport's info for a msgbox
 //@param aptidx index of the airport
 //@param buf the buffer to store the resulting list in (use {@code buf4096})
 //@returns {@code 0} if {@param aptidx} is invalid
-native APT_FormatInfoList(playerid, aptidx, buf[])
+native APT_FormatInfo(aptidx, buf[])
 
 //@summary Format an airport's code and name for use in dialog titles etc
 //@param aptidx index of the airport
