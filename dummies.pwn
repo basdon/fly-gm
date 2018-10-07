@@ -1,7 +1,39 @@
 
 // vim: set filetype=c ts=8 noexpandtab:
 
+/* vendor/a_mysql_min.inc */
+
 /* afk.pwn */
+
+//@summary see {@link cache_get_row}
+//@param row row index (zero based)
+//@param field field index (zero based)
+//@param dest destination buffer
+//@remarks Is implemented as a preprocessor replacement.
+//@reamrks this is replaced into a normal assigned instead of by ref
+stock cache_get_field_str(row, field, dest[]) {
+	this_function _ should_not _ be_called
+}
+
+//@summary see {@link cache_get_row_int}
+//@param row row index (zero based)
+//@param field field index (zero based)
+//@param dest destination variable
+//@remarks Is implemented as a preprocessor replacement.
+//@reamrks this is replaced into a normal assigned instead of by ref
+stock cache_get_field_int(row, field, &dest) {
+	this_function _ should_not _ be_called
+}
+
+//@summary see {@link cache_get_row_float}
+//@param row row index (zero based)
+//@param field field index (zero based)
+//@param dest destination variable
+//@remarks Is implemented as a preprocessor replacement.
+//@reamrks this is replaced into a normal assigned instead of by ref
+stock cache_get_field_flt(row, field, &Float:dest) {
+	this_function _ should_not _ be_called
+}
 
 //@summary Check if a player is afk.
 //@param playerid the playerid to check

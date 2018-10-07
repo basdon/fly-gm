@@ -27,6 +27,9 @@
 #define CR_COMMAND_OUT_OF_SYNC 			2014
 #define CR_SERVER_LOST_EXTENDED 		2055
 
+#define cache_get_field_str(%0,%1,%2) cache_get_row(%0,%1,%2)
+#define cache_get_field_int(%0,%1,%2) %2=cache_get_row_int(%0,%1)
+#define cache_get_field_flt(%0,%1,%2) %2=cache_get_row_float(%0,%1)
 
 enum E_LOGLEVEL
 {
@@ -125,10 +128,15 @@ native mysql_set_charset(charset[], connectionHandle = 1);
 
 // Cache functions
 native cache_get_data(&num_rows, &num_fields, connectionHandle = 1);
+
+/// <param name="connectionHandle">connection handle (optional=<b><c>1</c></b>)</param>
+/// <returns>the row count</returns>
 native cache_get_row_count(connectionHandle = 1);
 native cache_get_field_count(connectionHandle = 1);
 native cache_get_field_name(field_index, destination[], connectionHandle = 1, max_len = sizeof(destination));
 
+/// <param name="connectionHandle">(optional=<b><c>1</c></b>)</param>
+/// <param name="max_len">(optional=<b><c>sizeof destination</c></b>)</param>
 native cache_get_row(row, field_idx, destination[], connectionHandle = 1, max_len = sizeof(destination));
 native cache_get_row_int(row, field_idx, connectionHandle = 1);
 native Float:cache_get_row_float(row, field_idx, connectionHandle = 1);

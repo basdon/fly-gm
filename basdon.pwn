@@ -1,6 +1,7 @@
 
 // vim: set filetype=c ts=8 noexpandtab:
 
+#include "dummies"
 #include <a_samp>
 #include <a_http>
 #include <a_mysql_min>
@@ -9,7 +10,6 @@
 #include "settings"
 #include "colors"
 #include "natives"
-#include "dummies"
 
 #pragma tabsize 0 // it does not go well with some macros and preprocess
 
@@ -321,6 +321,7 @@ public OnGameModeInit()
 ###include "panel"
 ###include "spawn"
 ###include "timecyc"
+###include "airport"
 ##endsection
 
 	return 1;
@@ -338,6 +339,10 @@ public OnPlayerUpdate(playerid)
 
 public OnGameModeExit()
 {
+##section OnGameModeExit
+###include "airport"
+##endsection
+
 	if (mysql_unprocessed_queries() > 0) {
 		new starttime = gettime()
 		do {
@@ -388,4 +393,5 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 #include "game_sa"
 #include "afk"
 #include "spawn"
+#include "airport"
 

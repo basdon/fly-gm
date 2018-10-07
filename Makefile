@@ -22,11 +22,12 @@ pp = $(sed) -f $(ppfile)
 #FILE timecyc
 #FILE anticheat
 #FILE dummies
+#FILE airport
 
 #START
 #S2
 
-build: p/sharedsymbols.p p/dummies.p p/anticheat.p p/timecyc.p p/spawn.p p/dialog.p p/colors.p p/settings.p p/util.p p/login.p p/playername.p p/afk.p p/game_sa.p p/simpleiter.p p/panel.p p/sharedsymbols.p p/natives.p p/basdon.p
+build: p/sharedsymbols.p p/airport.p p/dummies.p p/anticheat.p p/timecyc.p p/spawn.p p/dialog.p p/colors.p p/settings.p p/util.p p/login.p p/playername.p p/afk.p p/game_sa.p p/simpleiter.p p/panel.p p/sharedsymbols.p p/natives.p p/basdon.p
 	@echo.
 
 p/basdon.p: basdon.pwn $(ppfile)
@@ -79,6 +80,9 @@ p/anticheat.p: anticheat.pwn $(ppfile)
 
 p/dummies.p: dummies.pwn $(ppfile)
 	$(pp) dummies.pwn>p/dummies.p
+
+p/airport.p: airport.pwn $(ppfile)
+	$(pp) airport.pwn>p/airport.p
 
 #S3
 #STOP
