@@ -133,7 +133,7 @@ public OnPlayerConnect(playerid)
 
 ##section OnPlayerConnect
 ###include "dialog" // keep this first
-###include "playername"
+###include "playername" // keep this second
 ###include "login"
 ###include "panel"
 ###include "spawn"
@@ -154,6 +154,7 @@ public OnPlayerDisconnect(playerid, reason)
 ###include "afk"
 ###include "dialog"
 ###include "airport"
+###include "playername"
 ##endsection
 	iter_remove(players, playerid)
 	iter_remove(allplayers, playerid)

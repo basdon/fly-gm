@@ -15,6 +15,13 @@ varinit
 hook OnPlayerConnect(playerid)
 {
 	playernames[playerid][0] = GetPlayerName(playerid, playernames[playerid][1], 20)
+	GetPlayerIp playerid, buf32, 16
+	PlayerData_Init playerid, buf32, NAMEOF(playerid), NAMELEN(playerid)
+}
+
+hook OnPlayerDisconnect(playerid)
+{
+	PlayerData_Clear playerid
 }
 
 //@summary Hooks {@link SetPlayerName} to cache playernames
@@ -34,8 +41,8 @@ SetPlayerNameHook(playerid, const name[])
 		playernames[playerid][0] = len
 		#allowmemcpywitharrayindexer
 		memcpy(playernames[playerid], name, 4, ++len * 4)
+		PlayerData_UpdateName playerid, NAMEOF(playerid), NAMELEN(playerid)
 ##section onPlayerNameChange
-###include "login"
 ##endsection
 		new s[34 + MAX_PLAYER_NAME + 1]
 		format s, sizeof(s), "Your name has been changed to '%s'", NAMEOF(playerid)

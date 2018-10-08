@@ -100,7 +100,6 @@ hook OnPlayerDisconnect(playerid, reason)
 	updatePlayerLastseen playerid, .isdisconnect=1
 	loggedstatus[playerid] = LOGGED_NO
 	ResetPasswordConfirmData playerid
-	ClearLoginData playerid
 }
 
 hook OnPlayerConnect(playerid)
@@ -121,16 +120,9 @@ hook OnPlayerConnect(playerid)
 			return 0
 		}
 	}
-	GetPlayerIp playerid, buf32, 16
-	SetLoginData playerid, buf32, NAMEOF(playerid), NAMELEN(playerid)
 
 	ensureDialogTransaction playerid, TRANSACTION_LOGIN
 	checkUserExist playerid, ""#PUB_LOGIN_USERCHECK_CB""
-}
-
-hook onPlayerNameChange(playerid)
-{
-	UpdateLoginData playerid, NAMEOF(playerid), NAMELEN(playerid)
 }
 
 hook OnPlayerRequestSpawn(playerid)
