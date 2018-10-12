@@ -255,3 +255,20 @@ native APT_FormatInfo(aptidx, buf[])
 //@returns {@code 0} if {@param aptidx} is invalid
 native APT_FormatCodeAndName(aptidx, buf[])
 
+//@summary Check if the player's zone has changed.
+//@param playerid player to check
+//@param x x position of player
+//@param y y position of player
+//@param z z position of player
+//@returns {@code 0} if the player's zone did not change
+native Zones_UpdateForPlayer(playerid, Float:x, Float:y, Float:z)
+
+//@summary Invalidate cached zone for player
+//@param playerid player to invalidate cache for
+native Zones_InvalidateForPlayer(playerid)
+
+//@summary Insert the zone string for player in {@param buf}
+//@param playerid the playerid of which to get the zone
+//@param buf a buffer
+native Zones_FormatForPlayer(playerid, buf[])
+

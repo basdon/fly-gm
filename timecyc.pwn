@@ -60,6 +60,9 @@ hook loop100()
 {
 	new time = gettime() // TODO this can be used as time cache?
 	if (time > lasttime) {
+##section loop1s
+###include "zones"
+##endsection
 		if (++time_s >= 60) {
 			time_s = 0
 			currentweather = upcomingweather
@@ -90,7 +93,6 @@ loop30s:
 		TextDrawSetString clocktext, buf
 #endif
 		lasttime = time
-		// TODO: this is 1s loop
 	}
 }
 

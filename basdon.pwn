@@ -73,6 +73,8 @@ new _pd[] = "%d"
 
 new buf4096[4096], buf64[64], buf32[32], buf32_1[32]
 
+#define SetPlayerPos SetPlayerPosHook
+
 ##section varinit
 ###include "dialog"
 ###include "playername"
@@ -83,6 +85,7 @@ new buf4096[4096], buf64[64], buf32[32], buf32_1[32]
 ###include "spawn"
 ###include "timecyc"
 ###include "anticheat"
+###include "zones"
 ##endsection
 
 main()
@@ -140,6 +143,7 @@ public OnPlayerConnect(playerid)
 ###include "timecyc"
 ###include "anticheat"
 ###include "afk"
+###include "zones"
 ##endsection
 
 	return 1
@@ -188,6 +192,7 @@ public OnPlayerSpawn(playerid)
 
 ##section OnPlayerSpawn
 ###include "spawn"
+###include "zones"
 ##endsection
 
 	return 1
@@ -202,9 +207,29 @@ public OnPlayerDeath(playerid, killerid, reason)
 ##section OnPlayerDeath
 ###include "spawn"
 ###include "timecyc"
+###include "zones"
 ##endsection
 
 	return 1
+}
+
+//@summary Hooks {@link SetPlayerPos} to do stuff
+//@param playerid see {@link SetPlayerPos}
+//@param x see {@link SetPlayerPos}
+//@param y see {@link SetPlayerPos}
+//@param z see {@link SetPlayerPos}
+//@returns see {@link SetPlayerPos}
+//@remarks see {@link SetPlayerPos}
+//@remarks has {@code onSetPlayerPos} section
+//@seealso SetPlayerPos
+SetPlayerPosHook(playerid, Float:x, Float:y, Float:z)
+{
+##section onSetPlayerPos
+###include "zones"
+##endsection
+#undef SetPlayerPos
+	SetPlayerPos playerid, x, y, z
+#define SetPlayerPos SetPlayerPosHook
 }
 
 public OnPlayerCommandText(playerid, cmdtext[])
@@ -398,4 +423,5 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 #include "afk"
 #include "spawn"
 #include "airport"
+#include "zones"
 
