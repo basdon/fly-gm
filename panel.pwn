@@ -3,13 +3,9 @@
 
 #namespace "panel"
 
-#define VEL_TO_KPH(%0) (195.555*%0)
-#define VEL_TO_KTS(%0) (96.77661*%0) // KPH / 293 * 145
-#define VEL_TO_MPS(%0) (54.3297*%0) // (KPH / 3.6)
-#define VEL_TO_KFPM(%0) (10.69482*%0) // K feet per minute (MPS * 3.28084 * 60 / 1000)
-
-#define VEL_TO_KFPMA_VER 1 // change this when the value changes
-#define VEL_TO_KFPMA(%0) (6.11132*%0) // some adjustment (KFPM / 1.75)
+// see sharedsymbols.h / sharedsymbols.pwn
+#define VEL_TO_KTS(%0) (VEL_TO_KTS_VAL*%0)
+#define VEL_TO_KFPMA(%0) (VEL_TO_KFPMA_VAL*%0)
 
 #define PNLTXT_BG 0
 #define PNLTXT_VAI_METER 1
@@ -76,8 +72,8 @@ hook loop100()
 		}
 
 		// VAI
-		#assert VEL_TO_KFPMA_VER == 1
-		vz = clamp(floatround(/*VEL_TO_KFPMA*14.5*/88.61422 * vz), -34, 34)
+		#assert VEL_VER == 2
+		vz = clamp(floatround(/*VEL_TO_KFPMA*14.5*/81.64485 * vz), -34, 34)
 		#define TDVAR tmp
 		new PlayerText:TDVAR = pnltxtvai[playerid]
 		PlayerTextDrawDestroy(playerid, TDVAR)

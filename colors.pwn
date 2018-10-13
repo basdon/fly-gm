@@ -7,6 +7,7 @@
 #define COL_INFO 0x3498dbff
 #define COL_WARN 0xe84c3dff
 #define COL_SUCC 0x2cc36bff
+#define COL_INFO_GENERIC 0xffffffff
 
 #define COL_JOIN 0x1b8ae4ff
 #define COL_QUIT 0x1674Bcff

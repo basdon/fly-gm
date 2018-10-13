@@ -49,6 +49,32 @@ hook loop1s()
 	}
 }
 
+hook OnPlayerCommandTextCase(playerid, cmdtext[])
+{
+	case 1507505: if (IsCommand(cmdtext, "/loc")) {
+		new idx = 4, target = 3;
+		if (!Params_GetPlayer(cmdtext[idx], idx, target)) {
+			SendClientMessage playerid, COL_WARN, WARN"Syntax: /loc [id/part of name]"
+			#return 1
+		}
+		if (target == INVALID_PLAYER_ID) {
+			SendClientMessage playerid, COL_WARN, WARN"That player is not online"
+			#return 1
+		}
+		new vid, model = 0, Float:x, Float:y, Float:z, Float:vx, Float:vy, Float:vz;
+		GetPlayerPos target, x, y, z
+		updatePlayerZoneEx target, x, y, z
+		vid = GetPlayerVehicleID(target)
+		if (vid != 0) {
+			model = GetVehicleModel(vid)
+			GetVehicleVelocity vid, vx, vy, vz
+		}
+		Zones_FormatLoc target, buf4096, z, model, vx, vy, vz
+		SendClientMessage playerid, COL_INFO_GENERIC, buf4096
+		#return 1
+	}
+}
+
 //@summary Checks if a player's zone changed an updates stuff accordingly
 //@param playerid the playerid for which to update their zone
 //@remarks Use {@link updatePlayerZoneEx} if the player's position is already known
