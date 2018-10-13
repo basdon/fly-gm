@@ -249,6 +249,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		SendClientMessageToAll -1, "changing weather"
 		return 1
 	}
+	if (strcicmp("/sound", cmdtext, .length=6) == 0) {
+		PlayerPlaySound playerid, atoi(cmdtext[7]), 0.0, 0.0, 0.0
+		return 1
+	}
 	if (strcicmp("/timex", cmdtext, .length=6) == 0) {
 		SetPlayerTime playerid, atoi(cmdtext[7]), atoi(cmdtext[9])
 		return 1
