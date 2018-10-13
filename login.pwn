@@ -151,7 +151,7 @@ hook OnPlayerText(playerid, text[])
 
 hook OnPlayerCommandTextCase(playerid, cmdtext[])
 {
-	case 258772946: if (IsCommand(cmdtext, "/register")) if (isGuest(playerid)) {
+	case 258772946: if (IsCommand(cmdtext, "/register", idx)) if (isGuest(playerid)) {
 		if (sessionid[playerid] == -1 || userid[playerid] == -1) {
 			ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, REGISTER_CAPTION,
 				""#ECOL_WARN"You are not on an active guest session. Please reconnect if you want to register.", "Ok", ""
@@ -164,7 +164,7 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 		SendClientMessage playerid, COL_WARN, #WARN"You're already registered!"
 		#return 1
 	}
-	case -1292722118: if (!isGuest(playerid) && IsCommand(cmdtext, "/changepassword")) {
+	case -1292722118: if (!isGuest(playerid) && IsCommand(cmdtext, "/changepassword", idx)) {
 		PREP_CHANGEPASSTEXT1
 		ShowPlayerDialog playerid, DIALOG_CHANGEPASS1, DIALOG_STYLE_PASSWORD, CHANGEPASS_CAPTION, CHANGEPASS_TEXT, "Next", "Cancel", TRANSACTION_CHANGEPASS
 		#return 1

@@ -269,6 +269,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 ###include "spawn" // block if not spawned
 ##endsection
 
+	new idx
 	switch (CommandHash(cmdtext)) {
 ##section OnPlayerCommandTextCase
 ###include "login"

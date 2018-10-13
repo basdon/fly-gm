@@ -63,7 +63,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 
 hook OnPlayerCommandTextCase(playerid, cmdtext[])
 {
-	case 2133486927: if (IsCommand(cmdtext, "/nearest")) {
+	case 2133486927: if (IsCommand(cmdtext, "/nearest", idx)) {
 		new Float: x, Float: y, Float:z;
 		GetPlayerPos playerid, x, y, z
 		APT_FormatNearestList playerid, x, y, buf4096
