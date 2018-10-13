@@ -24,11 +24,12 @@ pp = $(sed) -f $(ppfile)
 #FILE dummies
 #FILE airport
 #FILE zones
+#FILE nav
 
 #START
 #S2
 
-build: p/sharedsymbols.p p/zones.p p/airport.p p/dummies.p p/anticheat.p p/timecyc.p p/spawn.p p/dialog.p p/colors.p p/settings.p p/util.p p/login.p p/playername.p p/afk.p p/game_sa.p p/simpleiter.p p/panel.p p/sharedsymbols.p p/natives.p p/basdon.p
+build: p/sharedsymbols.p p/nav.p p/zones.p p/airport.p p/dummies.p p/anticheat.p p/timecyc.p p/spawn.p p/dialog.p p/colors.p p/settings.p p/util.p p/login.p p/playername.p p/afk.p p/game_sa.p p/simpleiter.p p/panel.p p/sharedsymbols.p p/natives.p p/basdon.p
 	@echo.
 
 p/basdon.p: basdon.pwn $(ppfile)
@@ -87,6 +88,9 @@ p/airport.p: airport.pwn $(ppfile)
 
 p/zones.p: zones.pwn $(ppfile)
 	$(pp) zones.pwn>p/zones.p
+
+p/nav.p: nav.pwn $(ppfile)
+	$(pp) nav.pwn>p/nav.p
 
 #S3
 #STOP

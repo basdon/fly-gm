@@ -71,7 +71,7 @@ stock const TXT_EMPTY_CONST[] = "_"
 //@summary {@code "%d"}
 new _pd[] = "%d"
 
-new buf4096[4096], buf64[64], buf32[32], buf32_1[32]
+new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
 
 #define SetPlayerPos SetPlayerPosHook
 
@@ -79,6 +79,7 @@ new buf4096[4096], buf64[64], buf32[32], buf32_1[32]
 ###include "dialog"
 ###include "playername"
 ###include "panel"
+###include "nav"
 ###include "game_sa"
 ###include "afk"
 ###include "login"
@@ -279,6 +280,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 ###include "login"
 ###include "airport"
 ###include "zones"
+###include "nav"
 ##endsection
 	}
 
@@ -420,9 +422,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	return 0
 }
 
+public OnVehicleSpawn(vehicleid)
+{
+##section OnVehicleSpawn
+###include "nav"
+##endsection
+}
+
 #include "anticheat"
 #include "playername" // try to keep this top-ish (for onPlayerNameChange section)
 #include "panel"
+#include "nav"
 #include "timecyc"
 #include "dialog"
 #include "login"

@@ -25,7 +25,7 @@
 #define PNLTXT_HDG_METER 6
 #define PNLTXT_HDG 7
 #define PNLTXT_ADF_DIS 8
-#define PNLTXT_ADF_ETA 9
+#define PNLTXT_ADF_ALT 9
 #define PNLTXT_ADF_CRS 10
 #define PNLTXT_P_TOTAL 11
 
@@ -47,7 +47,7 @@ hook loop100()
 		new playerid = iter_access(panelplayers, _i)
 
 		new vid = GetPlayerVehicleID(playerid)
-		new Float:vx, Float:vy, Float:vz
+		new Float:vx, Float:vy, Float:vz, Float:heading
 
 		// ALT
 		GetVehiclePos vid, vx, vy, vz
@@ -59,6 +59,17 @@ hook loop100()
 			if (buf44[0]) {
 				PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ALT_METER], buf44
 			}
+		}
+
+		// HDG
+		GetVehicleZAngle(vid, heading)
+		if (Panel_FormatHeading(playerid, floatround(heading), buf4, buf44)) {
+			PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_HDG], buf4
+			PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_HDG_METER], buf44
+		}
+
+		if (GetPlayerState(playerid) == PLAYER_STATE_DRIVER) {
+			Nav_Update vid, vy, vy, vz, heading
 		}
 
 		// SPD
@@ -89,13 +100,6 @@ hook loop100()
 		PlayerTextDrawSetShadow(playerid, TDVAR, 0)
 		PlayerTextDrawShow(playerid, TDVAR)
 		#undef TDVAR
-
-		// HDG
-		GetVehicleZAngle(vid, vz)
-		if (Panel_FormatHeading(playerid, floatround(vz), buf4, buf44)) {
-			PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_HDG], buf4
-			PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_HDG_METER], buf44
-		}
 	}
 }
 
@@ -237,7 +241,7 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawSetOutline(playerid, TDVAR, 0);
 #undef TDVAR
 
-#define TDVAR playerpnltxt[playerid][PNLTXT_ADF_ETA]
+#define TDVAR playerpnltxt[playerid][PNLTXT_ADF_ALT]
 	TDVAR = CreatePlayerTextDraw(playerid, 330.0, 360.0, "-");
 	PlayerTextDrawAlignment(playerid, TDVAR, 2);
 	PlayerTextDrawFont(playerid, TDVAR, 2);
@@ -309,7 +313,7 @@ hook OnGameModeInit()
 #undef TDVAR
 
 #define TDVAR pnltxt[PNLTXT_ADF]
-	TDVAR = TextDrawCreate(227.0, 360.0, "DIS_______________ETA_______________CRS");
+	TDVAR = TextDrawCreate(227.0, 360.0, "DIS_______________ALT_______________CRS");
 	TextDrawFont(TDVAR, 2);
 	TextDrawLetterSize(TDVAR, 0.25, 1.0);
 	TextDrawColor(TDVAR, 0xFFFFFFFF);
