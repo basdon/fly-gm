@@ -24,7 +24,10 @@
 #define PNLTXT_ALT 5
 #define PNLTXT_HDG_METER 6
 #define PNLTXT_HDG 7
-#define PNLTXT_P_TOTAL 8
+#define PNLTXT_ADF_DIS 8
+#define PNLTXT_ADF_ETA 9
+#define PNLTXT_ADF_CRS 10
+#define PNLTXT_P_TOTAL 11
 
 varinit
 {
@@ -98,16 +101,17 @@ hook loop100()
 
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
-	if (newstate == PLAYER_STATE_DRIVER && isInAirVehicle(playerid)) {
+	if ((newstate == PLAYER_STATE_DRIVER || newstate == PLAYER_STATE_PASSENGER) && isInAirVehicle(playerid)) {
 		pnltxtvai[playerid] = CreatePlayerTextDraw(playerid, -10.0, -10.0, "_")
 		for (new i = 0; i < sizeof(pnltxt); i++) TextDrawShowForPlayer playerid, pnltxt[i]
 		for (new i = 0; i < sizeof(playerpnltxt[]); i++) PlayerTextDrawShow playerid, playerpnltxt[playerid][i]
 		iter_add(panelplayers, playerid)
-	} else if (oldstate == PLAYER_STATE_DRIVER) {
+	} else if (_:pnltxtvai[playerid] != -1) {
 		for (new i = 0; i < sizeof(pnltxt); i++) TextDrawHideForPlayer playerid, pnltxt[i]
 		for (new i = 0; i < sizeof(playerpnltxt[]); i++) PlayerTextDrawHide playerid, playerpnltxt[playerid][i]
 		iter_remove(panelplayers, playerid)
 		PlayerTextDrawDestroy(playerid, pnltxtvai[playerid])
+		pnltxtvai[playerid] = PlayerText:-1
 	}
 }
 
@@ -131,6 +135,7 @@ hook OnPlayerDisconnect(playerid)
 hook OnPlayerConnect(playerid)
 {
 	Panel_ResetCaches playerid
+	pnltxtvai[playerid] = PlayerText:-1
 
 #define METER_COLOR 0x989898FF
 #define METER2_COLOR 0x585858FF
@@ -222,6 +227,33 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawSetShadow(playerid, TDVAR, 0);
 	PlayerTextDrawSetProportional(playerid, TDVAR, 0);
 #undef TDVAR
+
+#define TDVAR playerpnltxt[playerid][PNLTXT_ADF_DIS]
+	TDVAR = CreatePlayerTextDraw(playerid, 265.0, 360.0, "-");
+	PlayerTextDrawAlignment(playerid, TDVAR, 2);
+	PlayerTextDrawFont(playerid, TDVAR, 2);
+	PlayerTextDrawLetterSize(playerid, TDVAR, 0.25, 1.0);
+	PlayerTextDrawColor(playerid, TDVAR, 0xff00ffff);
+	PlayerTextDrawSetOutline(playerid, TDVAR, 0);
+#undef TDVAR
+
+#define TDVAR playerpnltxt[playerid][PNLTXT_ADF_ETA]
+	TDVAR = CreatePlayerTextDraw(playerid, 330.0, 360.0, "-");
+	PlayerTextDrawAlignment(playerid, TDVAR, 2);
+	PlayerTextDrawFont(playerid, TDVAR, 2);
+	PlayerTextDrawLetterSize(playerid, TDVAR, 0.25, 1.0);
+	PlayerTextDrawColor(playerid, TDVAR, 0xff00ffff);
+	PlayerTextDrawSetOutline(playerid, TDVAR, 0);
+#undef TDVAR
+
+#define TDVAR playerpnltxt[playerid][PNLTXT_ADF_CRS]
+	TDVAR = CreatePlayerTextDraw(playerid, 395.0, 360.0, "-");
+	PlayerTextDrawAlignment(playerid, TDVAR, 2);
+	PlayerTextDrawFont(playerid, TDVAR, 2);
+	PlayerTextDrawLetterSize(playerid, TDVAR, 0.25, 1.0);
+	PlayerTextDrawColor(playerid, TDVAR, 0xff00ffff);
+	PlayerTextDrawSetOutline(playerid, TDVAR, 0);
+#undef TDVAR
 }
 
 hook OnGameModeInit()
@@ -277,8 +309,7 @@ hook OnGameModeInit()
 #undef TDVAR
 
 #define TDVAR pnltxt[PNLTXT_ADF]
-	TDVAR = TextDrawCreate(320.0, 360.0, "DIS_________________ETA_________________CRS________");
-	TextDrawAlignment(TDVAR, 2);
+	TDVAR = TextDrawCreate(227.0, 360.0, "DIS_______________ETA_______________CRS");
 	TextDrawFont(TDVAR, 2);
 	TextDrawLetterSize(TDVAR, 0.25, 1.0);
 	TextDrawColor(TDVAR, 0xFFFFFFFF);
