@@ -85,6 +85,14 @@ hook OnPlayerDeath(playerid, killerid, reason)
 	spawned[playerid] = 0
 }
 
+hook OnPlayerCommandText(playerid, cmdtext[])
+{
+	if (!isSpawned(playerid)) {
+		SendClientMessage playerid, COL_WARN, WARN"You can't use commands when not spawned."
+		#return 1
+	}
+}
+
 //@summary Class names, used for class selection
 #assert SPAWN_ORDER_VER == 1
 stock const SPAWN_CLASSNAMES[] = "~p~Pilot\0~y~Trucker\0~b~~h~~h~Rescue worker\0~g~~h~Army\0~r~~h~~h~Aid worker"
