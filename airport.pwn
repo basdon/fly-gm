@@ -70,6 +70,11 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 		ShowPlayerDialog playerid, DIALOG_NEAREST, DIALOG_STYLE_TABLIST, "Nearest airports", buf4096, "Info", "Close"
 		#return 1
 	}
+	case 72939936: if (IsCommand(cmdtext, "/beacons", idx)) {
+		APT_FormatBeaconList buf4096
+		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, "Beacons", buf4096, "Close", ""
+		#return 1
+	}
 }
 
 #printhookguards

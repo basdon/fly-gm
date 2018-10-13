@@ -53,7 +53,7 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 {
 	case 1507505: if (IsCommand(cmdtext, "/loc", idx)) {
 		new target;
-		if (!Params_GetPlayer(cmdtext[idx], idx, target)) {
+		if (!Params_GetPlayer(cmdtext, idx, target)) {
 			SendClientMessage playerid, COL_WARN, WARN"Syntax: /loc [id/part of name]"
 			#return 1
 		}
