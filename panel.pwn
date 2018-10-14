@@ -39,10 +39,9 @@ varinit
 
 hook loop100()
 {
-	static buf4[5] // value (spd, alt)
-	static buf13[14] // small meter (spd, alt)
-	static buf44[45] // large meter (spd, alt)
-
+#define buf4 buf32
+#define buf13 buf32_1
+#define buf44 buf64
 	for (new _i : panelplayers) {
 		new playerid = iter_access(panelplayers, _i)
 
@@ -101,6 +100,9 @@ hook loop100()
 		PlayerTextDrawShow(playerid, TDVAR)
 		#undef TDVAR
 	}
+#undef buf4
+#undef buf13
+#undef buf44
 }
 
 hook OnPlayerStateChange(playerid, newstate, oldstate)
