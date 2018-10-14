@@ -3,7 +3,8 @@
 
 #namespace "nav"
 
-#define SOUND_NAV_SET 1057
+#define SOUND_NAV_SET 1083
+#define SOUND_NAV_DEL 1084
 
 varinit
 {
@@ -17,13 +18,18 @@ hook OnVehicleSpawn(vehicleid)
 hook OnPlayerCommandTextCase(playerid, cmdtext[])
 {
 	case 1496596: if (IsCommand(cmdtext, "/adf", idx)) {
-		if (!Params_GetString(cmdtext, idx, buf144)) {
-			SendClientMessage playerid, COL_WARN, WARN"Syntax: /adf [beacon] - see /beacons or /nearest"
-			#return 1
-		}
 		new vid = GetPlayerVehicleID(playerid)
 		if (vid == 0 || !IsAirVehicle(GetVehicleModel(vid))) {
 			SendClientMessage playerid, COL_WARN, WARN"You're not in an ADF capable vehicle"
+			#return 1
+		}
+		if (!Params_GetString(cmdtext, idx, buf144)) {
+			if (Nav_Reset(vid)) {
+				PlayerPlaySound playerid, SOUND_NAV_DEL, 0.0, 0.0, 0.0
+				panel_resetNavForPassengers vid
+			} else {
+				SendClientMessage playerid, COL_WARN, WARN"Syntax: /adf [beacon] - see /beacons or /nearest"
+			}
 			#return 1
 		}
 		if (GetPlayerState(playerid) != PLAYER_STATE_DRIVER) {

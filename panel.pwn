@@ -35,6 +35,7 @@ varinit
 	new PlayerText:playerpnltxt[MAX_PLAYERS][PNLTXT_P_TOTAL]
 	new PlayerText:pnltxtvai[MAX_PLAYERS]
 	new Iter:panelplayers[MAX_PLAYERS]
+#define isPanelActive(%0) (_:pnltxtvai[playerid] != -1)
 }
 
 hook loop100()
@@ -68,7 +69,19 @@ hook loop100()
 		}
 
 		if (GetPlayerState(playerid) == PLAYER_STATE_DRIVER) {
-			Nav_Update vid, vy, vy, vz, heading
+			Nav_Update vid, vx, vy, vz, heading
+		}
+
+		if (Nav_Format(playerid, vid, buf32, buf32_1, buf64)) {
+			if (buf32[0]) {
+				PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ADF_DIS], buf32
+			}
+			if (buf32_1[0]) {
+				PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ADF_ALT], buf32_1
+			}
+			if (buf64[0]) {
+				PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ADF_CRS], buf64
+			}
 		}
 
 		// SPD
@@ -112,7 +125,8 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 		for (new i = 0; i < sizeof(pnltxt); i++) TextDrawShowForPlayer playerid, pnltxt[i]
 		for (new i = 0; i < sizeof(playerpnltxt[]); i++) PlayerTextDrawShow playerid, playerpnltxt[playerid][i]
 		iter_add(panelplayers, playerid)
-	} else if (_:pnltxtvai[playerid] != -1) {
+		panel_resetNav playerid
+	} else if (isPanelActive(playerid)) {
 		for (new i = 0; i < sizeof(pnltxt); i++) TextDrawHideForPlayer playerid, pnltxt[i]
 		for (new i = 0; i < sizeof(playerpnltxt[]); i++) PlayerTextDrawHide playerid, playerpnltxt[playerid][i]
 		iter_remove(panelplayers, playerid)
@@ -241,6 +255,7 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawLetterSize(playerid, TDVAR, 0.25, 1.0);
 	PlayerTextDrawColor(playerid, TDVAR, 0xff00ffff);
 	PlayerTextDrawSetOutline(playerid, TDVAR, 0);
+	PlayerTextDrawSetShadow(playerid, TDVAR, 0);
 #undef TDVAR
 
 #define TDVAR playerpnltxt[playerid][PNLTXT_ADF_ALT]
@@ -250,6 +265,7 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawLetterSize(playerid, TDVAR, 0.25, 1.0);
 	PlayerTextDrawColor(playerid, TDVAR, 0xff00ffff);
 	PlayerTextDrawSetOutline(playerid, TDVAR, 0);
+	PlayerTextDrawSetShadow(playerid, TDVAR, 0);
 #undef TDVAR
 
 #define TDVAR playerpnltxt[playerid][PNLTXT_ADF_CRS]
@@ -259,6 +275,7 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawLetterSize(playerid, TDVAR, 0.25, 1.0);
 	PlayerTextDrawColor(playerid, TDVAR, 0xff00ffff);
 	PlayerTextDrawSetOutline(playerid, TDVAR, 0);
+	PlayerTextDrawSetShadow(playerid, TDVAR, 0);
 #undef TDVAR
 }
 
@@ -324,6 +341,28 @@ hook OnGameModeInit()
 	TextDrawSetProportional(TDVAR, 1);
 #undef TDVAR
 
+}
+
+//@summary Resets nav indicators for a player
+//@param playerid player to reset indicators for
+panel_resetNav(playerid)
+{
+	if (isPanelActive(playerid)) {
+		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ADF_DIS], "-"
+		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ADF_ALT], "-"
+		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ADF_CRS], "-"
+	}
+}
+
+//@summary Resets nav indicators for all players in given vehicle
+//@param vehicleid vehicle of which all passengers' nav should reset
+panel_resetNavForPassengers(vehicleid)
+{
+	foreach (new playerid : players) {
+		if (GetPlayerVehicleID(playerid) == vehicleid) {
+			panel_resetNav(playerid)
+		}
+	}
 }
 
 #printhookguards
