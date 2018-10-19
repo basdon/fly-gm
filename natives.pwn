@@ -53,6 +53,16 @@ native Panel_FormatHeading(playerid, heading, buf4[], buf44[])
 //@returns {@code 0} if the model given is not an air vehicle
 native IsAirVehicle(model)
 
+//@summary Checks if a vehicle with specified model is a heli
+//@param model the model of the vehicle to check, {@b MUST} be either a valid model or {@code 0}
+//@returns {@code 0} if the model given is not a heli
+native IsHelicopter(model)
+
+//@summary Checks if a vehicle with specified model is a plane
+//@param model the model of the vehicle to check, {@b MUST} be either a valid model or {@code 0}
+//@returns {@code 0} if the model given is not a plane
+native IsPlane(model)
+
 //@summary Store password hash to confirm it later using {@link ValidatePasswordConfirmData}
 //@param playerid the player for which to store the hash
 //@param pwhash the hash to store
@@ -315,6 +325,22 @@ native Nav_Reset(vehicleid)
 //@param beacon beacon to navigate to
 //@returns {@code 0} if the beacon is not known
 native Nav_EnableADF(vehicleid, beacon[])
+
+//@summary Enables VOR navigation for a vehicle
+//@param vehicleid vehicle to enable VOR for
+//@param cmdtext beacon+runway to navigate to (optionally prepended by whitespace and white space between beacon and runway)
+//@param buf64 buffer to store any more return data in, see remarks
+//@returns {@code 0} if the beacon/runway combination is not known, error message will be in {@param buf64}
+//@remarks If the return value is {@code 0}, the first cell in {@param buf64} will note extra info.
+/// <remarks>
+///   <b>first cell value:</b><p/>
+///   <ul>
+///     <li><b><c>0</c></b> - command syntax error</li>
+///     <li><b><c>1</c></b> - VOR is now disabled</li>
+///     <li><b><c>anything else</c></b> - <paramref name="buf64"/> contains a custom error message string</li>
+///   </ul>
+/// </remarks>
+native Nav_EnableVOR(vehicleid, cmdtext[], buf64[])
 
 //@summary Update nav for vehicle
 //@param vehicleid vehicle to update nav for

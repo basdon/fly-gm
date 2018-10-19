@@ -84,6 +84,8 @@ hook loop100()
 			}
 		}
 
+		// VOR needle offset = 85
+
 		// SPD
 		GetVehicleVelocity vid, vx, vy, vz
 		vx = VEL_TO_KTS(VectorSize(vx, vy, vz))
