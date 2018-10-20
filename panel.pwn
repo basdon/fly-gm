@@ -12,7 +12,8 @@
 #define PNLTXT_BG_SPD 2
 #define PNLTXT_BG_ALT 3
 #define PNLTXT_ADF 4
-#define PNLTXT_G_TOTAL 5
+#define PNLTXT_VORBAR 5
+#define PNLTXT_G_TOTAL 6
 
 // METER = overview meters (SPD, ALT, HDG)
 // METER2 = extra small (SPD & ALT) meters
@@ -34,6 +35,7 @@ varinit
 	new Text:pnltxt[PNLTXT_G_TOTAL]
 	new PlayerText:playerpnltxt[MAX_PLAYERS][PNLTXT_P_TOTAL]
 	new PlayerText:pnltxtvai[MAX_PLAYERS]
+	new PlayerText:pnltxtvor[MAX_PLAYERS]
 	new Iter:panelplayers[MAX_PLAYERS]
 #define isPanelActive(%0) (_:pnltxtvai[playerid] != -1)
 }
@@ -72,7 +74,7 @@ hook loop100()
 			Nav_Update vid, vx, vy, vz, heading
 		}
 
-		if (Nav_Format(playerid, vid, buf32, buf32_1, buf64)) {
+		if (Nav_Format(playerid, vid, buf32, buf32_1, buf64, vx)) {
 			if (buf32[0]) {
 				PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ADF_DIS], buf32
 			}
@@ -82,9 +84,25 @@ hook loop100()
 			if (buf64[0]) {
 				PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ADF_CRS], buf64
 			}
+#define TDVAR pnltxtvor[playerid]
+			if (_:TDVAR != -1) {
+				PlayerTextDrawDestroy(playerid, TDVAR)
+			}
+			if (vx < 640.0) {
+				TDVAR = CreatePlayerTextDraw(playerid, vx, 407.0, "i")
+				PlayerTextDrawAlignment(playerid, TDVAR, 2)
+				PlayerTextDrawFont(playerid, TDVAR, 2)
+				PlayerTextDrawLetterSize(playerid, TDVAR, 0.4, 1.6)
+				PlayerTextDrawColor(playerid, TDVAR, 0xff00ffff)
+				PlayerTextDrawSetOutline(playerid, TDVAR, 0)
+				PlayerTextDrawSetProportional(playerid, TDVAR, 1)
+				PlayerTextDrawSetShadow(playerid, TDVAR, 0)
+				PlayerTextDrawShow(playerid, TDVAR)
+			} else {
+				TDVAR = PlayerText:-1;
+			}
+#undef TDVAR
 		}
-
-		// VOR needle offset = 85
 
 		// SPD
 		GetVehicleVelocity vid, vx, vy, vz
@@ -134,6 +152,10 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 		iter_remove(panelplayers, playerid)
 		PlayerTextDrawDestroy(playerid, pnltxtvai[playerid])
 		pnltxtvai[playerid] = PlayerText:-1
+		if (_:pnltxtvor[playerid] != -1) {
+			PlayerTextDrawDestroy(playerid, pnltxtvor[playerid])
+			pnltxtvor[playerid] = PlayerText:-1
+		}
 	}
 }
 
@@ -158,6 +180,7 @@ hook OnPlayerConnect(playerid)
 {
 	Panel_ResetCaches playerid
 	pnltxtvai[playerid] = PlayerText:-1
+	pnltxtvor[playerid] = PlayerText:-1
 
 #define METER_COLOR 0x989898FF
 #define METER2_COLOR 0x585858FF
@@ -343,6 +366,19 @@ hook OnGameModeInit()
 	TextDrawSetProportional(TDVAR, 1);
 #undef TDVAR
 
+#define TDVAR pnltxt[PNLTXT_VORBAR]
+	TDVAR = TextDrawCreate(320.0, 410.0, "O_____O_____O_____-_____O_____O_____O")
+	TextDrawFont(TDVAR, 1)
+	TextDrawAlignment(TDVAR, 2)
+	TextDrawLetterSize(TDVAR, 0.25, 1.0)
+	TextDrawColor(TDVAR, 0xFFFFFFFF)
+	TextDrawSetOutline(TDVAR, 0)
+	TextDrawSetShadow(TDVAR, 0)
+	TextDrawSetProportional(TDVAR, 1)
+	TextDrawUseBox(TDVAR, 1)
+	TextDrawBoxColor(TDVAR, 0x66)
+	TextDrawTextSize(TDVAR, 0.0, 170.0)
+#undef TDVAR
 }
 
 //@summary Resets nav indicators for a player
