@@ -299,7 +299,7 @@ public OnPlayerText(playerid, text[])
 }
 
 //@summary Called when a player goes afk
-//@summary playerid the playerid that went afk
+//@param playerid the playerid that went afk
 //@remarks {@b A player is also marked afk when they are not spawned (dead or in class select)!}
 //@seealso onPlayerWasAfk
 //@seealso isAfk
@@ -312,7 +312,7 @@ onPlayerNowAfk(playerid)
 }
 
 //@summary Gets called when a player comes back from being afk
-//@summary playerid the playerid that is now back
+//@param playerid the playerid that is now back
 //@remarks {@b A player is also marked afk when they are not spawned (dead or in class select)!}
 //@seealso onPlayerNowAfk
 //@seealso isAfk
@@ -352,7 +352,8 @@ public OnGameModeInit()
 
 	AddStaticVehicle(MODEL_HYDRA + 1, 1477.4471, 1220.7747, 10.8281, 0.0, 0, 0)
 	AddStaticVehicle(MODEL_HYDRA, 1477.4471, 1240.7747, 10.8281, 0.0, 0, 0)
-	AddStaticVehicle(MODEL_DODO, 1477.4471, 1254.7747, 10.8281, 0.0, 0, 0)
+	AddStaticVehicle(MODEL_DODO, 1477.4471, 1260.7747, 10.8281, 0.0, 0, 0)
+	AddStaticVehicle(MODEL_MAVERICK, 1477.4471, 1280.7747, 10.8281, 0.0, 0, 0)
 
 ##section OnGameModeInit
 ###include "panel"

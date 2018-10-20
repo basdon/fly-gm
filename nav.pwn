@@ -41,6 +41,7 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 			#return 1
 		}
 		PlayerPlaySound playerid, SOUND_NAV_SET, 0.0, 0.0, 0.0
+		panel_hideVorBarForPassengers vid
 		#return 1
 	}
 	case 1517130: if (IsCommand(cmdtext, "/vor", idx)) {
@@ -61,6 +62,7 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 			#return 1
 		}
 		PlayerPlaySound playerid, SOUND_NAV_SET, 0.0, 0.0, 0.0
+		panel_showVorBarForPassengers vid
 		#return 1
 	}
 	case 1504545: if (IsCommand(cmdtext, "/ils", idx)) {

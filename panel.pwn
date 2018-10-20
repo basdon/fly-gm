@@ -12,8 +12,7 @@
 #define PNLTXT_BG_SPD 2
 #define PNLTXT_BG_ALT 3
 #define PNLTXT_ADF 4
-#define PNLTXT_VORBAR 5
-#define PNLTXT_G_TOTAL 6
+#define PNLTXT_G_TOTAL 5
 
 // METER = overview meters (SPD, ALT, HDG)
 // METER2 = extra small (SPD & ALT) meters
@@ -33,6 +32,7 @@
 varinit
 {
 	new Text:pnltxt[PNLTXT_G_TOTAL]
+	new Text:vorbar
 	new PlayerText:playerpnltxt[MAX_PLAYERS][PNLTXT_P_TOTAL]
 	new PlayerText:pnltxtvai[MAX_PLAYERS]
 	new PlayerText:pnltxtvor[MAX_PLAYERS]
@@ -146,9 +146,13 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 		for (new i = 0; i < sizeof(playerpnltxt[]); i++) PlayerTextDrawShow playerid, playerpnltxt[playerid][i]
 		iter_add(panelplayers, playerid)
 		panel_resetNav playerid
+		if (Nav_GetActiveNavType(GetPlayerVehicleID(playerid)) == NAV_VOR) {
+			TextDrawShowForPlayer playerid, vorbar
+		}
 	} else if (isPanelActive(playerid)) {
 		for (new i = 0; i < sizeof(pnltxt); i++) TextDrawHideForPlayer playerid, pnltxt[i]
 		for (new i = 0; i < sizeof(playerpnltxt[]); i++) PlayerTextDrawHide playerid, playerpnltxt[playerid][i]
+		TextDrawHideForPlayer playerid, vorbar
 		iter_remove(panelplayers, playerid)
 		PlayerTextDrawDestroy(playerid, pnltxtvai[playerid])
 		pnltxtvai[playerid] = PlayerText:-1
@@ -366,7 +370,7 @@ hook OnGameModeInit()
 	TextDrawSetProportional(TDVAR, 1);
 #undef TDVAR
 
-#define TDVAR pnltxt[PNLTXT_VORBAR]
+#define TDVAR vorbar
 	TDVAR = TextDrawCreate(320.0, 410.0, "O_____O_____O_____-_____O_____O_____O")
 	TextDrawFont(TDVAR, 1)
 	TextDrawAlignment(TDVAR, 2)
@@ -389,6 +393,34 @@ panel_resetNav(playerid)
 		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ADF_DIS], "-"
 		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ADF_ALT], "-"
 		PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ADF_CRS], "-"
+		if (_:pnltxtvor[playerid] != -1) {
+			PlayerTextDrawDestroy playerid, pnltxtvor[playerid]
+			pnltxtvor[playerid] = PlayerText:-1
+		}
+		TextDrawHideForPlayer playerid, vorbar
+		Nav_ResetCache playerid
+	}
+}
+
+//@summary Shows the VOR bar for passengers of given vehicle
+//@param vehicleid vehicle of which all passengers' VOR bar should be shown
+panel_showVorBarForPassengers(vehicleid)
+{
+	foreach (new playerid : players) {
+		if (GetPlayerVehicleID(playerid) == vehicleid) {
+			TextDrawShowForPlayer playerid, vorbar
+		}
+	}
+}
+
+//@summary Hides the VOR bar for passengers of given vehicle
+//@param vehicleid vehicle of which all passengers' VOR bar should be hidden
+panel_hideVorBarForPassengers(vehicleid)
+{
+	foreach (new playerid : players) {
+		if (GetPlayerVehicleID(playerid) == vehicleid) {
+			TextDrawHideForPlayer playerid, vorbar
+		}
 	}
 }
 
