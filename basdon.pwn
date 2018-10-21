@@ -78,6 +78,7 @@ new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
 
 ##section varinit
 ###include "dialog"
+###include "generalcmds"
 ###include "playername"
 ###include "panel"
 ###include "game_sa"
@@ -138,6 +139,7 @@ public OnPlayerConnect(playerid)
 ##section OnPlayerConnect
 ###include "dialog" // keep this first
 ###include "playername" // keep this second
+###include "generalcmds"
 ###include "login"
 ###include "panel"
 ###include "spawn"
@@ -153,6 +155,7 @@ public OnPlayerConnect(playerid)
 public OnPlayerDisconnect(playerid, reason)
 {
 ##section OnPlayerDisconnect
+###include "generalcmds"
 ###include "login"
 ###include "spawn"
 ###include "panel"
@@ -281,6 +284,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 ###include "airport"
 ###include "zones"
 ###include "nav"
+###include "generalcmds"
 ##endsection
 	}
 
@@ -433,6 +437,7 @@ public OnVehicleSpawn(vehicleid)
 
 #include "anticheat"
 #include "playername" // try to keep this top-ish (for onPlayerNameChange section)
+#include "generalcmds"
 #include "panel"
 #include "nav"
 #include "timecyc"

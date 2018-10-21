@@ -8,6 +8,8 @@
 #define COL_WARN 0xe84c3dff
 #define COL_SUCC 0x2cc36bff
 #define COL_INFO_GENERIC 0xffffffff
+#define COL_PRIVMSG 0xffff00ff
+#define COL_PRIVMSG_HINT 0xafafafff
 
 #define COL_JOIN 0x1b8ae4ff
 #define COL_QUIT 0x1674Bcff
