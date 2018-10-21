@@ -37,6 +37,9 @@ msg_synerr:
 			WARNMSG("That player is not online")
 			#return 1
 		}
+		while (cmdtext[idx] == ' ') {
+			idx++
+		}
 		if (cmdtext[idx] == 0) {
 			goto msg_synerr
 		}
@@ -44,6 +47,13 @@ msg_synerr:
 		#return 1
 	}
 	case 1571: if (IsCommand(cmdtext, "/r", idx)) {
+		while (cmdtext[idx] == ' ') {
+			idx++
+		}
+		if (cmdtext[idx] == 0) {
+			WARNMSG("Syntax: /r [message]")
+			#return 1
+		}
 		switch (lastpmtarget[playerid]) {
 		case LAST_PMTARGET_NOBODY: WARNMSG("Nobody has sent you a PM yet! Use /pm [id/name] [message]")
 		case LAST_PMTARGET_INVALID: WARNMSG("The person who last sent you a PM has gone away")
