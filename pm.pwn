@@ -1,7 +1,7 @@
 
 // vim: set filetype=c ts=8 noexpandtab:
 
-#namespace "gcmds"
+#namespace "pm"
 
 varinit
 {

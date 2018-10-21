@@ -78,12 +78,12 @@ new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
 
 ##section varinit
 ###include "dialog"
-###include "generalcmds"
 ###include "playername"
 ###include "panel"
 ###include "game_sa"
 ###include "afk"
 ###include "login"
+###include "pm"
 ###include "spawn"
 ###include "timecyc"
 ###include "anticheat"
@@ -139,13 +139,13 @@ public OnPlayerConnect(playerid)
 ##section OnPlayerConnect
 ###include "dialog" // keep this first
 ###include "playername" // keep this second
-###include "generalcmds"
 ###include "login"
 ###include "panel"
 ###include "spawn"
 ###include "timecyc"
 ###include "anticheat"
 ###include "afk"
+###include "pm"
 ###include "zones"
 ##endsection
 
@@ -155,7 +155,6 @@ public OnPlayerConnect(playerid)
 public OnPlayerDisconnect(playerid, reason)
 {
 ##section OnPlayerDisconnect
-###include "generalcmds"
 ###include "login"
 ###include "spawn"
 ###include "panel"
@@ -163,6 +162,7 @@ public OnPlayerDisconnect(playerid, reason)
 ###include "dialog"
 ###include "airport"
 ###include "playername"
+###include "pm"
 ##endsection
 	iter_remove(players, playerid)
 	iter_remove(allplayers, playerid)
@@ -282,9 +282,9 @@ public OnPlayerCommandText(playerid, cmdtext[])
 ##section OnPlayerCommandTextCase
 ###include "login"
 ###include "airport"
-###include "zones"
 ###include "nav"
-###include "generalcmds"
+###include "pm"
+###include "zones"
 ##endsection
 	}
 
@@ -437,7 +437,6 @@ public OnVehicleSpawn(vehicleid)
 
 #include "anticheat"
 #include "playername" // try to keep this top-ish (for onPlayerNameChange section)
-#include "generalcmds"
 #include "panel"
 #include "nav"
 #include "timecyc"
@@ -445,6 +444,7 @@ public OnVehicleSpawn(vehicleid)
 #include "login"
 #include "game_sa"
 #include "afk"
+#include "pm"
 #include "spawn"
 #include "airport"
 #include "zones"
