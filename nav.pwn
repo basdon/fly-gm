@@ -23,21 +23,17 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 			WARNMSG("Only the pilot can change navigation settings")
 			#return 1
 		}
-		if (!Params_GetString(cmdtext, idx, buf144)) {
-			if (Nav_Reset(vid)) {
-				PlayerPlaySound playerid, SOUND_NAV_DEL, 0.0, 0.0, 0.0
-				panel_resetNavForPassengers vid
-			} else {
-				WARNMSG("Syntax: /adf [beacon] - see /beacons or /nearest")
-			}
-			#return 1
+		switch (Nav_EnableADF(vid, cmdtext[idx], buf64)) {
+		case RESULT_ADF_OFF: {
+			PlayerPlaySound playerid, SOUND_NAV_DEL, 0.0, 0.0, 0.0
+			panel_resetNavForPassengers vid
 		}
-		if (!Nav_EnableADF(vid, buf144)) {
-			WARNMSG("Unknown beacon - see /beacons or /nearest")
-			#return 1
+		case RESULT_ADF_ON: {
+			PlayerPlaySound playerid, SOUND_NAV_SET, 0.0, 0.0, 0.0
+			panel_hideVorBarForPassengers vid
 		}
-		PlayerPlaySound playerid, SOUND_NAV_SET, 0.0, 0.0, 0.0
-		panel_hideVorBarForPassengers vid
+		case RESULT_ADF_ERR: SendClientMessage playerid, COL_WARN, buf64
+		}
 		#return 1
 	}
 	case 1517130: if (IsCommand(cmdtext, "/vor", idx)) {
