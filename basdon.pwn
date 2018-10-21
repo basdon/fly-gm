@@ -40,6 +40,7 @@
 #define FLOAT_PINF (Float:0x7F800000)
 #define FLOAT_NINF (Float:0xFF800000)
 #define FLOAT_NAN (Float:0xFF800001)
+#define WARNMSG(%0) SendClientMessage(playerid, COL_WARN, WARN%0)
 
 // public symbols
 #define PUB_LOOP25 a // main
@@ -79,7 +80,6 @@ new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
 ###include "dialog"
 ###include "playername"
 ###include "panel"
-###include "nav"
 ###include "game_sa"
 ###include "afk"
 ###include "login"
@@ -354,6 +354,7 @@ public OnGameModeInit()
 	AddStaticVehicle(MODEL_HYDRA, 1477.4471, 1240.7747, 10.8281, 0.0, 0, 0)
 	AddStaticVehicle(MODEL_DODO, 1477.4471, 1260.7747, 10.8281, 0.0, 0, 0)
 	AddStaticVehicle(MODEL_MAVERICK, 1477.4471, 1280.7747, 10.8281, 0.0, 0, 0)
+	AddStaticVehicle(MODEL_ANDROM, 1477.4471, 1310.7747, 10.8281, 0.0, 0, 0)
 
 ##section OnGameModeInit
 ###include "panel"
