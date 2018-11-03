@@ -437,9 +437,9 @@ public OnVehicleSpawn(vehicleid)
 
 #include "anticheat"
 #include "playername" // try to keep this top-ish (for onPlayerNameChange section)
+#include "timecyc" // also try to keep this top-ish (because 1s 30s loop hooks)
 #include "panel"
 #include "nav"
-#include "timecyc"
 #include "dialog"
 #include "login"
 #include "game_sa"

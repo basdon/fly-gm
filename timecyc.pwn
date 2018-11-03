@@ -58,10 +58,21 @@ hook OnGameModeInit()
 
 hook loop100()
 {
+// very ew, but if @loop100 is defined, other loophooks in here might get confused, so temp undefine it
+#ifndef @loop100
+#error "in loop100 but no @loop100 defined"
+#endif
+#undef @loop100
+
 	new time = gettime() // TODO this can be used as time cache?
 	if (time > lasttime) {
 ##section loop1s
-###include "zones"
+##endsection
+##section loop1splayers
+	foreach (new playerid : players) {
+##include "zones"
+
+	}
 ##endsection
 		if (++time_s >= 60) {
 			time_s = 0
@@ -84,7 +95,8 @@ hook loop100()
 			}
 loop30s:
 ##section loop30s
-###include "login"
+##include "login"
+
 ##endsection
 		}
 #ifdef TIMECYC_OVERLAY_CLOCK
@@ -94,6 +106,9 @@ loop30s:
 #endif
 		lasttime = time
 	}
+
+// restore actual hook
+#define @loop100
 }
 
 hook OnPlayerConnect(playerid)

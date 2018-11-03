@@ -40,12 +40,10 @@ hook onSetPlayerPos(playerid, Float:x, Float:y, Float:z)
 	updatePlayerZoneEx playerid, x, y, z
 }
 
-hook loop1s()
+hook loop1splayers()
 {
-	foreach (new playerid : players) {
-		if (!isAfk(playerid)) {
-			updatePlayerZone playerid
-		}
+	if (!isAfk(playerid)) {
+		updatePlayerZone playerid
 	}
 }
 
