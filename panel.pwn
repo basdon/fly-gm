@@ -74,7 +74,7 @@ hook loop100()
 			Nav_Update vid, vx, vy, vz, heading
 		}
 
-		if (Nav_Format(playerid, vid, buf32, buf32_1, buf64, vx)) {
+		if (Nav_Format(playerid, vid, buf32, buf32_1, buf64, buf144, vx)) {
 			if (buf32[0]) {
 				PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ADF_DIS], buf32
 			}
@@ -83,6 +83,9 @@ hook loop100()
 			}
 			if (buf64[0]) {
 				PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_ADF_CRS], buf64
+			}
+			if (buf144[0]) {
+				GameTextForPlayer playerid, buf144, 200, 6
 			}
 #define TDVAR pnltxtvor[playerid]
 			if (_:TDVAR != -1) {
@@ -306,6 +309,19 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawSetOutline(playerid, TDVAR, 0);
 	PlayerTextDrawSetShadow(playerid, TDVAR, 0);
 #undef TDVAR
+
+/*
+	// ILS
+	TDVAR = CreatePlayerTextDraw(playerid, 320.0, 100.0, "-")
+	//"~w~X~n~~w~X~n~~w~X~n~~w~X~n~~w~X ~w~X ~w~X ~w~X ~w~X ~w~X ~w~X ~w~X ~w~X~n~~w~X~n~~w~X~n~~w~X~n~~w~X")
+	PlayerTextDrawAlignment(playerid, TDVAR, 2)
+	PlayerTextDrawBackgroundColor(playerid, TDVAR, 0x000000FF)
+	PlayerTextDrawFont(playerid, playerid, TDVAR, 2)
+	PlayerTextDrawLetterSize(playerid, TDVAR, 0.45, 2.5)
+	PlayerTextDrawColor(playerid, TDVAR, -1)
+	PlayerTextDrawSetOutline(playerid, TDVAR, 1)
+	PlayerTextDrawSetProportional(playerid, TDVAR, 1)
+*/
 }
 
 hook OnGameModeInit()

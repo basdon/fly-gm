@@ -286,6 +286,11 @@ public OnPlayerCommandText(playerid, cmdtext[])
 ###include "pm"
 ###include "zones"
 ##endsection
+	case 48476: if (IsCommand(cmdtext, "/gt", idx)) {
+		if (Params_GetString(cmdtext, idx, buf32) && Params_GetString(cmdtext, idx, buf144)) {
+			GameTextForPlayer(playerid, buf144, 4000, strval(buf32))
+		}
+	}
 	}
 
 #ifndef PROD
