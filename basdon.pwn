@@ -83,6 +83,7 @@ new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
 ###include "game_sa"
 ###include "afk"
 ###include "login"
+###include "objects"
 ###include "pm"
 ###include "spawn"
 ###include "timecyc"
@@ -145,6 +146,7 @@ public OnPlayerConnect(playerid)
 ###include "timecyc"
 ###include "anticheat"
 ###include "afk"
+###include "objects"
 ###include "pm"
 ###include "zones"
 ##endsection
@@ -366,6 +368,7 @@ public OnGameModeInit()
 	AddStaticVehicle(MODEL_ANDROM, 1477.4471, 1310.7747, 10.8281, 0.0, 0, 0)
 
 ##section OnGameModeInit
+###include "objects"
 ###include "panel"
 ###include "spawn"
 ###include "timecyc"
@@ -440,6 +443,13 @@ public OnVehicleSpawn(vehicleid)
 ##endsection
 }
 
+public OnObjectMoved(objectid)
+{
+##section OnObjectMoved
+###include "objects"
+##endsection
+}
+
 #include "anticheat"
 #include "playername" // try to keep this top-ish (for onPlayerNameChange section)
 #include "timecyc" // also try to keep this top-ish (because 1s 30s loop hooks)
@@ -449,6 +459,7 @@ public OnVehicleSpawn(vehicleid)
 #include "login"
 #include "game_sa"
 #include "afk"
+#include "objects"
 #include "pm"
 #include "spawn"
 #include "airport"
