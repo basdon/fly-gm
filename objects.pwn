@@ -44,10 +44,11 @@ hook OnPlayerConnect(playerid)
 	//RemoveBuildingForPlayer playerid, 1378, 2232.4, -2458.6, 36.2, 1.2 // LA annoying dock crane
 	//RemoveBuildingForPlayer playerid, 1396, 2232.4, -2458.6, 36.2, 1.2 // LA annoying dock crane LOD
 	// (need the cable & blue control thing ^)
-
 }
 
-export obj_rotate_radars()
+//@summary Rotates the radar objects placed at LSA, LVA, SFA
+//@remarks Is called once at startup and then retriggered by {@link OnObjectMoved}
+obj_rotate_radars()
 {
 	obj_loop_idx ^= 1
 	obj_radar_z_rot += 179.99
