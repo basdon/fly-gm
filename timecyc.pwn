@@ -41,7 +41,7 @@ varinit
 hook OnGameModeInit()
 {
 	lasttime = gettime()
-	time_h = 0, time_s = 0
+	time_h = 7, time_s = 59
 
 #ifdef TIMECYC_OVERLAY_CLOCK
 	clocktext = TextDrawCreate(608.0, 22.0, "12:73")
