@@ -716,7 +716,7 @@ savePlayerName(playerid)
 //@summary Renames a player to a guest name
 //@param playerid the player to give a guest name to
 //@returns {@code 0} if it was unsuccessful, which means the player is getting kicked
-//@remarks player will be kicked when the name {@code =playername} is already taken and it failed to give a random name 5 times
+//@remarks player will be kicked when the name {@code @playername} is already taken and it failed to give a random name 5 times
 giveGuestName(playerid)
 {
 	new newname[MAX_PLAYER_NAME]
