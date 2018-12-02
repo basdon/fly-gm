@@ -1,7 +1,7 @@
 
 // vim: set filetype=c ts=8 noexpandtab:
 
-#namespace "timecyc"
+#namespace "tcyc"
 
 // phase one: lockedweather changes
 // (nothing happens)
@@ -42,6 +42,8 @@ hook OnGameModeInit()
 {
 	lasttime = gettime()
 	time_h = 7, time_s = 59
+
+	timecyc_nextweather
 
 #ifdef TIMECYC_OVERLAY_CLOCK
 	clocktext = TextDrawCreate(608.0, 22.0, "12:73")
@@ -174,6 +176,15 @@ hook OnPlayerUpdate(playerid)
 	}
 }
 
+hook OnPlayerCommandTextCase(playerid, cmdtext[])
+{
+	case 1531147493, 1449357374: if (IsCommand(cmdtext, "/weather", idx) || IsCommand(cmdtext, "/metar", idx)) {
+		Timecyc_GetCurrentWeatherMsg buf144
+		SendClientMessage playerid, COLOR_METAR, buf144
+		#return 1
+	}
+}
+
 //@summary Change the weather (slowly)
 //@param weather the weather id to change to
 setWeather(weather)
@@ -219,6 +230,13 @@ forceTimecycForPlayer(playerid)
 
 	// rest is done in OnPlayerUpdate
 	playertimecycstate[playerid] = TIMESIG(1)
+}
+
+timecyc_nextweather()
+{
+	new weather = random(NEXT_WEATHER_POSSIBILITIES)
+	Timecyc_GetNextWeatherMsg weather, buf144
+	SendClientMessageToAll COLOR_METAR, buf144
 }
 
 #printhookguards

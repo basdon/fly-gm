@@ -255,6 +255,12 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		SendClientMessageToAll -1, "changing weather"
 		return 1
 	}
+	if (strcicmp("/fweather", cmdtext, .length=9) == 0) {
+		lockedweather = upcomingweather = currentweather = atoi(cmdtext[10]) // timecyc hack
+		forceTimecycForPlayer playerid
+		SendClientMessageToAll -1, "changing weather"
+		return 1
+	}
 	if (strcicmp("/sound", cmdtext, .length=6) == 0) {
 		PlayerPlaySound playerid, atoi(cmdtext[7]), 0.0, 0.0, 0.0
 		return 1
@@ -286,18 +292,23 @@ public OnPlayerCommandText(playerid, cmdtext[])
 ###include "airport"
 ###include "nav"
 ###include "pm"
+###include "timecyc"
 ###include "zones"
 ##endsection
+
+#ifndef PROD
 	case 48476: if (IsCommand(cmdtext, "/gt", idx)) {
 		if (Params_GetString(cmdtext, idx, buf32) && Params_GetString(cmdtext, idx, buf144)) {
 			GameTextForPlayer(playerid, buf144, 4000, strval(buf32))
 		}
 	}
+	case 608035061: if (IsCommand(cmdtext, "/nweather", idx)) {
+		timecyc_nextweather
 	}
-
-#ifndef PROD
+	}
 	printf "command '%s' hash: %d", cmdtext, CommandHash(cmdtext)
 #endif
+
 	return 0
 }
 
