@@ -360,7 +360,7 @@ public OnGameModeInit()
 	fclose mysqlfile
 
 	mysql_log LOG_ERROR | LOG_WARNING
-	if (!mysql_connect("127.0.0.1", creds[creds[0]], creds[creds[1]], creds[creds[2]])) {
+	if (!mysql_connect("127.0.0.1", creds[creds[0]], creds[creds[1]], creds[creds[2]]) || mysql_errno() != 0) {
 		printf "no db connection"
 		SendRconCommand "exit"
 		return 1
