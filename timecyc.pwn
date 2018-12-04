@@ -232,11 +232,15 @@ forceTimecycForPlayer(playerid)
 	playertimecycstate[playerid] = TIMESIG(1)
 }
 
+//@summary Advances the weather
 timecyc_nextweather()
 {
 	new weather = random(NEXT_WEATHER_POSSIBILITIES)
-	Timecyc_GetNextWeatherMsg weather, buf144
+	setWeather Timecyc_GetNextWeatherMsgQuery(weather, buf144, buf4096)
 	SendClientMessageToAll COLOR_METAR, buf144
+	if (buf4096[0]) {
+		mysql_tquery 1, buf4096
+	}
 }
 
 #printhookguards
