@@ -462,7 +462,7 @@ export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
 	COMMON_UNKNOWNRESPONSE("E-U03")
 err:
 	ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-		""#ECOL_WARN"An occurred, you will be spawned as a guest", "Ok", ""
+		""#ECOL_WARN"An error occurred, you will be spawned as a guest", "Ok", ""
 	SendClientMessage playerid, COL_WARN, WARN"An error occured while contacting the login server."
 asguest:
 	SendClientMessage playerid, COL_SAMP_GREEN, "You will be spawned as a guest."
@@ -501,7 +501,7 @@ export PUB_LOGIN_REGISTER_CB(playerid, response_code, data[])
 	COMMON_UNKNOWNRESPONSE("E-U07")
 err:
 	ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-		""#ECOL_WARN"An occurred, you will be spawned as a guest", "Ok", ""
+		""#ECOL_WARN"An error occurred, you will be spawned as a guest", "Ok", ""
 	SendClientMessage playerid, COL_WARN, WARN"An error occured while registering."
 	SendClientMessage playerid, COL_SAMP_GREEN, "You will be spawned as a guest."
 	if (giveGuestName(playerid)) {
@@ -619,7 +619,7 @@ export PUB_LOGIN_GUESTREGISTERUSERCHECK_CB(playerid, response_code, data[])
 	COMMON_UNKNOWNRESPONSE("E-U13")
 err:
 	ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-		""#ECOL_WARN"An occurred, please try again later.", "Ok", "", TRANSACTION_GUESTREGISTER
+		""#ECOL_WARN"An error occurred, please try again later.", "Ok", "", TRANSACTION_GUESTREGISTER
 giveguestname:
 	if (giveGuestName(playerid)) {
 		savePlayerName playerid
@@ -676,7 +676,7 @@ export PUB_LOGIN_CHANGEPASS_CHECK_CB(playerid, response_code, data[])
 	COMMON_UNKNOWNRESPONSE("E-U17")
 err:
 	ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-		""#ECOL_WARN"An occurred, please try again later.", "Ok", "", TRANSACTION_CHANGEPASS
+		""#ECOL_WARN"An error occurred, please try again later.", "Ok", "", TRANSACTION_CHANGEPASS
 }
 
 //@summary Callback after call to change a player's password
@@ -696,7 +696,7 @@ export PUB_LOGIN_CHANGEPASS_CHANGE_CB(playerid, response_code, data[])
 	COMMON_UNKNOWNRESPONSE("E-U19")
 err:
 	ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-		""#ECOL_WARN"An occurred, please try again later.", "Ok", "", TRANSACTION_CHANGEPASS
+		""#ECOL_WARN"An error occurred, please try again later.", "Ok", "", TRANSACTION_CHANGEPASS
 }
 
 //@summary Saves a player's name in db
