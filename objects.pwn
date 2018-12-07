@@ -25,13 +25,6 @@ hook OnGameModeInit()
 	obj_rotate_radars
 }
 
-hook OnObjectMoved(objectid)
-{
-	if (objectid == obj_radar_lv) {
-		obj_rotate_radars
-	}
-}
-
 hook OnPlayerConnect(playerid)
 {
 	RemoveBuildingForPlayer playerid, 1682, 1295.1, 1502.9, 26.2, 1.2 // LV radar
@@ -46,9 +39,7 @@ hook OnPlayerConnect(playerid)
 	// (need the cable & blue control thing ^)
 }
 
-//@summary Rotates the radar objects placed at LSA, LVA, SFA
-//@remarks Is called once at startup and then retriggered by {@link OnObjectMoved}
-obj_rotate_radars()
+hook loop5000()
 {
 	obj_loop_idx ^= 1
 	obj_radar_z_rot += 179.99
@@ -56,9 +47,9 @@ obj_rotate_radars()
 		obj_radar_z_rot -= 360.0
 	}
 	new Float: zoff = obj_loop_idx * 0.006
-	MoveObject obj_radar_la, OBJ_RADAR_LA_POS + zoff, 0.002, 0.0, 0.0, obj_radar_z_rot
-	MoveObject obj_radar_lv, OBJ_RADAR_LV_POS + zoff, 0.002, 0.0, 0.0, obj_radar_z_rot
-	MoveObject obj_radar_sf, OBJ_RADAR_SF_POS + zoff, 0.002, 0.0, 0.0, obj_radar_z_rot
+	MoveObject obj_radar_la, OBJ_RADAR_LA_POS + zoff, 0.0012, 0.0, 0.0, obj_radar_z_rot
+	MoveObject obj_radar_lv, OBJ_RADAR_LV_POS + zoff, 0.0012, 0.0, 0.0, obj_radar_z_rot
+	MoveObject obj_radar_sf, OBJ_RADAR_SF_POS + zoff, 0.0012, 0.0, 0.0, obj_radar_z_rot
 }
 
 #printhookguards

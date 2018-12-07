@@ -108,25 +108,29 @@ main()
 //@remarks PUB_LOOP25
 export PUB_LOOP25()
 {
+	static lastinvoctime = 0
 	static invoc = 0
 ##section loop25
 ##endsection
-	++invoc
-	if (invoc & 0x3 == 0) {
+	invoc = (++invoc & 0x3)
+	if (!invoc) {
 ##section loop100
 ###include "panel"
 ###include "afk"
 ###include "timecyc"
 ###include "anticheat"
 ##endsection
+		invoc = 0
+	}
+	new _tc = tickcount()
+	if (_tc - lastinvoctime > 4984) {
+		// this should be 4985-5010(+5)
 		// 1s,30s,1m loop is inside timecyc
-		if (invoc >= 168) {
-			// 5000ms (mostly ~5030-5040)
 ##section loop5000
 ###include "dialog"
+###include "objects"
 ##endsection
-			invoc = 0
-		}
+		lastinvoctime = _tc
 	}
 }
 
@@ -457,7 +461,6 @@ public OnVehicleSpawn(vehicleid)
 public OnObjectMoved(objectid)
 {
 ##section OnObjectMoved
-###include "objects"
 ##endsection
 }
 
