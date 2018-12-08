@@ -22,7 +22,6 @@ hook OnGameModeInit()
 	obj_radar_la = CreateObject(1682, OBJ_RADAR_LA_POS, 0.0, 0.0, 0.0)
 	obj_radar_lv = CreateObject(1682, OBJ_RADAR_LV_POS, 0.0, 0.0, 0.0)
 	obj_radar_sf = CreateObject(1682, OBJ_RADAR_SF_POS, 0.0, 0.0, 0.0)
-	obj_rotate_radars
 }
 
 hook OnPlayerConnect(playerid)
