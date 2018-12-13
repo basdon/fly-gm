@@ -43,7 +43,8 @@ hook OnGameModeInit()
 	lasttime = gettime()
 	time_h = 7, time_s = 59
 
-	timecyc_nextweather
+	PUB_TIMECYC_NEXTWEATHER
+	SetTimer #PUB_TIMECYC_NEXTWEATHER, 15 * 60000, .repeating=1
 
 #ifdef TIMECYC_OVERLAY_CLOCK
 	clocktext = TextDrawCreate(608.0, 22.0, "12:73")
@@ -233,7 +234,8 @@ forceTimecycForPlayer(playerid)
 }
 
 //@summary Advances the weather
-timecyc_nextweather()
+//@remarks PUB_TIMECYC_NEXTWEATHER
+export PUB_TIMECYC_NEXTWEATHER()
 {
 	new weather = random(NEXT_WEATHER_POSSIBILITIES)
 	setWeather Timecyc_GetNextWeatherMsgQuery(weather, buf144, buf4096)

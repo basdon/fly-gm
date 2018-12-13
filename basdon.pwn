@@ -52,6 +52,7 @@
 #define PUB_LOGIN_GUESTREGISTER_CB g // login
 #define PUB_LOGIN_CHANGEPASS_CHECK_CB h // login
 #define PUB_LOGIN_CHANGEPASS_CHANGE_CB o // login
+#define PUB_TIMECYC_NEXTWEATHER p // timcyc
 
 //@summary Iter that contains {@b logged in (or guest)} players
 new Iter:players[MAX_PLAYERS]
@@ -307,7 +308,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		}
 	}
 	case 608035061: if (IsCommand(cmdtext, "/nweather", idx)) {
-		timecyc_nextweather
+		PUB_TIMECYC_NEXTWEATHER
 	}
 	}
 	printf "command '%s' hash: %d", cmdtext, CommandHash(cmdtext)
