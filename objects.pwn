@@ -27,12 +27,15 @@ hook OnGameModeInit()
 hook OnPlayerConnect(playerid)
 {
 	RemoveBuildingForPlayer playerid, 1682, 1295.1, 1502.9, 26.2, 1.2 // LV radar
-	RemoveBuildingForPlayer playerid, 1682, 1709.4, -2362.7, 31.7, 2.2 // LA radar1
-	RemoveBuildingForPlayer playerid, 1682, 1663.6, -2362.7, 31.7, 2.2 // LA radar2
+	//RemoveBuildingForPlayer playerid, 1682, 1709.4, -2362.7, 31.7, 2.2 // LA radar1
+	//RemoveBuildingForPlayer playerid, 1682, 1663.6, -2362.7, 31.7, 2.2 // LA radar2
+	RemoveBuildingForPlayer playerid, 1682, 1686.5, -2362.7, 31.7, 23.5
 	RemoveBuildingForPlayer playerid, 1682, -1691.6, -619.7, 29.6, 1.2 // SF radar
-	RemoveBuildingForPlayer playerid, 3664, 2042.8, -2442.2, 19.3, 1.2 // LA ramp random
-	RemoveBuildingForPlayer playerid, 3664, 1388.0, -2494.3, 19.3, 1.2 // LA ramp runwayN
-	RemoveBuildingForPlayer playerid, 3664, 1388.0, -2593.0, 19.3, 1.2 // LA ramp runwayS
+	//RemoveBuildingForPlayer playerid, 3664, 2042.8, -2442.2, 19.3, 1.2 // LA ramp random
+	//RemoveBuildingForPlayer playerid, 3664, 1388.0, -2494.3, 19.3, 1.2 // LA ramp runwayN
+	//RemoveBuildingForPlayer playerid, 3664, 1388.0, -2593.0, 19.3, 1.2 // LA ramp runwayS
+	RemoveBuildingForPlayer playerid, 3664, 1715.4, -2517.6, 19.3, 387.5
+
 	//RemoveBuildingForPlayer playerid, 1378, 2232.4, -2458.6, 36.2, 1.2 // LA annoying dock crane
 	//RemoveBuildingForPlayer playerid, 1396, 2232.4, -2458.6, 36.2, 1.2 // LA annoying dock crane LOD
 	// (need the cable & blue control thing ^)
