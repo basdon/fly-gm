@@ -5,6 +5,7 @@
 #include <a_samp>
 #include <a_http>
 #include <a_mysql_min>
+#include <bcrypt>
 #include "simpleiter"
 #include "util"
 #include "settings"
