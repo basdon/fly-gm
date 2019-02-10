@@ -6,6 +6,7 @@
 #include <a_http>
 #include <a_mysql_min>
 #include <bcrypt>
+#include <socket>
 #include "simpleiter"
 #include "util"
 #include "settings"
@@ -89,6 +90,7 @@ new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
 ###include "pm"
 ###include "spawn"
 ###include "timecyc"
+###include "tracker"
 ###include "anticheat"
 ###include "zones"
 ##endsection
@@ -389,6 +391,7 @@ public OnGameModeInit()
 ###include "panel"
 ###include "spawn"
 ###include "timecyc"
+###include "tracker"
 ###include "airport"
 ##endsection
 
@@ -409,6 +412,7 @@ public OnGameModeExit()
 {
 ##section OnGameModeExit
 ###include "airport"
+###include "tracker"
 ##endsection
 
 	if (mysql_unprocessed_queries() > 0) {
@@ -478,6 +482,7 @@ public OnObjectMoved(objectid)
 #include "objects"
 #include "pm"
 #include "spawn"
+#include "tracker"
 #include "airport"
 #include "zones"
 
