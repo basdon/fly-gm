@@ -107,9 +107,29 @@ hook OnPlayerConnect(playerid)
 	userid[playerid] = -1
 	sessionid[playerid] = -1
 	failedlogins{playerid} = 0
+
+	// check name validity (even though server might do this already)
+	#assert PLAYERNAMEVER == 1
+	{
+		for (new i = playernames[playerid][0]; i > 0; i--) {
+			new _c = playernames[playerid][i]
+			if (35 < _c && _c < 68 && (0xF23FF431 >>> (_c - 36)) & 1) {
+				continue
+			}
+			if (66 < _c && _c < 99 && (0xD5FFFFFF >>> (_c - 67)) & 1) {
+				continue
+			}
+			if (98 < _c && _c < 123) {
+				continue
+			}
+			goto invalidname
+		}
+	}
+
 	#assert PLAYERNAMEVER == 1
 	while (playernames[playerid][1] == '@') {
 		SendClientMessage playerid, COL_SAMP_GREEN, "Names starting with '@' are reserved for guest players."
+invalidname:
 		// wiki states that SetPlayerName does not propagate for the user
 		// if used in OnPlayerConnect, but tests have proven otherwise.
 		if (NAMELEN(playerid) <= 3 || SetPlayerName(playerid, playernames[playerid][2]) != 1) {
