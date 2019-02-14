@@ -118,7 +118,7 @@ native mysql_pquery(connectionHandle, query[], callback[] = "", format[] = "", {
 /// </remarks>
 /// <returns><b><c>1</c></b> if the query was successfully queued</returns>
 /// <seealso name="mysql_format" />
-native mysql_tquery(connectionHandle, query[], callback[] = "", format[] = "", {Float,_}:...);
+native mysql_tquery(connectionHandle = 1, query[], callback[] = "", format[] = "", {Float,_}:...);
 native Cache:mysql_query(conhandle, query[], bool:use_cache = true);
 
 native mysql_stat(destination[], connectionHandle = 1, max_len = sizeof(destination));

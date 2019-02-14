@@ -379,8 +379,8 @@ changePlayerNameFromInput(playerid, inputtext[])
 checkUserExist(playerid, callback[])
 {
 	GameTextForPlayer playerid, "~b~Contacting login server...", 0x800000, 3
-	FormatLoginApiUserExistsGuest playerid, buf4096
-	HTTP(playerid, HTTP_POST, #API_URL"/api-user-exists.php", buf4096, callback)
+	Login_FormatCheckUserExist playerid, buf4096
+	mysql_tquery 1, buf4096, callback, "i", playerid
 }
 
 //@summary Shows register dialog for player
@@ -454,41 +454,45 @@ report_api_unknown_response(data[], errcode[])
 
 //@summary Callback for usercheck done in {@link OnPlayerConnect} and after changing name during login.
 //@param playerid player that has been checked
-//@param response_code http response code or one of the {@code HTTP_*} macros
-//@param data response data
 //@remarks PUB_LOGIN_USERCHECK_CB
-export PUB_LOGIN_USERCHECK_CB(playerid, response_code, data[])
+export PUB_LOGIN_USERCHECK_CB(playerid)
 {
 	endDialogTransaction playerid, TRANSACTION_LOGIN
-	COMMON_CHECKRESPONSECODE("E-U01")
-	if (data[0] == 't') {
-		if (strlen(data) < 6) {
-			printf "E-U02: %d", strlen(data)
-			goto err
+	hideGameTextForPlayer(playerid)
+
+	if (!cache_get_row_count()) {
+		printf "E-U02"
+		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
+			""#ECOL_WARN"An error occurred, you will be spawned as a guest", "Ok", ""
+		SendClientMessage playerid, COL_WARN, WARN"An error occured while contacting the login server."
+		goto asguest
+	}
+
+	new failedattempts, id, pw[65]
+
+	cache_get_field_int(0, 0, failedattempts)
+	if (failedattempts > 10) {
+		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
+			""#ECOL_WARN"You will be spawned as guest due to too many failed logins from your location", "Ok", ""
+asguest:
+		SendClientMessage playerid, COL_SAMP_GREEN, "You will be spawned as a guest."
+		if (giveGuestName(playerid)) {
+			spawnAsGuest playerid
 		}
-		userid[playerid] = PARSE5BYTENONNULL(data, 1)
-		showLoginDialog playerid, .textoffset=LOGIN_TEXT_OFFSET
 		return
 	}
-	if (data[0] == 'f') {
+
+	cache_get_field_str(0, 1, pw)
+	if (ismysqlnull(pw)) {
+		// user doesn't exist
 		showRegisterDialog playerid, .textoffset=REGISTER_TEXT_OFFSET
 		return
 	}
-	if (data[0] == 'l') {
-		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-			""#ECOL_WARN"You will be spawned as guest due to too many failed logins from your location", "Ok", ""
-		goto asguest
-	}
-	COMMON_UNKNOWNRESPONSE("E-U03")
-err:
-	ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-		""#ECOL_WARN"An error occurred, you will be spawned as a guest", "Ok", ""
-	SendClientMessage playerid, COL_WARN, WARN"An error occured while contacting the login server."
-asguest:
-	SendClientMessage playerid, COL_SAMP_GREEN, "You will be spawned as a guest."
-	if (giveGuestName(playerid)) {
-		spawnAsGuest playerid
-	}
+
+	// user does exist
+	cache_get_field_int(0, 2, id)
+	userid[playerid] = id
+	showLoginDialog playerid, .textoffset=LOGIN_TEXT_OFFSET
 }
 
 //@summary Callback for register call
@@ -613,33 +617,41 @@ err:
 
 //@summary Callback for usercheck done after renaming while guest is registering from existing guest session.
 //@param playerid player that has been checked
-//@param response_code http response code or one of the {@code HTTP_*} macros
-//@param data response data
 //@remarks PUB_LOGIN_GUESTREGISTERUSERCHECK_CB
 export PUB_LOGIN_GUESTREGISTERUSERCHECK_CB(playerid, response_code, data[])
 {
 	endDialogTransaction playerid, TRANSACTION_GUESTREGISTER
-	COMMON_CHECKRESPONSECODE("E-U12")
-	if (data[0] == 't') {
+	hideGameTextForPlayer(playerid)
+
+	if (!cache_get_row_count()) {
+		printf "E-U12"
 		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-			""#ECOL_WARN"This name is registered, please retry with a different name.",
-			"Ok", "", TRANSACTION_GUESTREGISTER
+			""#ECOL_WARN"An error occurred, you will be spawned as a guest", "Ok", ""
+		SendClientMessage playerid, COL_WARN, WARN"An error occured while contacting the login server."
 		goto giveguestname
 	}
-	if (data[0] == 'f') {
-		PREP_GUESTREGTEXT2
-		ShowPlayerDialog playerid, DIALOG_GUESTREGISTER2, DIALOG_STYLE_PASSWORD, REGISTER_CAPTION, GUESTREGISTER_TEXT, "Next", "Cancel", TRANSACTION_GUESTREGISTER
-		return
-	}
-	if (data[0] == 'l') {
+
+	new failedattempts, pw[65]
+
+	cache_get_field_int(0, 0, failedattempts)
+	if (failedattempts > 10) {
 		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
 			""#ECOL_WARN"You cannot register right now because there are too many failed logins from your location", "Ok", ""
 		goto giveguestname
 	}
-	COMMON_UNKNOWNRESPONSE("E-U13")
-err:
+
+	cache_get_field_str(0, 1, pw)
+	if (ismysqlnull(pw)) {
+		// user doesn't exist
+		PREP_GUESTREGTEXT2
+		ShowPlayerDialog playerid, DIALOG_GUESTREGISTER2, DIALOG_STYLE_PASSWORD, REGISTER_CAPTION, GUESTREGISTER_TEXT, "Next", "Cancel", TRANSACTION_GUESTREGISTER
+		return
+	}
+
+	// user does exist
 	ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-		""#ECOL_WARN"An error occurred, please try again later.", "Ok", "", TRANSACTION_GUESTREGISTER
+		""#ECOL_WARN"This name is registered, please retry with a different name.",
+		"Ok", "", TRANSACTION_GUESTREGISTER
 giveguestname:
 	if (giveGuestName(playerid)) {
 		savePlayerName playerid
