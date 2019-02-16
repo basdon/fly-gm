@@ -55,6 +55,8 @@
 #define PUB_LOGIN_CHANGEPASS_CHECK_CB h // login
 #define PUB_LOGIN_CHANGEPASS_CHANGE_CB o // login
 #define PUB_TIMECYC_NEXTWEATHER p // timcyc
+#define PUB_LOGIN_LOADACCOUNT q // login
+#define PUB_LOGIN_CREATEGAMESESSION_CB r // login
 
 //@summary Iter that contains {@b logged in (or guest)} players
 new Iter:players[MAX_PLAYERS]
@@ -171,7 +173,7 @@ public OnPlayerDisconnect(playerid, reason)
 ###include "afk"
 ###include "dialog"
 ###include "airport"
-###include "playername"
+###include "playername" // keep this last-ish (clears data)
 ###include "pm"
 ##endsection
 	iter_remove(players, playerid)
@@ -468,6 +470,11 @@ public OnObjectMoved(objectid)
 {
 ##section OnObjectMoved
 ##endsection
+}
+
+public OnQueryError(errorid, error[], callback[], query[], connectionHandle)
+{
+	printf "query err %d - %s - %s - %s", errorid, error, callback, query
 }
 
 #include "anticheat"

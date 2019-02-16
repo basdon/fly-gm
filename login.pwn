@@ -233,14 +233,15 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		ensureDialogTransaction playerid, TRANSACTION_LOGIN
 		#return 1
 	}
-	case DIALOG_LOGIN1: {
+	case DIALOG_LOGIN_LOGIN_OR_GUEST: {
 		if (!response) {
 			showNamechangeDialog playerid, .textoffset=NAMECHANGE_TEXT_OFFSET
 			#return 1
 		}
 		GameTextForPlayer playerid, "~b~Logging in...", 0x800000, 3
-		FormatLoginApiLogin playerid, userid[playerid], inputtext, buf4096
-		HTTP(playerid, HTTP_POST, #API_URL"/api-login.php", buf4096, #PUB_LOGIN_LOGIN_CB)
+		new pw[65]
+		Login_GetPassword playerid, pw
+		bcrypt_check inputtext, pw, #PUB_LOGIN_LOGIN_CB, "i", playerid
 		ensureDialogTransaction playerid, TRANSACTION_LOGIN
 		#return 1
 	}
@@ -405,7 +406,7 @@ showRegisterDialog(playerid, textoffset=0)
 showLoginDialog(playerid, textoffset=0)
 {
 	ShowPlayerDialog playerid,
-		DIALOG_LOGIN1,
+		DIALOG_LOGIN_LOGIN_OR_GUEST,
 		DIALOG_STYLE_PASSWORD,
 		LOGIN_CAPTION,
 		LOGIN_TEXT[textoffset],
@@ -490,6 +491,7 @@ asguest:
 	}
 
 	// user does exist
+	Login_UsePassword playerid, pw
 	cache_get_field_int(0, 2, id)
 	userid[playerid] = id
 	showLoginDialog playerid, .textoffset=LOGIN_TEXT_OFFSET
@@ -535,49 +537,67 @@ err:
 
 //@summary Callback for login call
 //@param playerid player that wanted to login
-//@param response_code http response code or one of the {@code HTTP_*} macros
-//@param data response data
 //@remarks PUB_LOGIN_LOGIN_CB
-export PUB_LOGIN_LOGIN_CB(playerid, response_code, data[])
+export PUB_LOGIN_LOGIN_CB(playerid)
 {
 	endDialogTransaction playerid, TRANSACTION_LOGIN
-	COMMON_CHECKRESPONSECODE("E-U08")
-	if (data[0] == 's') {
-		if (strlen(data) < 11) {
-			printf "E-U09: %d", strlen(data)
-			goto err
-		}
-		SetPlayerScore playerid, PARSE5BYTENONNULL(data, 1)
-		sessionid[playerid] = PARSE5BYTENONNULL(data, 6)
-		loginPlayer playerid, LOGGED_IN
-		new str[MAX_PLAYER_NAME + 6 + 30 + 1]
-		format str, sizeof(str), "%s[%d] just logged in, welcome back!", NAMEOF(playerid), playerid
-		SendClientMessageToAll COL_JOIN, str
-		return
-	}
-	if (data[0] == 'f') {
+	hideGameTextForPlayer(playerid)
+
+	if (bcrypt_is_equal()) {
+		// great, correct password, do stuff
+		GameTextForPlayer playerid, "~b~Loading account...", 0x800000, 3
+		PlayerData_SetUserId playerid, userid[playerid]
+		Login_FormatLoadAccountData userid[playerid], buf4096
+		mysql_tquery 1, buf4096, #PUB_LOGIN_LOADACCOUNT_CB, "i", playerid
+	} else {
+		// failed login
 		if ((failedlogins{playerid} += 2) > (MAX_LOGIN_ATTEMPTS - 1) * 2) {
 			SendClientMessage playerid, COL_WARN, #WARN"Too many failed login attempts!"
 			KickDelayed playerid
 			return
 		}
 		showLoginDialog playerid, .textoffset=0
-		return
 	}
-	if (data[0] == 'l') {
-		ShowPlayerDialog playerid, DIALOG_LOGIN_ERROR, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-			""#ECOL_WARN"This account is temporary locked due to too many failed logins", "Ok", ""
-		return
-	}
-	LIMITSTRLEN(data, 500)
-	if (data[0] == 'e') {
-		printf "E-U0A: %s", data[1]
-	} else {
-		printf "E-U0B: %s", data
-	}
+}
+
+//@summary Callback for loading account data
+//@param playerid player
+//@remarks PUB_LOGIN_LOADACCOUNT_CB
+export PUB_LOGIN_LOADACCOUNT_CB(playerid)
+{
+	hideGameTextForPlayer(playerid)
+
+	if (!cache_get_row_count()) {
+		printf "E-U1A"
 err:
-	ShowPlayerDialog playerid, DIALOG_LOGIN_ERROR, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-		""#ECOL_WARN"An error occurred, please try again", "Ok", "", TRANSACTION_LOGIN
+		SendClientMessage playerid, COL_WARN, #WARN"Something went wrong, please reconnect"
+		return
+	}
+
+	GameTextForPlayer playerid, "~b~Creating game session...", 0x800000, 3
+	new score
+	cache_get_field_int(0, 0, score)
+	SetPlayerScore playerid, score
+
+	if (!Login_FormatCreateUserSession(playerid, buf4096)) {
+		printf "E-U1B"
+		goto err
+	}
+	mysql_tquery 1, buf4096[1]
+	mysql_tquery 1, buf4096[buf4096[0]], #PUB_LOGIN_CREATEGAMESESSION_CB, "i", playerid
+}
+
+//@summary Callback when creating game session
+//@param playerid player
+//@remarks spawns the player at the end
+//@remarks PUB_LOGIN_CREATEGAMESESSION_CB
+export PUB_LOGIN_CREATEGAMESESSION_CB(playerid)
+{
+	sessionid[playerid] = cache_insert_id()
+	loginPlayer playerid, LOGGED_IN
+	new str[MAX_PLAYER_NAME + 6 + 30 + 1]
+	format str, sizeof(str), "%s[%d] just logged in, welcome back!", NAMEOF(playerid), playerid
+	SendClientMessageToAll COL_JOIN, str
 }
 
 //@summary Callback for guest call
