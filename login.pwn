@@ -11,6 +11,74 @@
 #define PARSE5BYTENONNULL(%0,%1) ((%0[%1]&0x7F)|((%0[%1+1]&0x7F)<<7)|\
 			((%0[%1+2]&0x7F)<<14)|((%0[%1+3]&0x7F)<<21)|((%0[%1+4]&0x0F)<<28))
 
+// on join, [loginusercheck]
+
+// -- [loginusercheck]
+//    what: query check usr registered (get id & pw), check if ip should be blocked
+//    transaction: TRANSACTION_LOGIN
+//    msg: "~b~Contacting login server..."
+//    note: done by calling checkUserExist with callback
+//    cb: PUB_LOGIN_USERCHECK_CB
+
+// -- [PUB_LOGIN_USERCHECK_CB]
+//    what: cb from usr check query
+//    transaction: TRANSACTION_LOGIN
+//    - fail > spawn as guest
+//    - blocked ip > spawn as guest
+//    - not registered > [initialregisterbox] TRANSACTION_LOGIN
+//    - registered > [loginbox] TRANSACTION_LOGIN
+
+// -- [initialregisterbox]
+//    what: dialog that asks for password
+//    dialog: DIALOG_REGISTER1
+//    transaction: TRANSACTION_LOGIN
+//    buttons: "Next", "Play as guest"
+
+// -- [DIALOG_REGISTER1]
+//    what: response from dialog that asks for password
+//    - cancel > give player guest name and spawn
+//    - next > store given password hash, [confirmpwregisterbox]
+
+// -- [confirmpwregisterbox]
+//    what: dialog that asks for password confirmation
+//    dialog: DIALOG_REGISTER2
+//    transaction: TRANSACTION_LOGIN
+//    buttons: "Confirm", "Cancel"
+
+// -- [DIALOG_REGISTER2]
+//    what: response from dialog that asks for password confirmation
+//    - Confirm > match given password hash
+//              - match > TODO: [registeraccount] TRANSACTION_LOGIN
+//              - nomatch > [initialregisterbox] TRANSACTION_LOGIN
+//    - Cancel > [initialregisterbox] TRANSACTION_LOGIN
+
+// on guest session, guest does /register, [guestregister]
+
+// -- [guestregister]
+//    what: dialog to change guest name before registering
+//    dialog: DIALOG_GUESTREGISTER1
+
+// -- [DIALOG_GUESTREGISTER1]
+//    what: dialog to change guest name before registering
+//    - rejected name > halt
+//    - approved name > [guestregisterusercheck] TRANSACTION_GUESTREGISTER
+
+// -- [guestregisterusercheck]
+//    what: query check usr registered (get id & pw), check if ip should be blocked
+//    transaction: TRANSACTION_GUESTREGISTER
+//    msg: "~b~Contacting login server..."
+//    note: done by calling checkUserExist with callback
+//    cb: PUB_LOGIN_GUESTREGISTERUSERCHECK_CB
+
+// -- [PUB_LOGIN_GUESTREGISTERUSERCHECK_CB]
+//    transaction: TRANSACTION_GUESTREGISTER
+//    - fail > give guest name and halt
+//    - blocked ip > give guest name and halt
+//    - not registered > TODO: [guestregisterbox]
+//    - registered > give guest name and halt
+
+// -- [loginbox]
+
 varinit
 {
 	#define isPlaying(%0) (loggedstatus[%0])
