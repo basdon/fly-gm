@@ -30,22 +30,22 @@
 
 // -- [initialregisterbox]
 //    what: dialog that asks for password
-//    dialog: DIALOG_REGISTER1
+//    dialog: DIALOG_REGISTER_FIRSTPASS
 //    transaction: TRANSACTION_LOGIN
 //    buttons: "Next", "Play as guest"
 
-// -- [DIALOG_REGISTER1]
+// -- [DIALOG_REGISTER_FIRSTPASS]
 //    what: response from dialog that asks for password
 //    - cancel > give player guest name and spawn
 //    - next > store given password hash, [confirmpwregisterbox]
 
 // -- [confirmpwregisterbox]
 //    what: dialog that asks for password confirmation
-//    dialog: DIALOG_REGISTER2
+//    dialog: DIALOG_REGISTER_CONFIRMPASS
 //    transaction: TRANSACTION_LOGIN
 //    buttons: "Confirm", "Cancel"
 
-// -- [DIALOG_REGISTER2]
+// -- [DIALOG_REGISTER_CONFIRMPASS]
 //    what: response from dialog that asks for password confirmation
 //    - Confirm > match given password hash
 //              - match > TODO: [registeraccount] TRANSACTION_LOGIN
@@ -56,9 +56,9 @@
 
 // -- [guestregister]
 //    what: dialog to change guest name before registering
-//    dialog: DIALOG_GUESTREGISTER1
+//    dialog: DIALOG_GUESTREGISTER_CHOOSENAME
 
-// -- [DIALOG_GUESTREGISTER1]
+// -- [DIALOG_GUESTREGISTER_CHOOSENAME]
 //    what: dialog to change guest name before registering
 //    - rejected name > halt
 //    - approved name > [guestregisterusercheck] TRANSACTION_GUESTREGISTER
@@ -246,7 +246,14 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 			#return 1
 		}
 		PREP_GUESTREGTEXT1
-		ShowPlayerDialog playerid, DIALOG_GUESTREGISTER1, DIALOG_STYLE_INPUT, REGISTER_CAPTION, GUESTREGISTER_TEXT, "Next", "Cancel", TRANSACTION_GUESTREGISTER
+		ShowPlayerDialog\
+			playerid,
+			DIALOG_GUESTREGISTER_CHOOSENAME,
+			DIALOG_STYLE_INPUT,
+			REGISTER_CAPTION,
+			GUESTREGISTER_TEXT,
+			"Next", "Cancel",
+			TRANSACTION_GUESTREGISTER
 		#return 1
 	} else {
 		SendClientMessage playerid, COL_WARN, #WARN"You're already registered!"
@@ -254,14 +261,21 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 	}
 	case -1292722118: if (!isGuest(playerid) && IsCommand(cmdtext, "/changepassword", idx)) {
 		PREP_CHANGEPASSTEXT1
-		ShowPlayerDialog playerid, DIALOG_CHANGEPASS1, DIALOG_STYLE_PASSWORD, CHANGEPASS_CAPTION, CHANGEPASS_TEXT, "Next", "Cancel", TRANSACTION_CHANGEPASS
+		ShowPlayerDialog\
+			playerid,
+			DIALOG_CHANGEPASS_PREVPASS,
+			DIALOG_STYLE_PASSWORD,
+			CHANGEPASS_CAPTION,
+			CHANGEPASS_TEXT,
+			"Next", "Cancel",
+			TRANSACTION_CHANGEPASS
 		#return 1
 	}
 }
 
 hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 {
-	case DIALOG_REGISTER1: {
+	case DIALOG_REGISTER_FIRSTPASS: {
 		if (!response) {
 			ResetPasswordConfirmData playerid
 			if (giveGuestName(playerid)) {
@@ -274,7 +288,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		SetPasswordConfirmData playerid, pwhash
 		PREP_REGTEXT2
 		ShowPlayerDialog playerid,
-			DIALOG_REGISTER2,
+			DIALOG_REGISTER_CONFIRMPASS,
 			DIALOG_STYLE_PASSWORD,
 			REGISTER_CAPTION,
 			REGISTER_TEXT[REGISTER_TEXT_OFFSET],
@@ -283,7 +297,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			TRANSACTION_LOGIN
 		#return 1
 	}
-	case DIALOG_REGISTER2: {
+	case DIALOG_REGISTER_CONFIRMPASS: {
 		if (!response) {
 			ResetPasswordConfirmData playerid
 			showRegisterDialog playerid, .textoffset=REGISTER_TEXT_OFFSET
@@ -303,7 +317,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 	}
 	case DIALOG_LOGIN_LOGIN_OR_GUEST: {
 		if (!response) {
-			showNamechangeDialog playerid, .textoffset=NAMECHANGE_TEXT_OFFSET
+			showLoginNamechangeDialog playerid, .textoffset=NAMECHANGE_TEXT_OFFSET
 			#return 1
 		}
 		GameTextForPlayer playerid, "~b~Logging in...", 0x800000, 3
@@ -313,17 +327,17 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		ensureDialogTransaction playerid, TRANSACTION_LOGIN
 		#return 1
 	}
-	case DIALOG_LOGIN_ERROR: {
+	case DIALOG_LOGIN_LOADACCOUNTERROR: {
 		showLoginDialog playerid, .textoffset=LOGIN_TEXT_OFFSET
 		#return 1
 	}
-	case DIALOG_NAMECHANGE: {
+	case DIALOG_LOGIN_NAMECHANGE: {
 		if (!response) {
 			showLoginDialog playerid, .textoffset=LOGIN_TEXT_OFFSET
 			#return 1
 		}
 		if (!changePlayerNameFromInput(playerid, inputtext)) {
-			showNamechangeDialog playerid, .textoffset=0
+			showLoginNamechangeDialog playerid, .textoffset=0
 			#return 1
 		}
 		userid[playerid] = -1
@@ -331,7 +345,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		ensureDialogTransaction playerid, TRANSACTION_LOGIN
 		#return 1
 	}
-	case DIALOG_GUESTREGISTER1: {
+	case DIALOG_GUESTREGISTER_CHOOSENAME: {
 		if (!response) {
 			#return 1
 		}
@@ -344,7 +358,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		ensureDialogTransaction playerid, TRANSACTION_GUESTREGISTER
 		#return 1
 	}
-	case DIALOG_GUESTREGISTER2: {
+	case DIALOG_GUESTREGISTER_FIRSTPASS: {
 		if (!response) {
 			ResetPasswordConfirmData playerid
 			if (giveGuestName(playerid)) {
@@ -356,10 +370,17 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		SHA256_PassHash inputtext, /*salt*/REGISTER_CAPTION, pwhash, PW_HASH_LENGTH
 		SetPasswordConfirmData playerid, pwhash
 		PREP_GUESTREGTEXT3
-		ShowPlayerDialog playerid, DIALOG_GUESTREGISTER3, DIALOG_STYLE_PASSWORD, REGISTER_CAPTION, GUESTREGISTER_TEXT, "Next", "Cancel", TRANSACTION_GUESTREGISTER
+		ShowPlayerDialog\
+			playerid,
+			DIALOG_GUESTREGISTER_CONFIRMPASS,
+			DIALOG_STYLE_PASSWORD,
+			REGISTER_CAPTION,
+			GUESTREGISTER_TEXT,
+			"Next", "Cancel",
+			TRANSACTION_GUESTREGISTER
 		#return 1
 	}
-	case DIALOG_GUESTREGISTER3: {
+	case DIALOG_GUESTREGISTER_CONFIRMPASS: {
 		if (!response) {
 			ResetPasswordConfirmData playerid
 			if (giveGuestName(playerid)) {
@@ -370,8 +391,14 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		new pwhash[PW_HASH_LENGTH]
 		SHA256_PassHash inputtext, /*salt*/REGISTER_CAPTION, pwhash, PW_HASH_LENGTH
 		if (!ValidatePasswordConfirmData(playerid, pwhash)) {
-			ShowPlayerDialog playerid, DIALOG_GUESTREGISTER4, DIALOG_STYLE_MSGBOX, REGISTER_CAPTION,
-				""#ECOL_WARN"Passwords do not match, please try again", "Ok", "", TRANSACTION_GUESTREGISTER
+			ShowPlayerDialog\
+				playerid,
+				DIALOG_GUESTREGISTER_PASSWORDMISMATCHERROR,
+				DIALOG_STYLE_MSGBOX,
+				REGISTER_CAPTION,
+				""#ECOL_WARN"Passwords do not match, please try again",
+				"Ok", "",
+				TRANSACTION_GUESTREGISTER
 			#return 1
 		}
 		GameTextForPlayer playerid, "~b~Making your account...", 0x800000, 3
@@ -380,12 +407,19 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		ensureDialogTransaction playerid, TRANSACTION_GUESTREGISTER
 		#return 1
 	}
-	case DIALOG_GUESTREGISTER4: {
+	case DIALOG_GUESTREGISTER_PASSWORDMISMATCHERROR: {
 		PREP_GUESTREGTEXT2
-		ShowPlayerDialog playerid, DIALOG_GUESTREGISTER2, DIALOG_STYLE_PASSWORD, REGISTER_CAPTION, GUESTREGISTER_TEXT, "Next", "Cancel", TRANSACTION_GUESTREGISTER
+		ShowPlayerDialog\
+			playerid,
+			DIALOG_GUESTREGISTER_FIRSTPASS,
+			DIALOG_STYLE_PASSWORD,
+			REGISTER_CAPTION,
+			GUESTREGISTER_TEXT,
+			"Next", "Cancel",
+			TRANSACTION_GUESTREGISTER
 		#return 1
 	}
-	case DIALOG_CHANGEPASS1: {
+	case DIALOG_CHANGEPASS_PREVPASS: {
 		if (!response) {
 			#return 1
 		}
@@ -395,7 +429,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		ensureDialogTransaction playerid, TRANSACTION_CHANGEPASS
 		#return 1
 	}
-	case DIALOG_CHANGEPASS2: {
+	case DIALOG_CHANGEPASS_FIRSTPASS: {
 		if (!response) {
 			ResetPasswordConfirmData playerid
 			#return 1
@@ -404,10 +438,17 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		SHA256_PassHash inputtext, /*salt*/REGISTER_CAPTION, pwhash, PW_HASH_LENGTH
 		SetPasswordConfirmData playerid, pwhash
 		PREP_CHANGEPASSTEXT3
-		ShowPlayerDialog playerid, DIALOG_CHANGEPASS3, DIALOG_STYLE_PASSWORD, CHANGEPASS_CAPTION, CHANGEPASS_TEXT, "Next", "Cancel", TRANSACTION_CHANGEPASS
+		ShowPlayerDialog\
+			playerid,
+			DIALOG_CHANGEPASS_CONFIRMPASS,
+			DIALOG_STYLE_PASSWORD,
+			CHANGEPASS_CAPTION,
+			CHANGEPASS_TEXT,
+			"Next", "Cancel",
+			TRANSACTION_CHANGEPASS
 		#return 1
 	}
-	case DIALOG_CHANGEPASS3: {
+	case DIALOG_CHANGEPASS_CONFIRMPASS: {
 		if (!response) {
 			ResetPasswordConfirmData playerid
 			#return 1
@@ -415,8 +456,14 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		new pwhash[PW_HASH_LENGTH]
 		SHA256_PassHash inputtext, /*salt*/REGISTER_CAPTION, pwhash, PW_HASH_LENGTH
 		if (!ValidatePasswordConfirmData(playerid, pwhash)) {
-			ShowPlayerDialog playerid, DIALOG_CHANGEPASS4, DIALOG_STYLE_MSGBOX, REGISTER_CAPTION,
-				""#ECOL_WARN"Passwords do not match, please try again", "Ok", "", TRANSACTION_CHANGEPASS
+			ShowPlayerDialog\
+				playerid,
+				DIALOG_CHANGEPASS_NOMATCH,
+				DIALOG_STYLE_MSGBOX,
+				REGISTER_CAPTION,
+				""#ECOL_WARN"Passwords do not match, please try again",
+				"Ok", "",
+				TRANSACTION_CHANGEPASS
 			#return 1
 		}
 		GameTextForPlayer playerid, "~b~Updating...", 0x800000, 3
@@ -425,9 +472,16 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		ensureDialogTransaction playerid, TRANSACTION_CHANGEPASS
 		#return 1
 	}
-	case DIALOG_CHANGEPASS4: {
+	case DIALOG_CHANGEPASS_NOMATCH: {
 		PREP_CHANGEPASSTEXT2
-		ShowPlayerDialog playerid, DIALOG_CHANGEPASS2, DIALOG_STYLE_PASSWORD, CHANGEPASS_CAPTION, CHANGEPASS_TEXT, "Next", "Cancel", TRANSACTION_CHANGEPASS
+		ShowPlayerDialog\
+			playerid,
+			DIALOG_CHANGEPASS_FIRSTPASS,
+			DIALOG_STYLE_PASSWORD,
+			CHANGEPASS_CAPTION,
+			CHANGEPASS_TEXT,
+			"Next", "Cancel",
+			TRANSACTION_CHANGEPASS
 		#return 1
 	}
 }
@@ -459,7 +513,7 @@ showRegisterDialog(playerid, textoffset=0)
 {
 	PREP_REGTEXT1
 	ShowPlayerDialog playerid,
-		DIALOG_REGISTER1,
+		DIALOG_REGISTER_FIRSTPASS,
 		DIALOG_STYLE_PASSWORD,
 		REGISTER_CAPTION,
 		REGISTER_TEXT[textoffset],
@@ -486,10 +540,10 @@ showLoginDialog(playerid, textoffset=0)
 //@summary Shows namechange dialog for player (during login phase)
 //@param playerid player to show namechange dialog for
 //@param textoffset textoffset in login string, should be {@code NAMECHANGE_TEXT_OFFSET} or {@code 0}
-showNamechangeDialog(playerid, textoffset=0)
+showLoginNamechangeDialog(playerid, textoffset=0)
 {
 	ShowPlayerDialog playerid,
-		DIALOG_NAMECHANGE,
+		DIALOG_LOGIN_NAMECHANGE,
 		DIALOG_STYLE_INPUT,
 		NAMECHANGE_CAPTION,
 		NAMECHANGE_TEXT[textoffset],
@@ -638,8 +692,19 @@ export PUB_LOGIN_LOADACCOUNT_CB(playerid)
 	if (!cache_get_row_count()) {
 		printf "E-U1A"
 err:
-		SendClientMessage playerid, COL_WARN, #WARN"Something went wrong, please reconnect"
+		ShowPlayerDialog\
+			playerid,
+			DIALOG_LOGIN_LOADACCOUNTERROR,
+			DIALOG_STYLE_MSGBOX,
+			LOGIN_CAPTION,
+			""#ECOL_WARN"An error occured, please try again",
+			"Ok", ""
 		return
+	}
+
+	if (!Login_FormatCreateUserSession(playerid, buf4096)) {
+		printf "E-U1B"
+		goto err
 	}
 
 	GameTextForPlayer playerid, "~b~Creating game session...", 0x800000, 3
@@ -647,10 +712,6 @@ err:
 	cache_get_field_int(0, 0, score)
 	SetPlayerScore playerid, score
 
-	if (!Login_FormatCreateUserSession(playerid, buf4096)) {
-		printf "E-U1B"
-		goto err
-	}
 	mysql_tquery 1, buf4096[1]
 	mysql_tquery 1, buf4096[buf4096[0]], #PUB_LOGIN_CREATEGAMESESSION_CB, "i", playerid
 }
@@ -732,7 +793,14 @@ export PUB_LOGIN_GUESTREGISTERUSERCHECK_CB(playerid, response_code, data[])
 	if (ismysqlnull(pw)) {
 		// user doesn't exist
 		PREP_GUESTREGTEXT2
-		ShowPlayerDialog playerid, DIALOG_GUESTREGISTER2, DIALOG_STYLE_PASSWORD, REGISTER_CAPTION, GUESTREGISTER_TEXT, "Next", "Cancel", TRANSACTION_GUESTREGISTER
+		ShowPlayerDialog\
+			playerid,
+			DIALOG_GUESTREGISTER_FIRSTPASS,
+			DIALOG_STYLE_PASSWORD,
+			REGISTER_CAPTION,
+			GUESTREGISTER_TEXT,
+			"Next", "Cancel",
+			TRANSACTION_GUESTREGISTER
 		return
 	}
 
@@ -785,7 +853,14 @@ export PUB_LOGIN_CHANGEPASS_CHECK_CB(playerid, response_code, data[])
 	COMMON_CHECKRESPONSECODE("E-U16")
 	if (data[0] == 't') {
 		PREP_CHANGEPASSTEXT2
-		ShowPlayerDialog playerid, DIALOG_CHANGEPASS2, DIALOG_STYLE_PASSWORD, CHANGEPASS_CAPTION, CHANGEPASS_TEXT, "Next", "Cancel", TRANSACTION_CHANGEPASS
+		ShowPlayerDialog\
+			playerid,
+			DIALOG_CHANGEPASS_FIRSTPASS,
+			DIALOG_STYLE_PASSWORD,
+			CHANGEPASS_CAPTION,
+			CHANGEPASS_TEXT,
+			"Next", "Cancel",
+			TRANSACTION_CHANGEPASS
 		return
 	}
 	if (data[0] == 'f') {
