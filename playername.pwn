@@ -24,7 +24,7 @@ hook OnPlayerDisconnect(playerid)
 	PlayerData_Clear playerid
 }
 
-//@summary Hooks {@link SetPlayerName} to cache playernames
+//@summary Hooks {@link SetPlayerName} to cache playernames, both in script and plugin
 //@param playerid see {@link SetPlayerName}
 //@param name see {@link SetPlayerName}
 //@returns see {@link SetPlayerName}
@@ -44,9 +44,9 @@ SetPlayerNameHook(playerid, const name[])
 		PlayerData_UpdateName playerid, NAMEOF(playerid), NAMELEN(playerid)
 ##section onPlayerNameChange
 ##endsection
-		new s[34 + MAX_PLAYER_NAME + 1]
-		format s, sizeof(s), "Your name has been changed to '%s'", NAMEOF(playerid)
-		SendClientMessage playerid, COL_SAMP_GREEN, s
+		new msg[34 + MAX_PLAYER_NAME + 1]
+		format msg, sizeof(msg), "Your name has been changed to '%s'", NAMEOF(playerid)
+		SendClientMessage playerid, COL_SAMP_GREEN, msg
 		// TODO: if we ever do name changes, broadcast to other players that someone's name changed
 	}
 	return res

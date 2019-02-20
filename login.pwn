@@ -27,6 +27,7 @@
 //    - blocked ip > spawn as guest
 //    - not registered > [initialregisterbox] TRANSACTION_LOGIN
 //    - registered > [loginbox] TRANSACTION_LOGIN
+//                   password is stored in plugin so it can be retrieved later for checking
 
 // -- [initialregisterbox]
 //    what: dialog that asks for password
@@ -74,10 +75,55 @@
 //    transaction: TRANSACTION_GUESTREGISTER
 //    - fail > give guest name and halt
 //    - blocked ip > give guest name and halt
-//    - not registered > TODO: [guestregisterbox]
+//    - not registered > [guestregisterbox]
 //    - registered > give guest name and halt
 
+// -- [guestergisterbox]
+//    what: dialog that asks first password to register existing guest account
+//    dialog: DIALOG_GUESTREGISTER_FIRSTPASS
+//    transaction: TRANSACTION_GUESTREGISTER
+//    buttons: "Next", "Cancel"
+
+// -- [DIALOG_GUESTREGISTER_FIRSTPASS]
+//    what: response from dialog that asks first password to register guest account
+//    - Next > [guestregisterboxconfirmpass] hash password and store in plugin to check confirm pass later
+//    - Cancel > give player guest name, save name and halt
+
+// -- [guestregisterboxconfirmpass]
+//    what: dialog that asks confirm password to register existing guest account
+//    dialog: DIALOG_GUESTREGISTER_CONFIRMPASS
+//    transaction: TRANSACTION_GUESTREGISTER
+//    buttons: "Next", "Cancel"
+
+// -- [DIALOG_GUESTREGISTER_CONFIRMPASS]
+//    what: response from dialog to confirm first entered password
+//    Next > TODO [PUB_LOGIN_GUESTREGISTER_CB] check pass confirm, create account
+//    Cancel > remove stored password, give guest name, save name in db, halt
+
 // -- [loginbox]
+//    what: dialog that asks password for registered account
+//    dialog: DIALOG_LOGIN_LOGIN_OR_GUEST
+//    transaction: TRANSACTION_LOGIN
+//    buttons: "Login", "Change name"
+
+// -- [DIALOG_LOGIN_LOGIN_OR_GUEST]
+//    what: response from dialog that asks password
+//    - Login > [PUB_LOGIN_PWVERIFY_CB] match given password with password stored in plugin
+//    - Change name > [loginnamechangebox]
+
+// -- [loginnamechangebox]
+//    what: dialog to change name
+//    dialog: DIALOG_LOGIN_NAMECHANGE
+//    transaction: TRANSACTION_LOGIN
+//    buttons: "Change", "Cancel"
+
+// -- [DIALOG_LOGIN_NAMECHANGE]
+//    what: response from dialog to change name during login
+//    Change > failed to change > [loginnamechangebox]
+//             successfully changed > checkUserExist [PUB_LOGIN_USERCHECK_CB] TRANSACTION_LOGIN
+//    Cancel > [loginbox]
+
+// on registered session, user does /changepassword, TODO [changepasswordcurrent]
 
 varinit
 {
@@ -241,8 +287,14 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 {
 	case 258772946: if (IsCommand(cmdtext, "/register", idx)) if (isGuest(playerid)) {
 		if (sessionid[playerid] == -1 || userid[playerid] == -1) {
-			ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, REGISTER_CAPTION,
-				""#ECOL_WARN"You are not on an active guest session. Please reconnect if you want to register.", "Ok", ""
+			ShowPlayerDialog\
+				playerid,
+				DIALOG_DUMMY,
+				DIALOG_STYLE_MSGBOX,
+				REGISTER_CAPTION,
+				""#ECOL_WARN"You are not on an active guest session."\
+					"Please reconnect if you want to register.",
+				"Ok", ""
 			#return 1
 		}
 		PREP_GUESTREGTEXT1
@@ -323,7 +375,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		GameTextForPlayer playerid, "~b~Logging in...", 0x800000, 3
 		new pw[65]
 		Login_GetPassword playerid, pw
-		bcrypt_check inputtext, pw, #PUB_LOGIN_LOGIN_CB, "i", playerid
+		bcrypt_check inputtext, pw, #PUB_LOGIN_PWVERIFY_CB, "i", playerid
 		ensureDialogTransaction playerid, TRANSACTION_LOGIN
 		#return 1
 	}
@@ -350,8 +402,15 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			#return 1
 		}
 		if (!changePlayerNameFromInput(playerid, inputtext)) {
-			ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, REGISTER_CAPTION,
-				""#ECOL_WARN"Name rejected, it is either not valid or already taken (press tab). Try again.", "Ok", "", TRANSACTION_GUESTREGISTER
+			ShowPlayerDialog\
+				playerid,
+				DIALOG_DUMMY,
+				DIALOG_STYLE_MSGBOX,
+				REGISTER_CAPTION,
+				""#ECOL_WARN"Name rejected, it is either not valid or already"\
+					" taken (press tab). Try again.",
+				"Ok", "",
+				TRANSACTION_GUESTREGISTER
 			#return 1
 		}
 		checkUserExist playerid, ""#PUB_LOGIN_GUESTREGISTERUSERCHECK_CB""
@@ -402,9 +461,8 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			#return 1
 		}
 		GameTextForPlayer playerid, "~b~Making your account...", 0x800000, 3
-		FormatLoginApiGuestRegister playerid, userid[playerid], inputtext, buf4096
-		HTTP(playerid, HTTP_POST, #API_URL"/api-change.php", buf4096, #PUB_LOGIN_GUESTREGISTER_CB)
 		ensureDialogTransaction playerid, TRANSACTION_GUESTREGISTER
+		bcrypt_hash inputtext, /*cost*/12, #PUB_LOGIN_GUESTREGISTER_HASHPW_CB, "i", playerid
 		#return 1
 	}
 	case DIALOG_GUESTREGISTER_PASSWORDMISMATCHERROR: {
@@ -659,8 +717,8 @@ err:
 
 //@summary Callback for login call
 //@param playerid player that wanted to login
-//@remarks PUB_LOGIN_LOGIN_CB
-export PUB_LOGIN_LOGIN_CB(playerid)
+//@remarks PUB_LOGIN_PWVERIFY_CB
+export PUB_LOGIN_PWVERIFY_CB(playerid)
 {
 	endDialogTransaction playerid, TRANSACTION_LOGIN
 	hideGameTextForPlayer(playerid)
@@ -784,8 +842,14 @@ export PUB_LOGIN_GUESTREGISTERUSERCHECK_CB(playerid, response_code, data[])
 
 	cache_get_field_int(0, 0, failedattempts)
 	if (failedattempts > 10) {
-		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-			""#ECOL_WARN"You cannot register right now because there are too many failed logins from your location", "Ok", ""
+		ShowPlayerDialog\
+			playerid,
+			DIALOG_DUMMY,
+			DIALOG_STYLE_MSGBOX,
+			LOGIN_CAPTION,
+			""#ECOL_WARN"You cannot register right now because there"\
+				" are too many failed logins from your location",
+			"Ok", ""
 		goto giveguestname
 	}
 
@@ -814,31 +878,60 @@ giveguestname:
 	}
 }
 
-//@summary Callback after guest registers from a guest session
+//@summary Callback after hash pw when guest wants to register their account
+//@param playerid player
+//@remarks PUB_LOGIN_GUESTREGISTER_HASHPW_CB
+export PUB_LOGIN_GUESTREGISTER_HASHPW_CB(playerid)
+{
+	// dialog transaction should still be active (TRANSACTION_GUESTREGISTER)
+	bcrypt_get_hash buf144
+	if (Login_FormatRegisterGuestAcc(playerid, buf144, buf4096)) {
+		// it should always return 1
+		mysql_tquery 1, buf4096, #PUB_LOGIN_GUESTREGISTER_CB, "i", playerid
+	}
+}
+
+//@summary Callback after query to upgrade guest account to real registered account
 //@param playerid player that wanted to register
-//@param response_code http response code or one of the {@code HTTP_*} macros
-//@param data response data
 //@remarks PUB_LOGIN_GUESTREGISTER_CB
-export PUB_LOGIN_GUESTREGISTER_CB(playerid, response_code, data[])
+export PUB_LOGIN_GUESTREGISTER_CB(playerid)
 {
 	endDialogTransaction playerid, TRANSACTION_GUESTREGISTER
-	COMMON_CHECKRESPONSECODE("E-U14")
-	if (data[0] == 's') {
+	hideGameTextForPlayer(playerid)
+
+	if (cache_affected_rows(1)) {
 		loggedstatus[playerid] = LOGGED_IN
-		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
+		ShowPlayerDialog\
+			playerid,
+			DIALOG_DUMMY,
+			DIALOG_STYLE_MSGBOX,
+			LOGIN_CAPTION,
 			"Your account has been registered and your stats are saved, welcome!",
-			"Ok", "", TRANSACTION_GUESTREGISTER
+			"Ok", "",
+			TRANSACTION_GUESTREGISTER
+
 		new str[MAX_PLAYER_NAME + 6 + 46 + 1]
-		format str, sizeof(str), "Guest %s[%d] just registered their account, welcome!", NAMEOF(playerid), playerid
+		format\
+			str,
+			sizeof(str),
+			"Guest %s[%d] just registered their account, welcome!",
+			NAMEOF(playerid),
+			playerid
 		SendClientMessageToAll COL_JOIN, str
 		return
-	}
-	COMMON_UNKNOWNRESPONSE("E-U15")
-err:
-	ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-		""#ECOL_WARN"An occurred, please try again later.", "Ok", "", TRANSACTION_GUESTREGISTER
-	if (giveGuestName(playerid)) {
-		savePlayerName playerid
+	} else {
+		// TODO log
+		ShowPlayerDialog\
+			playerid,
+			DIALOG_DUMMY,
+			DIALOG_STYLE_MSGBOX,
+			LOGIN_CAPTION,
+			""#ECOL_WARN"An occurred, please try again later.",
+			"Ok", "",
+			TRANSACTION_GUESTREGISTER
+		if (giveGuestName(playerid)) {
+			savePlayerName playerid
+		}
 	}
 }
 
