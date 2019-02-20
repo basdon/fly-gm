@@ -55,7 +55,7 @@
 #define PUB_LOGIN_CHANGEPASS_CHECK_CB h // login
 #define PUB_LOGIN_CHANGEPASS_CHANGE_CB o // login
 #define PUB_TIMECYC_NEXTWEATHER p // timcyc
-#define PUB_LOGIN_LOADACCOUNT q // login
+#define PUB_LOGIN_LOADACCOUNT_CB q // login
 #define PUB_LOGIN_CREATEGAMESESSION_CB r // login
 #define PUB_LOGIN_GUESTREGISTER_HASHPW_CB s // login
 
