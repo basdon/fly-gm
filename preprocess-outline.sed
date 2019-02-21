@@ -9,6 +9,8 @@
 /\t*#outline/ {
 	s/^\(\t*\)#outline.*$/§\1§/
 	G
+	# use µ as separator to support nested outlines
+	s/$/µ/
 	h
 	c// outlined
 }
@@ -28,6 +30,10 @@ x
 		/^}}$/ {
 			x
 			s/^§\t*§//
+			s/^\n//
+			/µ.*µ/ {
+				s/^\(.*\)µ\(.*\)µ\(.*\)$/\1µ\3µ\2/
+			}
 			x
 		}
 	}
@@ -43,4 +49,5 @@ x
 	s/^/\n/
 	H
 	x
+	s/µ//g
 }
