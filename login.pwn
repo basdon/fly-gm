@@ -804,6 +804,7 @@ export PUB_LOGIN_GUEST_CB(playerid, response_code, data[])
 		}
 		userid[playerid] = PARSE5BYTENONNULL(data, 1)
 		sessionid[playerid] = PARSE5BYTENONNULL(data, 6)
+		PlayerData_SetUserId playerid, userid[playerid]
 		new str[MAX_PLAYER_NAME + 6 + 28 + 1]
 		format str, sizeof(str), "%s[%d] joined as a guest, welcome!", NAMEOF(playerid), playerid
 		SendClientMessageToAll COL_JOIN, str
