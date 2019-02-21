@@ -463,6 +463,66 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		GameTextForPlayer playerid, "~b~Making your account...", 0x800000, 3
 		ensureDialogTransaction playerid, TRANSACTION_GUESTREGISTER
 		bcrypt_hash inputtext, /*cost*/12, #PUB_LOGIN_GUESTREGISTER_HASHPW_CB, "i", playerid
+
+		#outline
+		//@summary Callback after hash pw when guest wants to register their account
+		//@param playerid player
+		//@remarks PUB_LOGIN_GUESTREGISTER_HASHPW_CB
+		export PUB_LOGIN_GUESTREGISTER_HASHPW_CB(playerid)
+		{
+			// dialog transaction should still be active (TRANSACTION_GUESTREGISTER)
+			bcrypt_get_hash buf144
+			if (Login_FormatRegisterGuestAcc(playerid, buf144, buf4096)) {
+				// it should always return 1
+				mysql_tquery 1, buf4096, #PUB_LOGIN_GUESTREGISTER_CB, "i", playerid
+			}
+		}
+
+		#outline
+		//@summary Callback after query to upgrade guest account to real registered account
+		//@param playerid player that wanted to register
+		//@remarks PUB_LOGIN_GUESTREGISTER_CB
+		export PUB_LOGIN_GUESTREGISTER_CB(playerid)
+		{
+			endDialogTransaction playerid, TRANSACTION_GUESTREGISTER
+			hideGameTextForPlayer(playerid)
+
+			if (cache_affected_rows(1)) {
+				loggedstatus[playerid] = LOGGED_IN
+				ShowPlayerDialog\
+					playerid,
+					DIALOG_DUMMY,
+					DIALOG_STYLE_MSGBOX,
+					LOGIN_CAPTION,
+					"Your account has been registered and your stats are saved, welcome!",
+					"Ok", "",
+					TRANSACTION_GUESTREGISTER
+
+				new str[MAX_PLAYER_NAME + 6 + 46 + 1]
+				format\
+					str,
+					sizeof(str),
+					"Guest %s[%d] just registered their account, welcome!",
+					NAMEOF(playerid),
+					playerid
+				SendClientMessageToAll COL_JOIN, str
+				return
+			} else {
+				// TODO log
+				ShowPlayerDialog\
+					playerid,
+					DIALOG_DUMMY,
+					DIALOG_STYLE_MSGBOX,
+					LOGIN_CAPTION,
+					""#ECOL_WARN"An occurred, please try again later.",
+					"Ok", "",
+					TRANSACTION_GUESTREGISTER
+				if (giveGuestName(playerid)) {
+					savePlayerName playerid
+				}
+			}
+		}
+
 		#return 1
 	}
 	case DIALOG_GUESTREGISTER_PASSWORDMISMATCHERROR: {
@@ -876,63 +936,6 @@ export PUB_LOGIN_GUESTREGISTERUSERCHECK_CB(playerid, response_code, data[])
 giveguestname:
 	if (giveGuestName(playerid)) {
 		savePlayerName playerid
-	}
-}
-
-//@summary Callback after hash pw when guest wants to register their account
-//@param playerid player
-//@remarks PUB_LOGIN_GUESTREGISTER_HASHPW_CB
-export PUB_LOGIN_GUESTREGISTER_HASHPW_CB(playerid)
-{
-	// dialog transaction should still be active (TRANSACTION_GUESTREGISTER)
-	bcrypt_get_hash buf144
-	if (Login_FormatRegisterGuestAcc(playerid, buf144, buf4096)) {
-		// it should always return 1
-		mysql_tquery 1, buf4096, #PUB_LOGIN_GUESTREGISTER_CB, "i", playerid
-	}
-}
-
-//@summary Callback after query to upgrade guest account to real registered account
-//@param playerid player that wanted to register
-//@remarks PUB_LOGIN_GUESTREGISTER_CB
-export PUB_LOGIN_GUESTREGISTER_CB(playerid)
-{
-	endDialogTransaction playerid, TRANSACTION_GUESTREGISTER
-	hideGameTextForPlayer(playerid)
-
-	if (cache_affected_rows(1)) {
-		loggedstatus[playerid] = LOGGED_IN
-		ShowPlayerDialog\
-			playerid,
-			DIALOG_DUMMY,
-			DIALOG_STYLE_MSGBOX,
-			LOGIN_CAPTION,
-			"Your account has been registered and your stats are saved, welcome!",
-			"Ok", "",
-			TRANSACTION_GUESTREGISTER
-
-		new str[MAX_PLAYER_NAME + 6 + 46 + 1]
-		format\
-			str,
-			sizeof(str),
-			"Guest %s[%d] just registered their account, welcome!",
-			NAMEOF(playerid),
-			playerid
-		SendClientMessageToAll COL_JOIN, str
-		return
-	} else {
-		// TODO log
-		ShowPlayerDialog\
-			playerid,
-			DIALOG_DUMMY,
-			DIALOG_STYLE_MSGBOX,
-			LOGIN_CAPTION,
-			""#ECOL_WARN"An occurred, please try again later.",
-			"Ok", "",
-			TRANSACTION_GUESTREGISTER
-		if (giveGuestName(playerid)) {
-			savePlayerName playerid
-		}
 	}
 }
 

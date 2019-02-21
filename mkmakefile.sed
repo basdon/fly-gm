@@ -41,7 +41,7 @@
 		s/^[^?]*?//
 		x
 		s/?.*$//
-		s_^\(.*\)$_p/\1.p: \1.pwn $(ppfile)\n	$(pp) \1.pwn>p/\1.p_p
+		s_^\(.*\)$_p/\1.p: \1.pwn $(ppfile) $(ppfileoutline)\n	$(sed) -f $(ppfileoutline) \1.pwn>p/\1.p\n	$(sed) -f $(ppfile) -i p/\1.p_p
 		i
 		g
 		/^$/!b next
