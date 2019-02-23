@@ -592,7 +592,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 changePlayerNameFromInput(playerid, inputtext[])
 {
 	new len = strlen(inputtext)
-	return 2 < len && len < 21 && inputtext[0] != '@' && SetPlayerName(playerid, inputtext);
+	return 2 < len && len < 21 && inputtext[0] != '@' && SetPlayerName(playerid, inputtext) == 1;
 }
 
 //@summary Check if a user with username of {@param playerid} exists
