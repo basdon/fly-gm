@@ -2,6 +2,8 @@ SHELL = cmd.exe
 .SHELLFLAGS = /c
 sed = "K:\Program Files\Git\usr\bin\sed.exe"
 cp = "K:\Program Files\Git\usr\bin\cp.exe"
+bash = K:/"Program Files"/Git/usr/bin/bash.exe
+
 ppfile = preprocess.sed
 ppfileoutline = preprocess-outline.sed
 
@@ -36,96 +38,73 @@ build: p/sharedsymbols.p p/objects.p p/nav.p p/zones.p p/airport.p p/dummies.p p
 	@echo.
 
 p/basdon.p: basdon.pwn $(ppfile) $(ppfileoutline)
-	$(sed) -f $(ppfileoutline) basdon.pwn>p/basdon.p
-	$(sed) -f $(ppfile) -i p/basdon.p
+	$(bash) -c "sed -f $(ppfileoutline) basdon.pwn|sed -f $(ppfile)>p/basdon.p"
 
 p/natives.p: natives.pwn $(ppfile) $(ppfileoutline)
-	$(sed) -f $(ppfileoutline) natives.pwn>p/natives.p
-	$(sed) -f $(ppfile) -i p/natives.p
+	$(bash) -c "sed -f $(ppfileoutline) natives.pwn|sed -f $(ppfile)>p/natives.p"
 
 p/sharedsymbols.p: sharedsymbols.pwn $(ppfile) $(ppfileoutline)
-	$(sed) -f $(ppfileoutline) sharedsymbols.pwn>p/sharedsymbols.p
-	$(sed) -f $(ppfile) -i p/sharedsymbols.p
+	$(bash) -c "sed -f $(ppfileoutline) sharedsymbols.pwn|sed -f $(ppfile)>p/sharedsymbols.p"
 
 p/panel.p: panel.pwn $(ppfile) $(ppfileoutline)
-	$(sed) -f $(ppfileoutline) panel.pwn>p/panel.p
-	$(sed) -f $(ppfile) -i p/panel.p
+	$(bash) -c "sed -f $(ppfileoutline) panel.pwn|sed -f $(ppfile)>p/panel.p"
 
 p/pm.p: pm.pwn $(ppfile) $(ppfileoutline)
-	$(sed) -f $(ppfileoutline) pm.pwn>p/pm.p
-	$(sed) -f $(ppfile) -i p/pm.p
+	$(bash) -c "sed -f $(ppfileoutline) pm.pwn|sed -f $(ppfile)>p/pm.p"
 
 p/simpleiter.p: simpleiter.pwn $(ppfile) $(ppfileoutline)
-	$(sed) -f $(ppfileoutline) simpleiter.pwn>p/simpleiter.p
-	$(sed) -f $(ppfile) -i p/simpleiter.p
+	$(bash) -c "sed -f $(ppfileoutline) simpleiter.pwn|sed -f $(ppfile)>p/simpleiter.p"
 
 p/game_sa.p: game_sa.pwn $(ppfile) $(ppfileoutline)
-	$(sed) -f $(ppfileoutline) game_sa.pwn>p/game_sa.p
-	$(sed) -f $(ppfile) -i p/game_sa.p
+	$(bash) -c "sed -f $(ppfileoutline) game_sa.pwn|sed -f $(ppfile)>p/game_sa.p"
 
 p/afk.p: afk.pwn $(ppfile) $(ppfileoutline)
-	$(sed) -f $(ppfileoutline) afk.pwn>p/afk.p
-	$(sed) -f $(ppfile) -i p/afk.p
+	$(bash) -c "sed -f $(ppfileoutline) afk.pwn|sed -f $(ppfile)>p/afk.p"
 
 p/playername.p: playername.pwn $(ppfile) $(ppfileoutline)
-	$(sed) -f $(ppfileoutline) playername.pwn>p/playername.p
-	$(sed) -f $(ppfile) -i p/playername.p
+	$(bash) -c "sed -f $(ppfileoutline) playername.pwn|sed -f $(ppfile)>p/playername.p"
 
 p/login.p: login.pwn $(ppfile) $(ppfileoutline)
-	$(sed) -f $(ppfileoutline) login.pwn>p/login.p
-	$(sed) -f $(ppfile) -i p/login.p
+	$(bash) -c "sed -f $(ppfileoutline) login.pwn|sed -f $(ppfile)>p/login.p"
 
 p/util.p: util.pwn $(ppfile) $(ppfileoutline)
-	$(sed) -f $(ppfileoutline) util.pwn>p/util.p
-	$(sed) -f $(ppfile) -i p/util.p
+	$(bash) -c "sed -f $(ppfileoutline) util.pwn|sed -f $(ppfile)>p/util.p"
 
 p/settings.p: settings.pwn $(ppfile) $(ppfileoutline)
-	$(sed) -f $(ppfileoutline) settings.pwn>p/settings.p
-	$(sed) -f $(ppfile) -i p/settings.p
+	$(bash) -c "sed -f $(ppfileoutline) settings.pwn|sed -f $(ppfile)>p/settings.p"
 
 p/colors.p: colors.pwn $(ppfile) $(ppfileoutline)
-	$(sed) -f $(ppfileoutline) colors.pwn>p/colors.p
-	$(sed) -f $(ppfile) -i p/colors.p
+	$(bash) -c "sed -f $(ppfileoutline) colors.pwn|sed -f $(ppfile)>p/colors.p"
 
 p/dialog.p: dialog.pwn $(ppfile) $(ppfileoutline)
-	$(sed) -f $(ppfileoutline) dialog.pwn>p/dialog.p
-	$(sed) -f $(ppfile) -i p/dialog.p
+	$(bash) -c "sed -f $(ppfileoutline) dialog.pwn|sed -f $(ppfile)>p/dialog.p"
 
 p/spawn.p: spawn.pwn $(ppfile) $(ppfileoutline)
-	$(sed) -f $(ppfileoutline) spawn.pwn>p/spawn.p
-	$(sed) -f $(ppfile) -i p/spawn.p
+	$(bash) -c "sed -f $(ppfileoutline) spawn.pwn|sed -f $(ppfile)>p/spawn.p"
 
 p/timecyc.p: timecyc.pwn $(ppfile) $(ppfileoutline)
-	$(sed) -f $(ppfileoutline) timecyc.pwn>p/timecyc.p
-	$(sed) -f $(ppfile) -i p/timecyc.p
+	$(bash) -c "sed -f $(ppfileoutline) timecyc.pwn|sed -f $(ppfile)>p/timecyc.p"
 
 p/tracker.p: tracker.pwn $(ppfile) $(ppfileoutline)
-	$(sed) -f $(ppfileoutline) tracker.pwn>p/tracker.p
-	$(sed) -f $(ppfile) -i p/tracker.p
+	$(bash) -c "sed -f $(ppfileoutline) tracker.pwn|sed -f $(ppfile)>p/tracker.p"
 
 p/anticheat.p: anticheat.pwn $(ppfile) $(ppfileoutline)
-	$(sed) -f $(ppfileoutline) anticheat.pwn>p/anticheat.p
-	$(sed) -f $(ppfile) -i p/anticheat.p
+	$(bash) -c "sed -f $(ppfileoutline) anticheat.pwn|sed -f $(ppfile)>p/anticheat.p"
 
 p/dummies.p: dummies.pwn $(ppfile) $(ppfileoutline)
-	$(sed) -f $(ppfileoutline) dummies.pwn>p/dummies.p
-	$(sed) -f $(ppfile) -i p/dummies.p
+	$(bash) -c "sed -f $(ppfileoutline) dummies.pwn|sed -f $(ppfile)>p/dummies.p"
 
 p/airport.p: airport.pwn $(ppfile) $(ppfileoutline)
-	$(sed) -f $(ppfileoutline) airport.pwn>p/airport.p
-	$(sed) -f $(ppfile) -i p/airport.p
+	$(bash) -c "sed -f $(ppfileoutline) airport.pwn|sed -f $(ppfile)>p/airport.p"
 
 p/zones.p: zones.pwn $(ppfile) $(ppfileoutline)
-	$(sed) -f $(ppfileoutline) zones.pwn>p/zones.p
-	$(sed) -f $(ppfile) -i p/zones.p
+	$(bash) -c "sed -f $(ppfileoutline) zones.pwn|sed -f $(ppfile)>p/zones.p"
 
 p/nav.p: nav.pwn $(ppfile) $(ppfileoutline)
-	$(sed) -f $(ppfileoutline) nav.pwn>p/nav.p
-	$(sed) -f $(ppfile) -i p/nav.p
+	$(bash) -c "sed -f $(ppfileoutline) nav.pwn|sed -f $(ppfile)>p/nav.p"
 
 p/objects.p: objects.pwn $(ppfile) $(ppfileoutline)
-	$(sed) -f $(ppfileoutline) objects.pwn>p/objects.p
-	$(sed) -f $(ppfile) -i p/objects.p
+	$(bash) -c "sed -f $(ppfileoutline) objects.pwn|sed -f $(ppfile)>p/objects.p"
 
 #S3
 #STOP
