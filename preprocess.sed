@@ -62,6 +62,25 @@ s/^\s*\(memcpy[ \|(]\?[^,]\+\[\)/#error possible memcpy bug (#allowmemcpywitharr
 	s&^\(.*\) __SHORTNAMED \([^(]\+\)\(.*\)$&/// <remarks>\2</remarks>\n\1 \2\3&
 }
 
+# append namespace to doc comments (requires at least summary doc)
+/\/\/\/ *<summary/ {
+	G
+	/§ns§/ !{
+		s/^\(.*\)\n.*$/\1/
+		b nonsdoc
+	}
+	s/\n.*$//
+	H
+	g
+	s-[\n^]\([^§]\+\)§ns§.*-/// <namespace>\1</namespace>-p
+	g
+	s/^\(.*\)\n/\1/
+	x
+	s/^.*\n//
+:nonsdoc
+}
+
+
 # hooked sections
 /^##section/ {
 	x

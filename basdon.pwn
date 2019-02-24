@@ -59,6 +59,8 @@
 #define PUB_LOGIN_CREATEGAMESESSION_CB r // login
 #define PUB_LOGIN_GUESTREGISTER_HASHPW_CB s // login
 
+#namespace "basdon"
+
 //@summary Iter that contains {@b logged in (or guest)} players
 new Iter:players[MAX_PLAYERS]
 
