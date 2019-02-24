@@ -58,6 +58,9 @@ s/^\s*\(memcpy[ \|(]\?[^,]\+\[\)/#error possible memcpy bug (#allowmemcpywitharr
 	s-{@link \([^}]*\)}-<a href="#\1">\1</a>-g
 	s-{@param \([^}]*\)}-<paramref name="\1"/>-g
 }
+/ __SHORTNAMED / {
+	s&^\(.*\) __SHORTNAMED \([^(]\+\)\(.*\)$&/// <remarks>\2</remarks>\n\1 \2\3&
+}
 
 # hooked sections
 /^##section/ {

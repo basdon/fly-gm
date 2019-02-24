@@ -234,8 +234,7 @@ forceTimecycForPlayer(playerid)
 }
 
 //@summary Advances the weather
-//@remarks PUB_TIMECYC_NEXTWEATHER
-export PUB_TIMECYC_NEXTWEATHER()
+export __SHORTNAMED PUB_TIMECYC_NEXTWEATHER()
 {
 	new weather = random(NEXT_WEATHER_POSSIBILITIES)
 	setWeather Timecyc_GetNextWeatherMsgQuery(weather, buf144, buf4096)

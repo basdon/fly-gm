@@ -459,8 +459,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		#outline
 		//@summary Callback after hash pw when guest wants to register their account
 		//@param playerid player
-		//@remarks PUB_LOGIN_GUESTREGISTER_HASHPW_CB
-		export PUB_LOGIN_GUESTREGISTER_HASHPW_CB(playerid)
+		export __SHORTNAMED PUB_LOGIN_GUESTREGISTER_HASHPW_CB(playerid)
 		{
 			// dialog transaction should still be active (TRANSACTION_GUESTREGISTER)
 			bcrypt_get_hash buf144
@@ -472,8 +471,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			#outline
 			//@summary Callback after query to upgrade guest account to real registered account
 			//@param playerid player that wanted to register
-			//@remarks PUB_LOGIN_GUESTREGISTER_CB
-			export PUB_LOGIN_GUESTREGISTER_CB(playerid)
+			export __SHORTNAMED PUB_LOGIN_GUESTREGISTER_CB(playerid)
 			{
 				endDialogTransaction playerid, TRANSACTION_GUESTREGISTER
 				hideGameTextForPlayer(playerid)
@@ -687,8 +685,7 @@ report_api_unknown_response(data[], errcode[])
 
 //@summary Callback for usercheck done in {@link OnPlayerConnect} and after changing name during login.
 //@param playerid player that has been checked
-//@remarks PUB_LOGIN_USERCHECK_CB
-export PUB_LOGIN_USERCHECK_CB(playerid)
+export __SHORTNAMED PUB_LOGIN_USERCHECK_CB(playerid)
 {
 	endDialogTransaction playerid, TRANSACTION_LOGIN
 	hideGameTextForPlayer(playerid)
@@ -733,8 +730,7 @@ asguest:
 //@param playerid player that wanted to register
 //@param response_code http response code or one of the {@code HTTP_*} macros
 //@param data response data
-//@remarks PUB_LOGIN_REGISTER_CB
-export PUB_LOGIN_REGISTER_CB(playerid, response_code, data[])
+export __SHORTNAMED PUB_LOGIN_REGISTER_CB(playerid, response_code, data[])
 {
 	endDialogTransaction playerid, TRANSACTION_LOGIN
 	COMMON_CHECKRESPONSECODE("E-U04")
@@ -769,8 +765,7 @@ err:
 
 //@summary Callback for login call
 //@param playerid player that wanted to login
-//@remarks PUB_LOGIN_PWVERIFY_CB
-export PUB_LOGIN_PWVERIFY_CB(playerid)
+export __SHORTNAMED PUB_LOGIN_PWVERIFY_CB(playerid)
 {
 	endDialogTransaction playerid, TRANSACTION_LOGIN
 	hideGameTextForPlayer(playerid)
@@ -794,8 +789,7 @@ export PUB_LOGIN_PWVERIFY_CB(playerid)
 
 //@summary Callback for loading account data
 //@param playerid player
-//@remarks PUB_LOGIN_LOADACCOUNT_CB
-export PUB_LOGIN_LOADACCOUNT_CB(playerid)
+export __SHORTNAMED PUB_LOGIN_LOADACCOUNT_CB(playerid)
 {
 	hideGameTextForPlayer(playerid)
 
@@ -829,8 +823,7 @@ err:
 //@summary Callback when creating game session
 //@param playerid player
 //@remarks spawns the player at the end
-//@remarks PUB_LOGIN_CREATEGAMESESSION_CB
-export PUB_LOGIN_CREATEGAMESESSION_CB(playerid)
+export __SHORTNAMED PUB_LOGIN_CREATEGAMESESSION_CB(playerid)
 {
 	sessionid[playerid] = cache_insert_id()
 	loginPlayer playerid, LOGGED_IN
@@ -843,8 +836,7 @@ export PUB_LOGIN_CREATEGAMESESSION_CB(playerid)
 //@param playerid player that needed a guest account
 //@param response_code http response code or one of the {@code HTTP_*} macros
 //@param data response data
-//@remarks PUB_LOGIN_GUEST_CB
-export PUB_LOGIN_GUEST_CB(playerid, response_code, data[])
+export __SHORTNAMED PUB_LOGIN_GUEST_CB(playerid, response_code, data[])
 {
 	hideGameTextForPlayer(playerid)
 	loginPlayer playerid, LOGGED_GUEST
@@ -877,8 +869,7 @@ err:
 
 //@summary Callback for usercheck done after renaming while guest is registering from existing guest session.
 //@param playerid player that has been checked
-//@remarks PUB_LOGIN_GUESTREGISTERUSERCHECK_CB
-export PUB_LOGIN_GUESTREGISTERUSERCHECK_CB(playerid, response_code, data[])
+export __SHORTNAMED PUB_LOGIN_GUESTREGISTERUSERCHECK_CB(playerid, response_code, data[])
 {
 	endDialogTransaction playerid, TRANSACTION_GUESTREGISTER
 	hideGameTextForPlayer(playerid)
@@ -935,8 +926,7 @@ giveguestname:
 //@param playerid player that wanted to change password
 //@param response_code http response code or one of the {@code HTTP_*} macros
 //@param data response data
-//@remarks PUB_LOGIN_CHANGEPASS_CHECK_CB
-export PUB_LOGIN_CHANGEPASS_CHECK_CB(playerid, response_code, data[])
+export __SHORTNAMED PUB_LOGIN_CHANGEPASS_CHECK_CB(playerid, response_code, data[])
 {
 	endDialogTransaction playerid, TRANSACTION_CHANGEPASS
 	COMMON_CHECKRESPONSECODE("E-U16")
@@ -967,8 +957,7 @@ err:
 //@param playerid player that wanted to change password
 //@param response_code http response code or one of the {@code HTTP_*} macros
 //@param data response data
-//@remarks PUB_LOGIN_CHANGEPASS_CHANGE_CB
-export PUB_LOGIN_CHANGEPASS_CHANGE_CB(playerid, response_code, data[])
+export __SHORTNAMED PUB_LOGIN_CHANGEPASS_CHANGE_CB(playerid, response_code, data[])
 {
 	endDialogTransaction playerid, TRANSACTION_CHANGEPASS
 	COMMON_CHECKRESPONSECODE("E-U18")

@@ -112,8 +112,7 @@ main()
 }
 
 //@summary Basic loop that handles (almost) all timed stuff.
-//@remarks PUB_LOOP25
-export PUB_LOOP25()
+export __SHORTNAMED PUB_LOOP25()
 {
 	static lastinvoctime = 0
 	static invoc = 0
