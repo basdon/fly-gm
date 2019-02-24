@@ -2,6 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <!-- Version: $Id: pawndoc.xsl 5182 2015-01-28 10:21:43Z  $ -->
 <!-- edit: https://github.com/yugecin/pawndocimproved -->
+<!-- edit: https://github.com/basdon/fly-gm : add namespace -->
 
 <xsl:strip-space elements="*"/>
 
@@ -51,6 +52,7 @@
 	H2 A { TEXT-DECORATION: none; }
 	H2 A.wiki { FONT-SIZE: 60%; COLOR: #BBB; MARGIN-LEFT: 1em; TEXT-DECORATION: underline; }
 	H2 A.wiki:active, H2 A.wiki:hover { COLOR: #f16043; }
+	H2 EM { FONT-SIZE: 80%; COLOR: #000; MARGIN-LEFT: .8em; FONT-STYLE: normal;  }
 	H3 { COLOR: #4e4887; FONT-SIZE: 1em; MARGIN-BOTTOM: 0.5em }
 	H4 { COLOR: #4e4887; FONT-SIZE: 1em; FONT-STYLE: italic; MARGIN-BOTTOM: 0.5em }
 	H5 { COLOR: #4e4887; FONT-SIZE: 0.8em; MARGIN-BOTTOM: 0.5em }
@@ -96,7 +98,12 @@
 		</h2>
 		<ul>
 			<xsl:for-each select="$members">
-				<li><a><xsl:attribute name="href">#<xsl:value-of select="substring(@name,3)"/></xsl:attribute><xsl:value-of select="substring(@name,3)"/></a></li>
+				<li>
+					<a><xsl:attribute name="href">#<xsl:value-of select="substring(@name,3)"/></xsl:attribute><xsl:value-of select="substring(@name,3)"/></a>
+					<xsl:if test="namespace">
+						&#160;(<xsl:value-of select="namespace"/>)
+					</xsl:if>
+				</li>
 			</xsl:for-each>
 		</ul>
 	</div>
@@ -114,6 +121,9 @@
 		<xsl:attribute name="class"><xsl:value-of select="$name"/></xsl:attribute>
 		<span><xsl:value-of select="$name"/></span>
 		<a><xsl:attribute name="href">#<xsl:value-of select="substring(@name,3)"/></xsl:attribute><xsl:value-of select="substring(@name,3)"/></a>
+		<xsl:if test="namespace">
+			<em>(<xsl:value-of select="namespace"/>)</em>
+		</xsl:if>
 		<a class="wiki" target="_blank"><xsl:attribute name="href">http://wiki.sa-mp.com/wiki/<xsl:value-of select="substring(@name,3)"/></xsl:attribute>wiki</a>
 	</h2>
 </xsl:template>
