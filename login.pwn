@@ -102,11 +102,11 @@
 
 // -- [loginbox]
 //    what: dialog that asks password for registered account
-//    dialog: DIALOG_LOGIN_LOGIN_OR_GUEST
+//    dialog: DIALOG_LOGIN_LOGIN_OR_NAMECHANGE
 //    transaction: TRANSACTION_LOGIN
 //    buttons: "Login", "Change name"
 
-// -- [DIALOG_LOGIN_LOGIN_OR_GUEST]
+// -- [DIALOG_LOGIN_LOGIN_OR_NAMECHANGE]
 //    what: response from dialog that asks password
 //    - Login > [PUB_LOGIN_PWVERIFY_CB] match given password with password stored in plugin
 //    - Change name > [loginnamechangebox]
@@ -348,7 +348,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		ensureDialogTransaction playerid, TRANSACTION_LOGIN
 		#return 1
 	}
-	case DIALOG_LOGIN_LOGIN_OR_GUEST: {
+	case DIALOG_LOGIN_LOGIN_OR_NAMECHANGE: {
 		if (!response) {
 			showLoginNamechangeDialog playerid, .textoffset=NAMECHANGE_TEXT_OFFSET
 			#return 1
@@ -638,7 +638,7 @@ showRegisterDialog(playerid, textoffset=0)
 showLoginDialog(playerid, textoffset=0)
 {
 	ShowPlayerDialog playerid,
-		DIALOG_LOGIN_LOGIN_OR_GUEST,
+		DIALOG_LOGIN_LOGIN_OR_NAMECHANGE,
 		DIALOG_STYLE_PASSWORD,
 		LOGIN_CAPTION,
 		LOGIN_TEXT[textoffset],
