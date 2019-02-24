@@ -115,13 +115,13 @@
 //    what: dialog to change name
 //    dialog: DIALOG_LOGIN_NAMECHANGE
 //    transaction: TRANSACTION_LOGIN
-//    buttons: "Change", "Cancel"
+//    buttons: "Change", "Play as guest"
 
 // -- [DIALOG_LOGIN_NAMECHANGE]
 //    what: response from dialog to change name during login
 //    Change > failed to change > [loginnamechangebox]
 //             successfully changed > checkUserExist [PUB_LOGIN_USERCHECK_CB] TRANSACTION_LOGIN
-//    Cancel > [loginbox]
+//    Play as guest > give guest name, start guest session
 
 // on registered session, user does /changepassword, TODO [changepasswordcurrent]
 
@@ -312,7 +312,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		if (!response) {
 			ResetPasswordConfirmData playerid
 			if (giveGuestName(playerid)) {
-				spawnAsGuest playerid
+				loginAndSpawnAsGuest playerid
 			}
 			#return 1
 		}
@@ -366,9 +366,20 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 	}
 	case DIALOG_LOGIN_NAMECHANGE: {
 		if (!response) {
+			// Play as guest
+			if (giveGuestName(playerid)) {
+				loginAndSpawnAsGuest playerid
+			}
+			#return 1
+		}
+		// Change
+
+		// edge: if input is empty, go back to login box
+		if (!inputtext[0]) {
 			showLoginDialog playerid, .textoffset=LOGIN_TEXT_OFFSET
 			#return 1
 		}
+
 		if (!changePlayerNameFromInput(playerid, inputtext)) {
 			showLoginNamechangeDialog playerid, .textoffset=0
 			#return 1
@@ -647,7 +658,7 @@ showLoginNamechangeDialog(playerid, textoffset=0)
 		NAMECHANGE_CAPTION,
 		NAMECHANGE_TEXT[textoffset],
 		"Change",
-		"Cancel",
+		"Play as guest",
 		TRANSACTION_LOGIN
 }
 
@@ -699,7 +710,7 @@ export PUB_LOGIN_USERCHECK_CB(playerid)
 asguest:
 		SendClientMessage playerid, COL_SAMP_GREEN, "You will be spawned as a guest."
 		if (giveGuestName(playerid)) {
-			spawnAsGuest playerid
+			loginAndSpawnAsGuest playerid
 		}
 		return
 	}
@@ -752,7 +763,7 @@ err:
 	SendClientMessage playerid, COL_WARN, WARN"An error occured while registering."
 	SendClientMessage playerid, COL_SAMP_GREEN, "You will be spawned as a guest."
 	if (giveGuestName(playerid)) {
-		spawnAsGuest playerid
+		loginAndSpawnAsGuest playerid
 	}
 }
 
@@ -1013,9 +1024,9 @@ giveGuestName(playerid)
 	return 0
 }
 
-//@summary Creates a guest session for player and spawns them as guest.
-//@param playerid the player to spawn as guest
-spawnAsGuest(playerid)
+//@summary Creates a guest session for player and log them in and spawn as guest.
+//@param playerid the player to login and spawn as guest
+loginAndSpawnAsGuest(playerid)
 {
 	GameTextForPlayer playerid, "~b~Creating guest session...", 0x800000, 3
 	FormatLoginApiUserExistsGuest playerid, buf4096
