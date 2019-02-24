@@ -206,9 +206,9 @@ hook loop30s()
 hook OnPlayerDisconnect(playerid, reason)
 {
 	if (isPlaying(playerid)) {
-		new reasons[] = "\3\11\16timeout\0quit\0kicked"
+		new reasons[] = "\4\12\17\4timeout\0quit\0kicked"
 		new str[MAX_PLAYER_NAME + 6 + 21 + 8 + 1]
-		format str, sizeof(str), "%s[%d] left the server (%s)", NAMEOF(playerid), playerid, reasons[reasons[reason]]
+		format str, sizeof(str), "%s[%d] left the server (%s)", NAMEOF(playerid), playerid, reasons[reasons[reason & 3]]
 		SendClientMessageToAll COL_QUIT, str
 	}
 	updatePlayerLastseen playerid, .isdisconnect=1
