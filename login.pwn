@@ -450,7 +450,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		{
 			// dialog transaction should still be active (TRANSACTION_GUESTREGISTER)
 			bcrypt_get_hash buf144
-			if (Login_FormatRegisterGuestAcc(playerid, buf144, buf4096)) {
+			if (Login_FormatUpgradeGuestAcc(playerid, buf144, buf4096)) {
 				// it should always return 1
 				mysql_tquery 1, buf4096, #PUB_LOGIN_GUESTREGISTER_CB, "i", playerid
 			}

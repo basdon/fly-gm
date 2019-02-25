@@ -238,7 +238,7 @@ native Login_FormatLoadAccountData(userid, buf[]);
 //@param password hashed password
 //@param buf buffer to store queries in
 //@returns {@code 0} on failure (but should not happen if login is inited for player)
-native Login_FormatRegisterGuestAcc(playerid, password[], buf[])
+native Login_FormatUpgradeGuestAcc(playerid, password[], buf[])
 
 //@summary Stores the hashed password so it can be checked against later
 //@param playerid player
