@@ -14,17 +14,7 @@
 #define COL_JOIN 0x1b8ae4ff
 #define COL_QUIT 0x1674Bcff
 
-#define ECOL_INFO "{3498db}"
-#define ECOL_WARN "{e84c3d}"
-#define ECOL_SUCC "{2cc36b}"
-
-#define WARN "! "
-#define INFO "* "
-#define SUCC "+ "
-
-#define ECOL_DIALOG_CAPTION "{d2d2d2}"
-#define ECOL_DIALOG_TEXT "{a9c4e4}"
-#define ECOL_DIALOG_BUTTON "{c8c8c8}"
+// see also sharedsymbols.h
 
 #define COLOR_METAR 0x33ccffff
 

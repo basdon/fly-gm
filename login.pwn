@@ -146,6 +146,7 @@ varinit
 	#define MOD_REGTEXT(%0,%1,%2,%3,%4) memcpy(REGISTER_TEXT,%1,4*%0,4*%4);memcpy(REGISTER_TEXT,%3,4*%2,4*%4)
 	#define PREP_REGTEXT1 MOD_REGTEXT(125,fourleft,162,ninespaces,4);MOD_REGTEXT(97,ecol_info,130,ecol_dialog_text,8)
 	#define PREP_REGTEXT2 MOD_REGTEXT(162,fourleft,125,ninespaces,4);MOD_REGTEXT(130,ecol_info,97,ecol_dialog_text,8)
+	// TODO: remove ecol_info
 
 	new LOGIN_CAPTION[] = "Login"
 	new LOGIN_TEXT[] =
@@ -160,21 +161,6 @@ varinit
 		"Enter your new name (3-20 length, 0-9a-zA-Z=()[]$@._).\n"\
 		"Names starting with @ are reserved for guests."
 	#define NAMECHANGE_TEXT_OFFSET 60
-
-	new GUESTREGISTER_TEXT[] =
-		""ECOL_DIALOG_TEXT"* choose a name (3-20 length, 0-9a-zA-Z=()[]$@._). <<<<\n"\
-		""ECOL_DIALOG_TEXT"* choose a password <<<<\n"\
-		""ECOL_DIALOG_TEXT"* confirm your password <<<<"
-	#define PREP_GUESTREGTEXT(%0,%1,%2,%3,%4,%5) \
-		memcpy(GUESTREGISTER_TEXT,fourleft,4*%0,16);\
-		memcpy(GUESTREGISTER_TEXT,ninespaces,4*%1,16);\
-		memcpy(GUESTREGISTER_TEXT,ninespaces,4*%2,16);\
-		memcpy(GUESTREGISTER_TEXT,ecol_info,4*%3,32);\
-		memcpy(GUESTREGISTER_TEXT,ecol_dialog_text,4*%4,32);\
-		memcpy(GUESTREGISTER_TEXT,ecol_dialog_text,4*%5,32)
-	#define PREP_GUESTREGTEXT1 PREP_GUESTREGTEXT(59,92,129,0,64,97)
-	#define PREP_GUESTREGTEXT2 PREP_GUESTREGTEXT(92,59,129,64,0,97)
-	#define PREP_GUESTREGTEXT3 PREP_GUESTREGTEXT(129,92,59,97,64,0)
 
 	new CHANGEPASS_CAPTION[] = "Change password"
 	new CHANGEPASS_TEXT[] =
@@ -274,17 +260,17 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 				DIALOG_STYLE_MSGBOX,
 				REGISTER_CAPTION,
 				""#ECOL_WARN"You are not on an active guest session."\
-					"Please reconnect if you want to register.",
+					" Please reconnect if you want to register.",
 				"Ok", ""
 			#return 1
 		}
-		PREP_GUESTREGTEXT1
+		Login_FormatGuestRegisterBox playerid, buf4096, .step=0
 		ShowPlayerDialog\
 			playerid,
 			DIALOG_GUESTREGISTER_CHOOSENAME,
 			DIALOG_STYLE_INPUT,
 			REGISTER_CAPTION,
-			GUESTREGISTER_TEXT,
+			buf4096,
 			"Next", "Cancel",
 			TRANSACTION_GUESTREGISTER
 		#return 1
@@ -394,14 +380,14 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			#return 1
 		}
 		if (!changePlayerNameFromInput(playerid, inputtext)) {
+			Login_FormatGuestRegisterBox playerid, buf4096, .invalid_name_error=1, .step=0
 			ShowPlayerDialog\
 				playerid,
-				DIALOG_DUMMY,
-				DIALOG_STYLE_MSGBOX,
+				DIALOG_GUESTREGISTER_CHOOSENAME,
+				DIALOG_STYLE_INPUT,
 				REGISTER_CAPTION,
-				""#ECOL_WARN"Name rejected, it is either not valid or already"\
-					" taken (press tab). Try again.",
-				"Ok", "",
+				buf4096,
+				"Next", "Cancel",
 				TRANSACTION_GUESTREGISTER
 			#return 1
 		}
@@ -420,13 +406,13 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		new pwhash[PW_HASH_LENGTH]
 		SHA256_PassHash inputtext, /*salt*/REGISTER_CAPTION, pwhash, PW_HASH_LENGTH
 		SetPasswordConfirmData playerid, pwhash
-		PREP_GUESTREGTEXT3
+		Login_FormatGuestRegisterBox playerid, buf4096, .step=2
 		ShowPlayerDialog\
 			playerid,
 			DIALOG_GUESTREGISTER_CONFIRMPASS,
 			DIALOG_STYLE_PASSWORD,
 			REGISTER_CAPTION,
-			GUESTREGISTER_TEXT,
+			buf4096,
 			"Next", "Cancel",
 			TRANSACTION_GUESTREGISTER
 		#return 1
@@ -442,13 +428,14 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		new pwhash[PW_HASH_LENGTH]
 		SHA256_PassHash inputtext, /*salt*/REGISTER_CAPTION, pwhash, PW_HASH_LENGTH
 		if (!ValidatePasswordConfirmData(playerid, pwhash)) {
+			Login_FormatGuestRegisterBox playerid, buf4096, .pwmismatch=1, .step=1
 			ShowPlayerDialog\
 				playerid,
-				DIALOG_GUESTREGISTER_PASSWORDMISMATCHERROR,
-				DIALOG_STYLE_MSGBOX,
+				DIALOG_GUESTREGISTER_FIRSTPASS,
+				DIALOG_STYLE_PASSWORD,
 				REGISTER_CAPTION,
-				""#ECOL_WARN"Passwords do not match, please try again",
-				"Ok", "",
+				buf4096,
+				"Next", "Cancel",
 				TRANSACTION_GUESTREGISTER
 			#return 1
 		}
@@ -513,18 +500,6 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			}
 		}
 
-		#return 1
-	}
-	case DIALOG_GUESTREGISTER_PASSWORDMISMATCHERROR: {
-		PREP_GUESTREGTEXT2
-		ShowPlayerDialog\
-			playerid,
-			DIALOG_GUESTREGISTER_FIRSTPASS,
-			DIALOG_STYLE_PASSWORD,
-			REGISTER_CAPTION,
-			GUESTREGISTER_TEXT,
-			"Next", "Cancel",
-			TRANSACTION_GUESTREGISTER
 		#return 1
 	}
 	case DIALOG_CHANGEPASS_PREVPASS: {
@@ -900,13 +875,13 @@ export __SHORTNAMED PUB_LOGIN_GUESTREGISTERUSERCHECK_CB(playerid, response_code,
 	cache_get_field_str(0, 1, pw)
 	if (ismysqlnull(pw)) {
 		// user doesn't exist
-		PREP_GUESTREGTEXT2
+		Login_FormatGuestRegisterBox playerid, buf4096, .step=1
 		ShowPlayerDialog\
 			playerid,
 			DIALOG_GUESTREGISTER_FIRSTPASS,
 			DIALOG_STYLE_PASSWORD,
 			REGISTER_CAPTION,
-			GUESTREGISTER_TEXT,
+			buf4096,
 			"Next", "Cancel",
 			TRANSACTION_GUESTREGISTER
 		return

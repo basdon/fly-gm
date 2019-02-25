@@ -10,7 +10,6 @@
 #include "simpleiter"
 #include "util"
 #include "settings"
-#include "colors"
 #include "natives"
 
 #pragma tabsize 0 // it does not go well with some macros and preprocess
@@ -19,6 +18,7 @@
 
 #undef MAX_PLAYERS
 #include "sharedsymbols"
+#include "colors"
 #ifndef MAX_PLAYERS
 #error "no MAX_PLAYERS"
 #endif
