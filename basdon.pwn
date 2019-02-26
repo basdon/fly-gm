@@ -41,7 +41,6 @@
 #define atoi strval
 #define FLOAT_PINF (Float:0x7F800000)
 #define FLOAT_NINF (Float:0xFF800000)
-#define FLOAT_NAN (Float:0xFF800001)
 #define WARNMSG(%0) SendClientMessage(playerid, COL_WARN, WARN%0)
 
 // public symbols
@@ -60,6 +59,14 @@
 #define PUB_LOGIN_GUESTREGISTER_HASHPW_CB s // login
 
 #namespace "basdon"
+
+//@summary Checks if a float is any NaN
+//@param n number to check for NaN-ness
+//@returns {@code 1} if {@param n} is any NaN
+stock isNaN(Float:n)
+{
+	return (_:n | 0x807FFFFF) == -1 && (_:n & 0x007FFFFF)
+}
 
 //@summary Iter that contains {@b logged in (or guest)} players
 new Iter:players[MAX_PLAYERS]
