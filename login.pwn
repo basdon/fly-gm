@@ -153,14 +153,14 @@ varinit
 		""ECOL_WARN"Incorrect password!\n\n"ECOL_DIALOG_TEXT""\
 		"Welcome! This account is registered.\n"\
 		"Please sign in or change your name."
-	#define LOGIN_TEXT_OFFSET 37
+	#define LOGIN_TEXT_NOPWERR_OFFSET 37
 
 	new NAMECHANGE_CAPTION[] = "Change name"
 	new NAMECHANGE_TEXT[] =
 		""ECOL_WARN"Invalid name or name is taken (press tab).\n\n"ECOL_DIALOG_TEXT""\
 		"Enter your new name (3-20 length, 0-9a-zA-Z=()[]$@._).\n"\
 		"Names starting with @ are reserved for guests."
-	#define NAMECHANGE_TEXT_OFFSET 60
+	#define NAMECHANGE_TEXT_NOERR_OFFSET 60
 
 	new CHANGEPASS_CAPTION[] = "Change password"
 	new CHANGEPASS_TEXT[] =
@@ -336,7 +336,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 	}
 	case DIALOG_LOGIN_LOGIN_OR_NAMECHANGE: {
 		if (!response) {
-			showLoginNamechangeDialog playerid, .textoffset=NAMECHANGE_TEXT_OFFSET
+			showLoginNamechangeDialog playerid
 			#return 1
 		}
 		GameTextForPlayer playerid, "~b~Logging in...", 0x800000, 3
@@ -347,7 +347,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		#return 1
 	}
 	case DIALOG_LOGIN_LOADACCOUNTERROR: {
-		showLoginDialog playerid, .textoffset=LOGIN_TEXT_OFFSET
+		showLoginDialog playerid
 		#return 1
 	}
 	case DIALOG_LOGIN_NAMECHANGE: {
@@ -362,12 +362,12 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 
 		// edge: if input is empty, go back to login box
 		if (!inputtext[0]) {
-			showLoginDialog playerid, .textoffset=LOGIN_TEXT_OFFSET
+			showLoginDialog playerid
 			#return 1
 		}
 
 		if (!changePlayerNameFromInput(playerid, inputtext)) {
-			showLoginNamechangeDialog playerid, .textoffset=0
+			showLoginNamechangeDialog playerid, .show_invalid_name_error=1
 			#return 1
 		}
 		userid[playerid] = -1
@@ -607,14 +607,14 @@ showRegisterDialog(playerid, textoffset=0)
 
 //@summary Shows login dialog for player
 //@param playerid player to show login dialog for
-//@param textoffset textoffset in login string, should be {@code LOGIN_TEXT_OFFSET} or {@code 0}
-showLoginDialog(playerid, textoffset=0)
+//@param show_invalid_pw_error whether to show invalid password error message (optional={@code 0})
+showLoginDialog(playerid, show_invalid_pw_error=0)
 {
 	ShowPlayerDialog playerid,
 		DIALOG_LOGIN_LOGIN_OR_NAMECHANGE,
 		DIALOG_STYLE_PASSWORD,
 		LOGIN_CAPTION,
-		LOGIN_TEXT[textoffset],
+		LOGIN_TEXT[((show_invalid_pw_error & 1) ^ 1) * LOGIN_TEXT_NOPWERR_OFFSET],
 		"Login",
 		"Change name",
 		TRANSACTION_LOGIN
@@ -622,14 +622,14 @@ showLoginDialog(playerid, textoffset=0)
 
 //@summary Shows namechange dialog for player (during login phase)
 //@param playerid player to show namechange dialog for
-//@param textoffset textoffset in login string, should be {@code NAMECHANGE_TEXT_OFFSET} or {@code 0}
-showLoginNamechangeDialog(playerid, textoffset=0)
+//@param show_invalid_name_error whether to show invalid name error message (optional={@code 0})
+showLoginNamechangeDialog(playerid, show_invalid_name_error=0)
 {
 	ShowPlayerDialog playerid,
 		DIALOG_LOGIN_NAMECHANGE,
 		DIALOG_STYLE_INPUT,
 		NAMECHANGE_CAPTION,
-		NAMECHANGE_TEXT[textoffset],
+		NAMECHANGE_TEXT[((show_invalid_name_error & 1) ^ 1) * NAMECHANGE_TEXT_NOERR_OFFSET],
 		"Change",
 		"Play as guest",
 		TRANSACTION_LOGIN
@@ -698,7 +698,7 @@ asguest:
 	Login_UsePassword playerid, pw
 	cache_get_field_int(0, 2, id)
 	userid[playerid] = id
-	showLoginDialog playerid, .textoffset=LOGIN_TEXT_OFFSET
+	showLoginDialog playerid
 }
 
 //@summary Callback for register call
@@ -758,7 +758,7 @@ export __SHORTNAMED PUB_LOGIN_PWVERIFY_CB(playerid)
 			KickDelayed playerid
 			return
 		}
-		showLoginDialog playerid, .textoffset=0
+		showLoginDialog playerid, .show_invalid_pw_error=1
 	}
 }
 
