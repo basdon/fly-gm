@@ -137,15 +137,6 @@ varinit
 	new sessionid[MAX_PLAYERS]
 
 	new REGISTER_CAPTION[] = "Register"
-	new REGISTER_TEXT[] =
-		""ECOL_WARN"Passwords do not match!\n\n"\
-		""ECOL_DIALOG_TEXT"Welcome! Register your account or continue as a guest.\n\n"\
-		""ECOL_DIALOG_TEXT"* choose a password <<<<\n"\
-		""ECOL_DIALOG_TEXT"* confirm your password <<<<"
-	#define REGISTER_TEXT_OFFSET 33
-	#define MOD_REGTEXT(%0,%1,%2,%3,%4) memcpy(REGISTER_TEXT,%1,4*%0,4*%4);memcpy(REGISTER_TEXT,%3,4*%2,4*%4)
-	#define PREP_REGTEXT1 MOD_REGTEXT(125,fourleft,162,ninespaces,4);MOD_REGTEXT(97,ecol_info,130,ecol_dialog_text,8)
-	#define PREP_REGTEXT2 MOD_REGTEXT(162,fourleft,125,ninespaces,4);MOD_REGTEXT(130,ecol_info,97,ecol_dialog_text,8)
 	// TODO: remove ecol_info
 
 	new LOGIN_CAPTION[] = "Login"
@@ -305,12 +296,13 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		new pwhash[PW_HASH_LENGTH]
 		SHA256_PassHash inputtext, /*salt*/REGISTER_CAPTION, pwhash, PW_HASH_LENGTH
 		SetPasswordConfirmData playerid, pwhash
-		PREP_REGTEXT2
-		ShowPlayerDialog playerid,
+		Login_FormatOnJoinRegisterBox buf4096, .step=1
+		ShowPlayerDialog\
+			playerid,
 			DIALOG_REGISTER_CONFIRMPASS,
 			DIALOG_STYLE_PASSWORD,
 			REGISTER_CAPTION,
-			REGISTER_TEXT[REGISTER_TEXT_OFFSET],
+			buf4096,
 			"Confirm",
 			"Cancel",
 			TRANSACTION_LOGIN
@@ -319,13 +311,15 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 	case DIALOG_REGISTER_CONFIRMPASS: {
 		if (!response) {
 			ResetPasswordConfirmData playerid
-			showRegisterDialog playerid, .textoffset=REGISTER_TEXT_OFFSET
+			Login_FormatOnJoinRegisterBox buf4096, .step=0
+			showRegisterDialog playerid, buf4096
 			#return 1
 		}
 		new pwhash[PW_HASH_LENGTH]
 		SHA256_PassHash inputtext, /*salt*/REGISTER_CAPTION, pwhash, PW_HASH_LENGTH
 		if (!ValidatePasswordConfirmData(playerid, pwhash)) {
-			showRegisterDialog playerid
+			Login_FormatOnJoinRegisterBox buf4096, .pwmismatch=1, .step=0
+			showRegisterDialog playerid, buf4096
 			#return 1
 		}
 		GameTextForPlayer playerid, "~b~Making your account...", 0x800000, 3
@@ -591,15 +585,14 @@ checkUserExist(playerid, callback[])
 
 //@summary Shows register dialog for player
 //@param playerid player to show register dialog for
-//@param textoffset textoffset in register string, should be {@code REGISTER_TEXT_OFFSET} or {@code 0}
-showRegisterDialog(playerid, textoffset=0)
+//@param text dialog body text, use {@link Login_FormatOnJoinRegisterBox}
+showRegisterDialog(playerid, text[])
 {
-	PREP_REGTEXT1
 	ShowPlayerDialog playerid,
 		DIALOG_REGISTER_FIRSTPASS,
 		DIALOG_STYLE_PASSWORD,
 		REGISTER_CAPTION,
-		REGISTER_TEXT[textoffset],
+		text,
 		"Next",
 		"Play as guest",
 		TRANSACTION_LOGIN
@@ -690,7 +683,8 @@ asguest:
 	cache_get_field_str(0, 1, pw)
 	if (ismysqlnull(pw)) {
 		// user doesn't exist
-		showRegisterDialog playerid, .textoffset=REGISTER_TEXT_OFFSET
+		Login_FormatOnJoinRegisterBox buf4096, .step=0
+		showRegisterDialog playerid, buf4096
 		return
 	}
 
