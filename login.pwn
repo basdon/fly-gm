@@ -309,10 +309,65 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			showRegisterDialog playerid, buf4096
 			#return 1
 		}
+
 		GameTextForPlayer playerid, "~b~Making your account...", 0x800000, 3
-		FormatLoginApiRegister playerid, inputtext, buf4096
-		HTTP(playerid, HTTP_POST, #API_URL"/api-register.php", buf4096, #PUB_LOGIN_REGISTER_CB)
+		bcrypt_hash inputtext, BCRYPT_COST, #PUB_LOGIN_REGISTER_HASHPW_CB, "i", playerid
 		ensureDialogTransaction playerid, TRANSACTION_LOGIN
+
+		#outline
+		//@summary Callback for hashing password during register process
+		//@param playerid player that wants to register
+		export __SHORTNAMED PUB_LOGIN_REGISTER_HASHPW_CB(playerid)
+		{
+			bcrypt_get_hash buf144
+			Login_UsePassword playerid, buf144
+			Login_FormatCreateUser playerid, buf4096, .password=buf144, .group=4
+			mysql_tquery 1, buf4096, #PUB_LOGIN_REGISTER_CB, "i", playerid
+
+			#outline
+			//@summary Callback for register call
+			//@param playerid player that wants to register
+			export __SHORTNAMED PUB_LOGIN_REGISTER_CB(playerid)
+			{
+				userid[playerid] = cache_insert_id()
+				PlayerData_SetUserId playerid, userid[playerid]
+				if (userid[playerid] == -1 || !Login_FormatCreateSession(playerid, buf4096)) {
+					hideGameTextForPlayer(playerid)
+					WARNMSG("An error occured while registering.")
+					WARNMSG("You will be spawned as a guest.")
+					if (giveGuestName(playerid)) {
+						loginAndSpawnAsGuest playerid
+					}
+					return
+				}
+				mysql_tquery 1, buf4096, #PUB_LOGIN_CREATE_NEWUSER_SES, "i", playerid
+				GameTextForPlayer playerid, "~b~Creating game session...", 0x800000, 3
+			}
+
+			#outline
+			//@summary Callback for creating game session for just registered account
+			//@param playerid player that just registered and needs game session
+			export __SHORTNAMED PUB_LOGIN_CREATE_NEWUSER_SES(playerid)
+			{
+				endDialogTransaction playerid, TRANSACTION_LOGIN
+				hideGameTextForPlayer(playerid)
+				loginPlayer playerid, LOGGED_IN
+				sessionid[playerid] = cache_insert_id()
+				/*
+				if (sessionid[playerid] == -1) {
+					// failed to create session
+					// no real problem, but time will not be registered
+				}
+				*/
+				format\
+					buf144,
+					sizeof(buf144),
+					"%s[%d] just registered an account, welcome!",
+					NAMEOF(playerid),
+					playerid
+				SendClientMessageToAll COL_JOIN, buf144
+			}
+		}
 		#return 1
 	}
 	case DIALOG_LOGIN_LOGIN_OR_NAMECHANGE: {
@@ -754,43 +809,6 @@ asguest:
 	showLoginDialog playerid
 }
 
-//@summary Callback for register call
-//@param playerid player that wanted to register
-//@param response_code http response code or one of the {@code HTTP_*} macros
-//@param data response data
-export __SHORTNAMED PUB_LOGIN_REGISTER_CB(playerid, response_code, data[])
-{
-	endDialogTransaction playerid, TRANSACTION_LOGIN
-	COMMON_CHECKRESPONSECODE("E-U04")
-	if (data[0] == 's') {
-		if (strlen(data) < 11) {
-			printf "E-U05: %d", strlen(data)
-			goto err
-		}
-		userid[playerid] = PARSE5BYTENONNULL(data, 1)
-		sessionid[playerid] = PARSE5BYTENONNULL(data, 6)
-		loginPlayer playerid, LOGGED_IN
-		new str[MAX_PLAYER_NAME + 6 + 37 + 1]
-		format str, sizeof(str), "%s[%d] just registered an account, welcome!", NAMEOF(playerid), playerid
-		SendClientMessageToAll COL_JOIN, str
-		return
-	}
-	if (data[0] == 'e') {
-		LIMITSTRLEN(data, 500)
-		printf "E-U06: %s", data[1]
-		goto err
-	}
-	COMMON_UNKNOWNRESPONSE("E-U07")
-err:
-	ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-		""#ECOL_WARN"An error occurred, you will be spawned as a guest", "Ok", ""
-	SendClientMessage playerid, COL_WARN, WARN"An error occured while registering."
-	SendClientMessage playerid, COL_SAMP_GREEN, "You will be spawned as a guest."
-	if (giveGuestName(playerid)) {
-		loginAndSpawnAsGuest playerid
-	}
-}
-
 //@summary Callback for login call
 //@param playerid player that wanted to login
 export __SHORTNAMED PUB_LOGIN_PWVERIFY_CB(playerid)
@@ -960,7 +978,7 @@ giveGuestName(playerid)
 //@param playerid the player to login and spawn as guest
 loginAndSpawnAsGuest(playerid)
 {
-	GameTextForPlayer playerid, "~b~Creating guest session...", 0x800000, 3
+	GameTextForPlayer playerid, "~b~Creating guest account...", 0x800000, 3
 	if (!Login_FormatCreateUser(playerid, buf4096, .password="", .group=0)) {
 		spawnWithoutGuestSession playerid
 		return
@@ -972,6 +990,7 @@ loginAndSpawnAsGuest(playerid)
 	//@param playerid the player a guest account was made for
 	export __SHORTNAMED PUB_LOGIN_CREATE_GUEST_USR(playerid)
 	{
+		GameTextForPlayer playerid, "~b~Creating game session...", 0x800000, 3
 		userid[playerid] = cache_insert_id()
 		PlayerData_SetUserId playerid, userid[playerid]
 		if (userid[playerid] == -1 || !Login_FormatCreateSession(playerid, buf4096)) {

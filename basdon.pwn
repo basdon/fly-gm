@@ -59,6 +59,8 @@
 #define PUB_LOGIN_GUESTREGISTER_HASHPW_CB s // login
 #define PUB_LOGIN_CHANGEPASS_HASHPW_CB t // login
 #define PUB_LOGIN_CREATE_GUEST_USR u // login
+#define PUB_LOGIN_REGISTER_HASHPW_CB v // login
+#define PUB_LOGIN_CREATE_USER_SES w // login
 
 #namespace "basdon"
 

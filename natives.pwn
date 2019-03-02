@@ -156,21 +156,6 @@ native PlayerData_UpdateName(playerid, name[], namelen)
 //@seealso PlayerData_Init
 native PlayerData_Clear(playerid)
 
-//@summary Format data to send to register api
-//@param playerid the player for who the call is
-//@param inputtext password as entered by player
-//@param buf the buffer to store the resulting post data in (use {@code buf4096})
-//@returns {@code 0} on failure (no login data set for {@param playerid})
-native FormatLoginApiRegister(playerid, inputtext[], buf[])
-
-//@summary Format data to send to guest register api
-//@param playerid the player for who the call is
-//@param userid userid of the player
-//@param inputtext password as entered by player
-//@param buf the buffer to store the resulting post data in (use {@code buf4096})
-//@returns {@code 0} on failure (no login data set for {@param playerid})
-native FormatLoginApiGuestRegister(playerid, userid, inputtext[], buf[])
-
 //@summary Format query to change password
 //@param userid user id
 //@param password hashed password to set
