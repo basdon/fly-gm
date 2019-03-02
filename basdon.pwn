@@ -48,7 +48,7 @@
 #define PUB_LOGIN_USERCHECK_CB b // login
 #define PUB_LOGIN_REGISTER_CB c // login
 #define PUB_LOGIN_PWVERIFY_CB d // login
-#define PUB_LOGIN_GUEST_CB e // login
+#define PUB_LOGIN_CREATE_GUEST_SES e // login
 #define PUB_LOGIN_GUESTREGISTERUSERCHECK_CB f // login
 #define PUB_LOGIN_GUESTREGISTER_CB g // login
 #define PUB_LOGIN_CHANGEPASS_CHECK_CB h // login
@@ -58,6 +58,7 @@
 #define PUB_LOGIN_CREATEGAMESESSION_CB r // login
 #define PUB_LOGIN_GUESTREGISTER_HASHPW_CB s // login
 #define PUB_LOGIN_CHANGEPASS_HASHPW_CB t // login
+#define PUB_LOGIN_CREATE_GUEST_USR u // login
 
 #namespace "basdon"
 

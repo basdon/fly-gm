@@ -860,41 +860,6 @@ export __SHORTNAMED PUB_LOGIN_CREATEGAMESESSION_CB(playerid)
 	SendClientMessageToAll COL_JOIN, str
 }
 
-//@summary Callback for guest call
-//@param playerid player that needed a guest account
-//@param response_code http response code or one of the {@code HTTP_*} macros
-//@param data response data
-export __SHORTNAMED PUB_LOGIN_GUEST_CB(playerid, response_code, data[])
-{
-	hideGameTextForPlayer(playerid)
-	loginPlayer playerid, LOGGED_GUEST
-	COMMON_CHECKRESPONSECODE_NOHIDETEXT("E-U0E")
-	if (data[0] == 's') {
-		if (strlen(data) < 11) {
-			printf "E-U0F: %d", strlen(data)
-			goto err
-		}
-		userid[playerid] = PARSE5BYTENONNULL(data, 1)
-		sessionid[playerid] = PARSE5BYTENONNULL(data, 6)
-		PlayerData_SetUserId playerid, userid[playerid]
-		new str[MAX_PLAYER_NAME + 6 + 28 + 1]
-		format str, sizeof(str), "%s[%d] joined as a guest, welcome!", NAMEOF(playerid), playerid
-		SendClientMessageToAll COL_JOIN, str
-		SendClientMessage playerid, COL_INFO,
-			""#INFO"You are now playing as a guest. You can use /register at any time to save your stats."
-		return
-	}
-	LIMITSTRLEN(data, 500)
-	if (data[0] == 'e') {
-		printf "E-U10: %s", data[1]
-	} else {
-		printf "E-U11: %s", data
-	}
-err:
-	SendClientMessage playerid, COL_WARN, #WARN"An error occurred while creating a guest session."
-	SendClientMessage playerid, COL_WARN, #WARN"You can play, but you won't be able to save your stats later."
-}
-
 //@summary Callback for usercheck done after renaming while guest is registering from existing guest session.
 //@param playerid player that has been checked
 export __SHORTNAMED PUB_LOGIN_GUESTREGISTERUSERCHECK_CB(playerid, response_code, data[])
@@ -991,13 +956,68 @@ giveGuestName(playerid)
 	return 0
 }
 
-//@summary Creates a guest session for player and log them in and spawn as guest.
+//@summary Creates a guest account and session for player and log them in and spawn as guest.
 //@param playerid the player to login and spawn as guest
 loginAndSpawnAsGuest(playerid)
 {
 	GameTextForPlayer playerid, "~b~Creating guest session...", 0x800000, 3
-	FormatLoginApiUserExistsGuest playerid, buf4096
-	HTTP(playerid, HTTP_POST, #API_URL"/api-guest.php", buf4096, #PUB_LOGIN_GUEST_CB)
+	if (!Login_FormatCreateUser(playerid, buf4096, .password="", .group=0)) {
+		spawnWithoutGuestSession playerid
+		return
+	}
+	mysql_tquery 1, buf4096, #PUB_LOGIN_CREATE_GUEST_USR, "i", playerid
+
+	#outline
+	//@summary Callback after create a guest user account
+	//@param playerid the player a guest account was made for
+	export __SHORTNAMED PUB_LOGIN_CREATE_GUEST_USR(playerid)
+	{
+		userid[playerid] = cache_insert_id()
+		PlayerData_SetUserId playerid, userid[playerid]
+		if (userid[playerid] == -1 || !Login_FormatCreateSession(playerid, buf4096)) {
+			spawnWithoutGuestSession playerid
+			return
+		}
+		mysql_tquery 1, buf4096, #PUB_LOGIN_CREATE_GUEST_SES, "i", playerid
+
+		#outline
+		//@summary Callback for query to create guest account
+		//@param playerid player that needed a guest account
+		export __SHORTNAMED PUB_LOGIN_CREATE_GUEST_SES(playerid)
+		{
+			hideGameTextForPlayer(playerid)
+			loginPlayer playerid, LOGGED_GUEST
+			sessionid[playerid] = cache_insert_id()
+			/*
+			if (sessionid[playerid] == -1) {
+				// failed to create session
+				// no real problem, but time will not be registered
+			}
+			*/
+			format\
+				buf144,
+				sizeof(buf144),
+				"%s[%d] joined as a guest, welcome!",
+				NAMEOF(playerid),
+				playerid
+			SendClientMessageToAll COL_JOIN, buf144
+			SendClientMessage\
+				playerid,
+				COL_INFO,
+				""#INFO"You are now playing as a guest. "\
+					"You can use /register at any time to save your stats."
+		}
+	}
+}
+
+//@summary Spawns a player without having a guest session and tells them
+//@remarks also hides game text
+spawnWithoutGuestSession(playerid)
+{
+	hideGameTextForPlayer(playerid)
+	WARNMSG("An error occurred while creating a guest session.")
+	WARNMSG("You can play, but you won't be able to save your stats later.")
+	loginPlayer playerid, LOGGED_GUEST
 }
 
 //@summary Updates a player's last seen (usr and ses) and total/actual time value in db
