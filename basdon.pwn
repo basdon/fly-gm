@@ -321,13 +321,15 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		if (Params_GetString(cmdtext, idx, buf32) && Params_GetString(cmdtext, idx, buf144)) {
 			GameTextForPlayer(playerid, buf144, 4000, strval(buf32))
 		}
+		return 1
 	}
 	case 608035061: if (IsCommand(cmdtext, "/nweather", idx)) {
 		PUB_TIMECYC_NEXTWEATHER
+		return 1
 	}
-	}
-	printf "command '%s' hash: %d", cmdtext, CommandHash(cmdtext)
+	default: printf "command '%s' hash: %d", cmdtext, CommandHash(cmdtext)
 #endif
+	}
 
 	return 0
 }
