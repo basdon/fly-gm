@@ -82,7 +82,9 @@ native print(const string[]);
 ///   </ul>
 /// </remarks>
 /// <remarks>The values for the placeholders follow in the exact same order as parameters in the call. For example, <b><c>"I am %i years old"</c></b> - the <b><c>%i</c></b> will be replaced with an Integer variable, which is the person's age.</remarks>
-/// <remarks>You may optionally put a number between the <b><c>%</c></b> and the letter of the placeholder code. This number indicates the field width; if the size of the parameter to print at the position of the placeholder is smaller than the field width, the field is expanded with spaces. To cut the number of decimal places beeing shown of a float, you can add <b><c>.&lt;max number&gt;</c></b> between the <b><c>%</c></b> and the <b><c>f</c></b>. (example: <b><c>%.2f</c></b>)</remarks>
+/// <remarks>You may optionally put a number between the <b><c>%</c></b> and the letter of the placeholder code. This number indicates the field width; if the size of the parameter to print at the position of the placeholder is smaller than the field width, the field is expanded with spaces. Add a <b><c>0</c></b> before the number to pad using zeros.</remarks>
+/// <remarks>To cut the number of decimal places beeing shown of a float, you can add <b><c>.&lt;max number&gt;</c></b> between the <b><c>%</c></b> and the <b><c>f</c></b>. (example: <b><c>%.2f</c></b>) (this also works on strings)</remarks>
+/// <remarks>The padding and cutoff amount can be specified in the arguments if you write a <b><c>*</c></b> in its place.</remarks>
 native printf(const format[], {Float,_}:...);
 
 /// <summary>Formats a string to include variables and other strings inside it.</summary>
@@ -108,7 +110,9 @@ native printf(const format[], {Float,_}:...);
 ///   </ul>
 /// </remarks>
 /// <remarks>The values for the placeholders follow in the exact same order as parameters in the call. For example, <b><c>"I am %i years old"</c></b> - the <b><c>%i</c></b> will be replaced with an Integer variable, which is the person's age.</remarks>
-/// <remarks>You may optionally put a number between the <b><c>%</c></b> and the letter of the placeholder code. This number indicates the field width; if the size of the parameter to print at the position of the placeholder is smaller than the field width, the field is expanded with spaces. To cut the number of decimal places beeing shown of a float, you can add <b><c>.&lt;max number&gt;</c></b> between the <b><c>%</c></b> and the <b><c>f</c></b>. (example: <b><c>%.2f</c></b>)</remarks>
+/// <remarks>You may optionally put a number between the <b><c>%</c></b> and the letter of the placeholder code. This number indicates the field width; if the size of the parameter to print at the position of the placeholder is smaller than the field width, the field is expanded with spaces. Add a <b><c>0</c></b> before the number to pad using zeros.</remarks>
+/// <remarks>To cut the number of decimal places beeing shown of a float, you can add <b><c>.&lt;max number&gt;</c></b> between the <b><c>%</c></b> and the <b><c>f</c></b>. (example: <b><c>%.2f</c></b>) (this also works on strings)</remarks>
+/// <remarks>The padding and cutoff amount can be specified in the arguments if you write a <b><c>*</c></b> in its place.</remarks>
 native format(output[], len, const format[], {Float,_}:...);
 
 /// <summary>This function sends a message to a specific player with a chosen color in the chat. The whole line in the chatbox will be in the set color unless color embedding is used (since <b><c>0.3c</c></b>).</summary>
@@ -185,7 +189,7 @@ native SendDeathMessageToPlayer(playerid, killer, killee, weapon);
 /// <summary>Shows 'game text' (on-screen text) for a certain length of time for all players.</summary>
 /// <param name="string">The text to be displayed</param>
 /// <param name="time">The duration of the text being shown in milliseconds</param>
-/// <param name="style">The style of text to be displayed</param>
+/// <param name="style">The <a href="http://wiki.sa-mp.com/wiki/GameTextStyle">style</a> of text to be displayed</param>
 /// <seealso name="GameTextForPlayer"/>
 /// <seealso name="TextDrawShowForAll"/>
 /// <returns>This function always returns <b><c>1</c></b>.</returns>
@@ -195,7 +199,7 @@ native GameTextForAll(const string[],time,style);
 /// <param name="playerid">The ID of the player to show the gametext for</param>
 /// <param name="string">The text to be displayed</param>
 /// <param name="time">The duration of the text being shown in milliseconds</param>
-/// <param name="style">The style of text to be displayed</param>
+/// <param name="style">The <a href="http://wiki.sa-mp.com/wiki/GameTextStyle">style</a> of text to be displayed</param>
 /// <seealso name="GameTextForAll"/>
 /// <seealso name="TextDrawShowForPlayer"/>
 /// <returns>
@@ -318,32 +322,32 @@ native CallLocalFunction(const function[], const format[], {Float,_}:...);
 /// <returns>The norm (length) of the provided vector as a float.</returns>
 native Float:VectorSize(Float:x, Float:y, Float:z);
 
-/// <summary>Get the inversed value of a sine in radians.</summary>
+/// <summary>Get the inversed value of a sine in degrees.</summary>
 /// <param name="value">The sine for which to find the angle for</param>
 /// <seealso name="floatsin"/>
-/// <returns>The angle in radians.</returns>
+/// <returns>The angle in degrees.</returns>
 native Float:asin(Float:value);
 
-/// <summary>Get the inversed value of a cosine in radians.</summary>
+/// <summary>Get the inversed value of a cosine in degrees.</summary>
 /// <param name="value">The cosine for which to find the angle for</param>
 /// <seealso name="floatcos"/>
-/// <returns>The angle in radians.</returns>
+/// <returns>The angle in degrees.</returns>
 native Float:acos(Float:value);
 
-/// <summary>Get the inversed value of a tangent in radians.</summary>
+/// <summary>Get the inversed value of a tangent in degrees.</summary>
 /// <param name="value">The tangent for which to find the angle for</param>
 /// <seealso name="atan2"/>
 /// <seealso name="floattan"/>
-/// <returns>The angle in radians.</returns>
+/// <returns>The angle in degrees.</returns>
 native Float:atan(Float:value);
 
-/// <summary>Get the multi-valued inversed value of a tangent in radians.</summary>
-/// <param name="x">x size</param>
+/// <summary>Get the multi-valued inversed value of a tangent in degrees.</summary>
 /// <param name="y">y size</param>
+/// <param name="x">x size</param>
 /// <seealso name="atan"/>
 /// <seealso name="floattan"/>
-/// <returns>The angle in radians.</returns>
-native Float:atan2(Float:x, Float:y);
+/// <returns>The angle in degrees.</returns>
+native Float:atan2(Float:y, Float:x);
 
 
 /// <summary>Gets the highest playerid currently in use on the server.</summary>
@@ -1915,16 +1919,27 @@ native UpdatePlayer3DTextLabelText(playerid, PlayerText3D:id, color, text[]);
 /// <summary>Shows the player a synchronous (only one at a time) dialog box.</summary>
 /// <param name="playerid">The ID of the player to show the dialog to</param>
 /// <param name="dialogid">An ID to assign this dialog to, so responses can be processed. Max dialogid is <b><c>32767</c></b>. Using negative values will close any open dialog</param>
-/// <param name="style">The style of the dialog</param>
+/// <param name="style">The <a href="http://wiki.sa-mp.com/wiki/Dialog_Styles">style</a> of the dialog</param>
 /// <param name="caption">The title at the top of the dialog. The length of the caption can not exceed more than 64 characters before it starts to cut off</param>
 /// <param name="info">The text to display in the main dialog. Use <b><c>\n</c></b> to start a new line and <b><c>\t</c></b> to tabulate</param>
 /// <param name="button1">The text on the left button</param>
-/// <param name="button2">The text on the right button. Leave it blank ( "" ) to hide it</param>
+/// <param name="button2">The text on the right button. Leave it blank ("") to hide it</param>
 /// <seealso name="TextDrawShowForPlayer"/>
 /// <seealso name="OnDialogResponse"/>
 /// <remarks>This function was added in <b>SA-MP 0.3a</b> and will not work in earlier versions!</remarks>
 /// <remarks>Use color embedding for multiple colors in the text. </remarks>
 /// <remarks>Using <b><c>-1</c></b> as dialogid closes all dialogs currently shown on the client's screen. </remarks>
+/// <remarks>
+///   <b>Dialog styles:</b>
+///   <ul>
+///     <li><b><c>DIALOG_STYLE_MSGBOX</c></b></li>
+///     <li><b><c>DIALOG_STYLE_INPUT</c></b></li>
+///     <li><b><c>DIALOG_STYLE_LIST</c></b></li>
+///     <li><b><c>DIALOG_STYLE_PASSWORD</c></b></li>
+///     <li><b><c>DIALOG_STYLE_TABLIST</c></b></li>
+///     <li><b><c>DIALOG_STYLE_TABLIST_HEADERS</c></b></li>
+///   </ul>
+/// </remarks>
 /// <returns>
 ///   <b><c>1</c></b>: The function executed successfully.<p/>
 ///   <b><c>0</c></b>: The function failed to execute. This means the player is not connected.<p/>
@@ -2682,7 +2697,7 @@ forward OnActorStreamOut(actorid, forplayerid);
 /// <summary>This callback is called when a player responds to a dialog shown using <a href="#ShowPlayerDialog">ShowPlayerDialog</a> by either clicking a button, pressing ENTER/ESC or double-clicking a list item (if using a list style dialog).</summary>
 /// <param name="playerid">The ID of the player that responded to the dialog</param>
 /// <param name="dialogid">The ID of the dialog the player responded to, assigned in ShowPlayerDialog</param>
-/// <param name="response"><b><c>1</c></b> for left button and <b><c>0</c></b> for right button (if only one button shown, always <b><c>1</c></b>)</param>
+/// <param name="response"><b><c>1</c></b> for left button and <b><c>0</c></b> for right button (or when pressing escape)</param>
 /// <param name="listitem">The ID of the list item selected by the player (starts at <b><c>0</c></b>) (only if using a list style dialog)</param>
 /// <param name="inputtext">The text entered into the input box by the player or the selected list item text</param>
 /// <seealso name="ShowPlayerDialog"/>
