@@ -57,6 +57,7 @@
 #define PUB_LOGIN_LOADACCOUNT_CB q // login
 #define PUB_LOGIN_CREATEGAMESESSION_CB r // login
 #define PUB_LOGIN_GUESTREGISTER_HASHPW_CB s // login
+#define PUB_LOGIN_CHANGEPASS_HASHPW_CB t // login
 
 #namespace "basdon"
 

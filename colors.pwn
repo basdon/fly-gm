@@ -18,6 +18,3 @@
 
 #define COLOR_METAR 0x33ccffff
 
-new ecol_info[] = ECOL_INFO
-new ecol_dialog_text[] = ECOL_DIALOG_TEXT
-

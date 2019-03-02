@@ -11,6 +11,8 @@
 #define PARSE5BYTENONNULL(%0,%1) ((%0[%1]&0x7F)|((%0[%1+1]&0x7F)<<7)|\
 			((%0[%1+2]&0x7F)<<14)|((%0[%1+3]&0x7F)<<21)|((%0[%1+4]&0x0F)<<28))
 
+#define BCRYPT_COST 12
+
 // on join, [loginusercheck]
 
 // -- [loginusercheck]
@@ -137,7 +139,6 @@ varinit
 	new sessionid[MAX_PLAYERS]
 
 	new REGISTER_CAPTION[] = "Register"
-	// TODO: remove ecol_info
 
 	new LOGIN_CAPTION[] = "Login"
 	new LOGIN_TEXT[] =
@@ -146,6 +147,8 @@ varinit
 		"Please sign in or change your name."
 	#define LOGIN_TEXT_NOPWERR_OFFSET 37
 
+	new CHANGEPASS_CAPTION[] = "Change password"
+
 	new NAMECHANGE_CAPTION[] = "Change name"
 	new NAMECHANGE_TEXT[] =
 		""ECOL_WARN"Invalid name or name is taken (press tab).\n\n"ECOL_DIALOG_TEXT""\
@@ -153,24 +156,7 @@ varinit
 		"Names starting with @ are reserved for guests."
 	#define NAMECHANGE_TEXT_NOERR_OFFSET 60
 
-	new CHANGEPASS_CAPTION[] = "Change password"
-	new CHANGEPASS_TEXT[] =
-		""ECOL_DIALOG_TEXT"* enter your current password <<<<\n"\
-		""ECOL_DIALOG_TEXT"* choose a new password <<<<\n"\
-		""ECOL_DIALOG_TEXT"* confirm your password <<<<"
-	#define PREP_CPTEXT(%0,%1,%2,%3,%4,%5) \
-		memcpy(CHANGEPASS_TEXT,fourleft,4*%0,16);\
-		memcpy(CHANGEPASS_TEXT,ninespaces,4*%1,16);\
-		memcpy(CHANGEPASS_TEXT,ninespaces,4*%2,16);\
-		memcpy(CHANGEPASS_TEXT,ecol_info,4*%3,32);\
-		memcpy(CHANGEPASS_TEXT,ecol_dialog_text,4*%4,32);\
-		memcpy(CHANGEPASS_TEXT,ecol_dialog_text,4*%5,32)
-	#define PREP_CHANGEPASSTEXT1 PREP_CPTEXT(38,75,112,0,43,80)
-	#define PREP_CHANGEPASSTEXT2 PREP_CPTEXT(75,38,112,43,0,80)
-	#define PREP_CHANGEPASSTEXT3 PREP_CPTEXT(112,75,38,80,43,0)
-
 	new ninespaces[] = "         "
-	new fourleft[] = "<<<<"
 }
 
 hook loop30s()
@@ -190,7 +176,8 @@ hook OnPlayerDisconnect(playerid, reason)
 	}
 	updatePlayerLastseen playerid, .isdisconnect=1
 	loggedstatus[playerid] = LOGGED_NO
-	ResetPasswordConfirmData playerid
+	Login_PasswordConfirmFree playerid
+	Login_FreePassword playerid
 }
 
 hook OnPlayerConnect(playerid)
@@ -270,13 +257,13 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 		#return 1
 	}
 	case -1292722118: if (!isGuest(playerid) && IsCommand(cmdtext, "/changepassword", idx)) {
-		PREP_CHANGEPASSTEXT1
+		Login_FormatChangePasswordBox buf4096, .step=0
 		ShowPlayerDialog\
 			playerid,
 			DIALOG_CHANGEPASS_PREVPASS,
 			DIALOG_STYLE_PASSWORD,
 			CHANGEPASS_CAPTION,
-			CHANGEPASS_TEXT,
+			buf4096,
 			"Next", "Cancel",
 			TRANSACTION_CHANGEPASS
 		#return 1
@@ -287,7 +274,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 {
 	case DIALOG_REGISTER_FIRSTPASS: {
 		if (!response) {
-			ResetPasswordConfirmData playerid
+			Login_PasswordConfirmFree playerid
 			if (giveGuestName(playerid)) {
 				loginAndSpawnAsGuest playerid
 			}
@@ -295,7 +282,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		}
 		new pwhash[PW_HASH_LENGTH]
 		SHA256_PassHash inputtext, /*salt*/REGISTER_CAPTION, pwhash, PW_HASH_LENGTH
-		SetPasswordConfirmData playerid, pwhash
+		Login_PasswordConfirmStore playerid, pwhash
 		Login_FormatOnJoinRegisterBox buf4096, .step=1
 		ShowPlayerDialog\
 			playerid,
@@ -310,14 +297,14 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 	}
 	case DIALOG_REGISTER_CONFIRMPASS: {
 		if (!response) {
-			ResetPasswordConfirmData playerid
+			Login_PasswordConfirmFree playerid
 			Login_FormatOnJoinRegisterBox buf4096, .step=0
 			showRegisterDialog playerid, buf4096
 			#return 1
 		}
 		new pwhash[PW_HASH_LENGTH]
 		SHA256_PassHash inputtext, /*salt*/REGISTER_CAPTION, pwhash, PW_HASH_LENGTH
-		if (!ValidatePasswordConfirmData(playerid, pwhash)) {
+		if (!Login_PasswordConfirmValidate(playerid, pwhash)) {
 			Login_FormatOnJoinRegisterBox buf4096, .pwmismatch=1, .step=0
 			showRegisterDialog playerid, buf4096
 			#return 1
@@ -391,7 +378,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 	}
 	case DIALOG_GUESTREGISTER_FIRSTPASS: {
 		if (!response) {
-			ResetPasswordConfirmData playerid
+			Login_PasswordConfirmFree playerid
 			if (giveGuestName(playerid)) {
 				savePlayerName playerid
 			}
@@ -399,7 +386,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		}
 		new pwhash[PW_HASH_LENGTH]
 		SHA256_PassHash inputtext, /*salt*/REGISTER_CAPTION, pwhash, PW_HASH_LENGTH
-		SetPasswordConfirmData playerid, pwhash
+		Login_PasswordConfirmStore playerid, pwhash
 		Login_FormatGuestRegisterBox playerid, buf4096, .step=2
 		ShowPlayerDialog\
 			playerid,
@@ -413,7 +400,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 	}
 	case DIALOG_GUESTREGISTER_CONFIRMPASS: {
 		if (!response) {
-			ResetPasswordConfirmData playerid
+			Login_PasswordConfirmFree playerid
 			if (giveGuestName(playerid)) {
 				savePlayerName playerid
 			}
@@ -421,7 +408,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		}
 		new pwhash[PW_HASH_LENGTH]
 		SHA256_PassHash inputtext, /*salt*/REGISTER_CAPTION, pwhash, PW_HASH_LENGTH
-		if (!ValidatePasswordConfirmData(playerid, pwhash)) {
+		if (!Login_PasswordConfirmValidate(playerid, pwhash)) {
 			Login_FormatGuestRegisterBox playerid, buf4096, .pwmismatch=1, .step=1
 			ShowPlayerDialog\
 				playerid,
@@ -435,7 +422,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		}
 		GameTextForPlayer playerid, "~b~Making your account...", 0x800000, 3
 		ensureDialogTransaction playerid, TRANSACTION_GUESTREGISTER
-		bcrypt_hash inputtext, /*cost*/12, #PUB_LOGIN_GUESTREGISTER_HASHPW_CB, "i", playerid
+		bcrypt_hash inputtext, BCRYPT_COST, #PUB_LOGIN_GUESTREGISTER_HASHPW_CB, "i", playerid
 
 		#outline
 		//@summary Callback after hash pw when guest wants to register their account
@@ -444,6 +431,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		{
 			// dialog transaction should still be active (TRANSACTION_GUESTREGISTER)
 			bcrypt_get_hash buf144
+			Login_UsePassword playerid, buf144
 			if (Login_FormatUpgradeGuestAcc(playerid, buf144, buf4096)) {
 				// it should always return 1
 				mysql_tquery 1, buf4096, #PUB_LOGIN_GUESTREGISTER_CB, "i", playerid
@@ -464,7 +452,8 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 						DIALOG_DUMMY,
 						DIALOG_STYLE_MSGBOX,
 						LOGIN_CAPTION,
-						"Your account has been registered and your stats are saved, welcome!",
+						""#ECOL_SUCC"Your account has been registered and "\
+							"your stats are saved, welcome!",
 						"Ok", "",
 						TRANSACTION_GUESTREGISTER
 
@@ -500,65 +489,135 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		if (!response) {
 			#return 1
 		}
+		if (!Login_GetPassword(playerid, buf144)) {
+			ShowPlayerDialog\
+				playerid,
+				DIALOG_DUMMY,
+				DIALOG_STYLE_MSGBOX,
+				LOGIN_CAPTION,
+				!""#ECOL_WARN"An error occurred, please try again after reconnecting.",
+				"Ok", ""
+			#return 1
+		}
 		GameTextForPlayer playerid, "~b~Verifying...", 0x800000, 3
-		FormatLoginApiCheckChangePass userid[playerid], inputtext, buf4096
-		HTTP(playerid, HTTP_POST, #API_URL"/api-checkpass.php", buf4096, #PUB_LOGIN_CHANGEPASS_CHECK_CB)
 		ensureDialogTransaction playerid, TRANSACTION_CHANGEPASS
+		bcrypt_check inputtext, buf144, #PUB_LOGIN_CHANGEPASS_CHECK_CB, "i", playerid
+
+		#outline
+		//@summary Callback after checking a player's current password during change password process
+		//@param playerid player that wanted to change password
+		export __SHORTNAMED PUB_LOGIN_CHANGEPASS_CHECK_CB(playerid)
+		{
+			hideGameTextForPlayer(playerid)
+			endDialogTransaction playerid, TRANSACTION_CHANGEPASS
+			if (bcrypt_is_equal()) {
+				Login_FormatChangePasswordBox buf4096, .step=1
+				ShowPlayerDialog\
+					playerid,
+					DIALOG_CHANGEPASS_FIRSTPASS,
+					DIALOG_STYLE_PASSWORD,
+					CHANGEPASS_CAPTION,
+					buf4096,
+					"Next", "Cancel",
+					TRANSACTION_CHANGEPASS
+			} else {
+				ShowPlayerDialog\
+					playerid,
+					DIALOG_DUMMY,
+					DIALOG_STYLE_MSGBOX,
+					CHANGEPASS_CAPTION,
+					""#ECOL_WARN"Incorrect password",
+					"Ok", ""
+			}
+		}
+
 		#return 1
 	}
 	case DIALOG_CHANGEPASS_FIRSTPASS: {
 		if (!response) {
-			ResetPasswordConfirmData playerid
+			Login_PasswordConfirmFree playerid
 			#return 1
 		}
 		new pwhash[PW_HASH_LENGTH]
 		SHA256_PassHash inputtext, /*salt*/REGISTER_CAPTION, pwhash, PW_HASH_LENGTH
-		SetPasswordConfirmData playerid, pwhash
-		PREP_CHANGEPASSTEXT3
+		Login_PasswordConfirmStore playerid, pwhash
+		Login_FormatChangePasswordBox buf4096, .step=2
 		ShowPlayerDialog\
 			playerid,
 			DIALOG_CHANGEPASS_CONFIRMPASS,
 			DIALOG_STYLE_PASSWORD,
 			CHANGEPASS_CAPTION,
-			CHANGEPASS_TEXT,
+			buf4096,
 			"Next", "Cancel",
 			TRANSACTION_CHANGEPASS
 		#return 1
 	}
 	case DIALOG_CHANGEPASS_CONFIRMPASS: {
 		if (!response) {
-			ResetPasswordConfirmData playerid
+			Login_PasswordConfirmFree playerid
 			#return 1
 		}
 		new pwhash[PW_HASH_LENGTH]
 		SHA256_PassHash inputtext, /*salt*/REGISTER_CAPTION, pwhash, PW_HASH_LENGTH
-		if (!ValidatePasswordConfirmData(playerid, pwhash)) {
+		if (!Login_PasswordConfirmValidate(playerid, pwhash)) {
+			Login_FormatChangePasswordBox buf4096, .pwmismatch=1, .step=1
 			ShowPlayerDialog\
 				playerid,
-				DIALOG_CHANGEPASS_NOMATCH,
-				DIALOG_STYLE_MSGBOX,
-				REGISTER_CAPTION,
-				""#ECOL_WARN"Passwords do not match, please try again",
-				"Ok", "",
+				DIALOG_CHANGEPASS_FIRSTPASS,
+				DIALOG_STYLE_PASSWORD,
+				CHANGEPASS_CAPTION,
+				buf4096,
+				"Next", "Cancel",
 				TRANSACTION_CHANGEPASS
 			#return 1
 		}
+
 		GameTextForPlayer playerid, "~b~Updating...", 0x800000, 3
-		FormatLoginApiCheckChangePass userid[playerid], inputtext, buf4096
-		HTTP(playerid, HTTP_POST, #API_URL"/api-change.php", buf4096, #PUB_LOGIN_CHANGEPASS_CHANGE_CB)
+
+		bcrypt_hash inputtext, BCRYPT_COST, #PUB_LOGIN_CHANGEPASS_HASHPW_CB, "i", playerid
 		ensureDialogTransaction playerid, TRANSACTION_CHANGEPASS
-		#return 1
-	}
-	case DIALOG_CHANGEPASS_NOMATCH: {
-		PREP_CHANGEPASSTEXT2
-		ShowPlayerDialog\
-			playerid,
-			DIALOG_CHANGEPASS_FIRSTPASS,
-			DIALOG_STYLE_PASSWORD,
-			CHANGEPASS_CAPTION,
-			CHANGEPASS_TEXT,
-			"Next", "Cancel",
-			TRANSACTION_CHANGEPASS
+
+		#outline
+		//@summary Callback after hash pw when guest wants to register their account
+		//@param playerid player
+		export __SHORTNAMED PUB_LOGIN_CHANGEPASS_HASHPW_CB(playerid)
+		{
+			// dialog transaction should still be active (TRANSACTION_CHANGEPASS)
+			bcrypt_get_hash buf144
+			Login_UsePassword playerid, buf144
+			Login_FormatChangePassword userid[playerid], buf144, buf4096
+			mysql_tquery 1, buf4096, #PUB_LOGIN_CHANGEPASS_CHANGE_CB, "i", playerid
+
+			#outline
+			//@summary Callback after call to change a player's password
+			//@param playerid player that wanted to change password
+			export __SHORTNAMED PUB_LOGIN_CHANGEPASS_CHANGE_CB(playerid)
+			{
+				hideGameTextForPlayer(playerid)
+				if (cache_affected_rows(1)) {
+					ShowPlayerDialog\
+						playerid,
+						DIALOG_DUMMY,
+						DIALOG_STYLE_MSGBOX,
+						CHANGEPASS_CAPTION,
+						""#ECOL_SUCC"Password changed!",
+						"Ok", "",
+						TRANSACTION_CHANGEPASS
+				} else {
+					// TODO: log
+					ShowPlayerDialog\
+						playerid,
+						DIALOG_DUMMY,
+						DIALOG_STYLE_MSGBOX,
+						CHANGEPASS_CAPTION,
+						""#ECOL_WARN"An error occurred, "\
+							"please try again later.",
+						"Ok", "",
+						TRANSACTION_CHANGEPASS
+				}
+			}
+		}
+
 		#return 1
 	}
 }
@@ -889,56 +948,6 @@ giveguestname:
 	if (giveGuestName(playerid)) {
 		savePlayerName playerid
 	}
-}
-
-//@summary Callback after checking a player's password during change password process
-//@param playerid player that wanted to change password
-//@param response_code http response code or one of the {@code HTTP_*} macros
-//@param data response data
-export __SHORTNAMED PUB_LOGIN_CHANGEPASS_CHECK_CB(playerid, response_code, data[])
-{
-	endDialogTransaction playerid, TRANSACTION_CHANGEPASS
-	COMMON_CHECKRESPONSECODE("E-U16")
-	if (data[0] == 't') {
-		PREP_CHANGEPASSTEXT2
-		ShowPlayerDialog\
-			playerid,
-			DIALOG_CHANGEPASS_FIRSTPASS,
-			DIALOG_STYLE_PASSWORD,
-			CHANGEPASS_CAPTION,
-			CHANGEPASS_TEXT,
-			"Next", "Cancel",
-			TRANSACTION_CHANGEPASS
-		return
-	}
-	if (data[0] == 'f') {
-		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-			""#ECOL_WARN"Incorrect password", "Ok", "", TRANSACTION_CHANGEPASS
-		return
-	}
-	COMMON_UNKNOWNRESPONSE("E-U17")
-err:
-	ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-		""#ECOL_WARN"An error occurred, please try again later.", "Ok", "", TRANSACTION_CHANGEPASS
-}
-
-//@summary Callback after call to change a player's password
-//@param playerid player that wanted to change password
-//@param response_code http response code or one of the {@code HTTP_*} macros
-//@param data response data
-export __SHORTNAMED PUB_LOGIN_CHANGEPASS_CHANGE_CB(playerid, response_code, data[])
-{
-	endDialogTransaction playerid, TRANSACTION_CHANGEPASS
-	COMMON_CHECKRESPONSECODE("E-U18")
-	if (data[0] == 's') {
-		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, CHANGEPASS_CAPTION,
-			"Password changed!", "Ok", "", TRANSACTION_CHANGEPASS
-		return
-	}
-	COMMON_UNKNOWNRESPONSE("E-U19")
-err:
-	ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-		""#ECOL_WARN"An error occurred, please try again later.", "Ok", "", TRANSACTION_CHANGEPASS
 }
 
 //@summary Saves a player's name in db
