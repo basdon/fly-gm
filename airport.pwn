@@ -6,7 +6,7 @@
 hook OnGameModeInit()
 {
 	new Cache:apc = mysql_query(1, "SELECT c,e,n,b,x,y,z FROM apt ORDER BY i ASC")
-	new rowcount = cache_get_row_count()
+	rowcount = cache_get_row_count()
 	APT_Init rowcount
 	while (rowcount--) {
 		new code[4 + 1], enabled, name[MAX_AIRPORT_NAME + 1], beacon[4 + 1], Float:x, Float:y, Float:z

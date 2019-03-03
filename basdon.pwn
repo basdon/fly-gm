@@ -48,7 +48,7 @@
 #define PUB_LOGIN_CHANGEPASS_CHANGE_CB o // login
 #define PUB_TIMECYC_NEXTWEATHER p // timcyc
 #define PUB_LOGIN_LOADACCOUNT_CB q // login
-#define PUB_LOGIN_CREATEGAMESESSION_CB r // login
+#define PUB_LOGIN_CREATEGAMESESSION_CB aa // login
 #define PUB_LOGIN_GUESTREGISTER_HASHPW_CB s // login
 #define PUB_LOGIN_CHANGEPASS_HASHPW_CB t // login
 #define PUB_LOGIN_CREATE_GUEST_USR u // login
@@ -98,6 +98,7 @@ new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
 ###include "timecyc"
 ###include "tracker"
 ###include "anticheat"
+###include "vehicles"
 ###include "zones"
 ##endsection
 
@@ -393,12 +394,15 @@ public OnGameModeInit()
 	AddStaticVehicle(MODEL_MAVERICK, 1477.4471, 1280.7747, 10.8281, 0.0, 0, 0)
 	AddStaticVehicle(MODEL_ANDROM, 1477.4471, 1310.7747, 10.8281, 0.0, 0, 0)
 
+	new rowcount // used in airprot, vehicles
+
 ##section OnGameModeInit
 ###include "objects"
 ###include "panel"
 ###include "spawn"
 ###include "timecyc"
 ###include "tracker"
+###include "vehicles"
 ###include "airport"
 ##endsection
 
@@ -420,6 +424,7 @@ public OnGameModeExit()
 ##section OnGameModeExit
 ###include "airport"
 ###include "tracker"
+###include "vehicles"
 ##endsection
 
 	if (mysql_unprocessed_queries() > 0) {
@@ -496,5 +501,6 @@ public OnQueryError(errorid, error[], callback[], query[], connectionHandle)
 #include "spawn"
 #include "tracker"
 #include "airport"
+#include "vehicles"
 #include "zones"
 

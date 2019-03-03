@@ -29,12 +29,13 @@ ppfileoutline = preprocess-outline.sed
 #FILE airport
 #FILE zones
 #FILE nav
+#FILE vehicles
 #FILE objects
 
 #START
 #S2
 
-build: p/sharedsymbols.p p/objects.p p/nav.p p/zones.p p/airport.p p/dummies.p p/anticheat.p p/tracker.p p/timecyc.p p/spawn.p p/dialog.p p/colors.p p/settings.p p/util.p p/login.p p/playername.p p/playtime.p p/game_sa.p p/simpleiter.p p/pm.p p/panel.p p/sharedsymbols.p p/natives.p p/basdon.p
+build: p/sharedsymbols.p p/objects.p p/vehicles.p p/nav.p p/zones.p p/airport.p p/dummies.p p/anticheat.p p/tracker.p p/timecyc.p p/spawn.p p/dialog.p p/colors.p p/settings.p p/util.p p/login.p p/playername.p p/playtime.p p/game_sa.p p/simpleiter.p p/pm.p p/panel.p p/sharedsymbols.p p/natives.p p/basdon.p
 	@echo.
 
 p/basdon.p: basdon.pwn $(ppfile) $(ppfileoutline)
@@ -102,6 +103,9 @@ p/zones.p: zones.pwn $(ppfile) $(ppfileoutline)
 
 p/nav.p: nav.pwn $(ppfile) $(ppfileoutline)
 	$(bash) -c "sed -f $(ppfileoutline) nav.pwn|sed -f $(ppfile)>p/nav.p"
+
+p/vehicles.p: vehicles.pwn $(ppfile) $(ppfileoutline)
+	$(bash) -c "sed -f $(ppfileoutline) vehicles.pwn|sed -f $(ppfile)>p/vehicles.p"
 
 p/objects.p: objects.pwn $(ppfile) $(ppfileoutline)
 	$(bash) -c "sed -f $(ppfileoutline) objects.pwn|sed -f $(ppfile)>p/objects.p"
