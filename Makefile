@@ -14,7 +14,7 @@ ppfileoutline = preprocess-outline.sed
 #FILE pm
 #FILE simpleiter
 #FILE game_sa
-#FILE afk
+#FILE playtime
 #FILE playername
 #FILE login
 #FILE util
@@ -34,7 +34,7 @@ ppfileoutline = preprocess-outline.sed
 #START
 #S2
 
-build: p/sharedsymbols.p p/objects.p p/nav.p p/zones.p p/airport.p p/dummies.p p/anticheat.p p/tracker.p p/timecyc.p p/spawn.p p/dialog.p p/colors.p p/settings.p p/util.p p/login.p p/playername.p p/afk.p p/game_sa.p p/simpleiter.p p/pm.p p/panel.p p/sharedsymbols.p p/natives.p p/basdon.p
+build: p/sharedsymbols.p p/objects.p p/nav.p p/zones.p p/airport.p p/dummies.p p/anticheat.p p/tracker.p p/timecyc.p p/spawn.p p/dialog.p p/colors.p p/settings.p p/util.p p/login.p p/playername.p p/playtime.p p/game_sa.p p/simpleiter.p p/pm.p p/panel.p p/sharedsymbols.p p/natives.p p/basdon.p
 	@echo.
 
 p/basdon.p: basdon.pwn $(ppfile) $(ppfileoutline)
@@ -58,8 +58,8 @@ p/simpleiter.p: simpleiter.pwn $(ppfile) $(ppfileoutline)
 p/game_sa.p: game_sa.pwn $(ppfile) $(ppfileoutline)
 	$(bash) -c "sed -f $(ppfileoutline) game_sa.pwn|sed -f $(ppfile)>p/game_sa.p"
 
-p/afk.p: afk.pwn $(ppfile) $(ppfileoutline)
-	$(bash) -c "sed -f $(ppfileoutline) afk.pwn|sed -f $(ppfile)>p/afk.p"
+p/playtime.p: playtime.pwn $(ppfile) $(ppfileoutline)
+	$(bash) -c "sed -f $(ppfileoutline) playtime.pwn|sed -f $(ppfile)>p/playtime.p"
 
 p/playername.p: playername.pwn $(ppfile) $(ppfileoutline)
 	$(bash) -c "sed -f $(ppfileoutline) playername.pwn|sed -f $(ppfile)>p/playername.p"

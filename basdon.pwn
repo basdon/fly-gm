@@ -93,7 +93,7 @@ new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
 ###include "playername"
 ###include "panel"
 ###include "game_sa"
-###include "afk"
+###include "playtime"
 ###include "login"
 ###include "objects"
 ###include "pm"
@@ -128,7 +128,7 @@ export __SHORTNAMED PUB_LOOP25()
 	if (!invoc) {
 ##section loop100
 ###include "panel"
-###include "afk"
+###include "playtime"
 ###include "timecyc"
 ###include "anticheat"
 ##endsection
@@ -161,7 +161,7 @@ public OnPlayerConnect(playerid)
 ###include "spawn"
 ###include "timecyc"
 ###include "anticheat"
-###include "afk"
+###include "playtime"
 ###include "objects"
 ###include "pm"
 ###include "zones"
@@ -176,7 +176,7 @@ public OnPlayerDisconnect(playerid, reason)
 ###include "login"
 ###include "spawn"
 ###include "panel"
-###include "afk"
+###include "playtime"
 ###include "dialog"
 ###include "airport"
 ###include "playername" // keep this last-ish (clears data)
@@ -346,7 +346,7 @@ public OnPlayerText(playerid, text[])
 onPlayerNowAfk(playerid)
 {
 ##section onPlayerNowAfk
-###include "afk"
+###include "playtime"
 ###include "panel"
 ##endsection
 }
@@ -359,7 +359,7 @@ onPlayerNowAfk(playerid)
 onPlayerWasAfk(playerid)
 {
 ##section onPlayerWasAfk
-###include "afk"
+###include "playtime"
 ###include "panel"
 ###include "timecyc"
 ##endsection
@@ -411,7 +411,7 @@ public OnGameModeInit()
 public OnPlayerUpdate(playerid)
 {
 ##section OnPlayerUpdate
-###include "afk"
+###include "playtime"
 ###include "timecyc"
 ###include "anticheat"
 ##endsection
@@ -493,7 +493,7 @@ public OnQueryError(errorid, error[], callback[], query[], connectionHandle)
 #include "dialog"
 #include "login"
 #include "game_sa"
-#include "afk"
+#include "playtime"
 #include "objects"
 #include "pm"
 #include "spawn"
