@@ -9,7 +9,7 @@ varinit
 
 hook OnGameModeInit()
 {
-	new Cache:veh = mysql_query(1, "SELECT veh.i,veh.m,veh.o,veh.x,veh.y,veh.z,veh.r,veh.c,veh.d,usr.n FROM veh JOIN usr ON veh.o = usr.i")
+	new Cache:veh = mysql_query(1, !"SELECT veh.i,veh.m,veh.o,veh.x,veh.y,veh.z,veh.r,veh.c,veh.d,usr.n FROM veh JOIN usr ON veh.o = usr.i")
 	rowcount = cache_get_row_count()
 	Veh_Init rowcount
 	while (rowcount--) {
