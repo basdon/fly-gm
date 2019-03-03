@@ -226,30 +226,30 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 				}
 				mysql_tquery 1, buf4096, #PUB_LOGIN_CREATE_NEWUSER_SES, "i", playerid
 				GameTextForPlayer playerid, "~b~Creating game session...", 0x800000, 3
-			}
 
-			#outline
-			//@summary Callback for creating game session for just registered account
-			//@param playerid player that just registered and needs game session
-			export __SHORTNAMED PUB_LOGIN_CREATE_NEWUSER_SES(playerid)
-			{
-				endDialogTransaction playerid, TRANSACTION_LOGIN
-				hideGameTextForPlayer(playerid)
-				sessionid[playerid] = cache_insert_id()
-				loginPlayer playerid, LOGGED_IN
-				/*
-				if (sessionid[playerid] == -1) {
-					// failed to create session
-					// no real problem, but time will not be registered
+				#outline
+				//@summary Callback for creating game session for just registered account
+				//@param playerid player that just registered and needs game session
+				export __SHORTNAMED PUB_LOGIN_CREATE_NEWUSER_SES(playerid)
+				{
+					endDialogTransaction playerid, TRANSACTION_LOGIN
+					hideGameTextForPlayer(playerid)
+					sessionid[playerid] = cache_insert_id()
+					loginPlayer playerid, LOGGED_IN
+					/*
+					if (sessionid[playerid] == -1) {
+						// failed to create session
+						// no real problem, but time will not be registered
+					}
+					*/
+					format\
+						buf144,
+						sizeof(buf144),
+						"%s[%d] just registered an account, welcome!",
+						NAMEOF(playerid),
+						playerid
+					SendClientMessageToAll COL_JOIN, buf144
 				}
-				*/
-				format\
-					buf144,
-					sizeof(buf144),
-					"%s[%d] just registered an account, welcome!",
-					NAMEOF(playerid),
-					playerid
-				SendClientMessageToAll COL_JOIN, buf144
 			}
 		}
 		#return 1
@@ -317,23 +317,23 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 
 				mysql_tquery 1, buf4096[1]
 				mysql_tquery 1, buf4096[buf4096[0]], #PUB_LOGIN_CREATEGAMESESSION_CB, "i", playerid
-			}
 
-			#outline
-			//@summary Callback when creating game session
-			//@param playerid player
-			//@remarks spawns the player at the end
-			export __SHORTNAMED PUB_LOGIN_CREATEGAMESESSION_CB(playerid)
-			{
-				sessionid[playerid] = cache_insert_id()
-				loginPlayer playerid, LOGGED_IN
-				format\
-					buf144,
-					sizeof(buf144),
-					"%s[%d] just logged in, welcome back!",
-					NAMEOF(playerid),
-					playerid
-				SendClientMessageToAll COL_JOIN, buf144
+				#outline
+				//@summary Callback when creating game session
+				//@param playerid player
+				//@remarks spawns the player at the end
+				export __SHORTNAMED PUB_LOGIN_CREATEGAMESESSION_CB(playerid)
+				{
+					sessionid[playerid] = cache_insert_id()
+					loginPlayer playerid, LOGGED_IN
+					format\
+						buf144,
+						sizeof(buf144),
+						"%s[%d] just logged in, welcome back!",
+						NAMEOF(playerid),
+						playerid
+					SendClientMessageToAll COL_JOIN, buf144
+				}
 			}
 		}
 
