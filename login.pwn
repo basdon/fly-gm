@@ -804,14 +804,9 @@ asguest:
 //@param playerid player to save the name of
 savePlayerName(playerid)
 {
-	#assert MAX_PLAYER_NAME == 24
-	static query[] = "UPDATE usr SET n='_________________________ WHERE i=__________"
-	memcpy query, ninespaces, 53 * 4, 9 * 4
-	format query[52], 10, _pd, userid[playerid]
-	memcpy query, "                       ", 20 * 4, 23 * 4
-	memcpy query, NAMEOF(playerid), 18 * 4, NAMELEN(playerid) * 4
-	query[18 + NAMELEN(playerid)] = '\'';
-	mysql_tquery 1, query
+	if (Login_FormatSavePlayerName(playerid, buf144)) {
+		mysql_tquery 1, buf144
+	}
 }
 
 //@summary Renames a player to a guest name
