@@ -42,10 +42,12 @@ s/^\s*\(memcpy[ \|(]\?[^,]\+\[\)/#error possible memcpy bug (#allowmemcpywitharr
 
 # custom doc comment formats
 /^\s*\/\/@/ {
+:concatnext
         /\\$/ {
                 N
                 s/\\\n//
                 a/// 
+                b concatnext
         }
 	s-^\s*//@summary \(.*\)$-/// <summary>\1</summary>-
 	s-^\s*//@param \([^ \t]\+\) \(.*\)$-/// <param name="\1">\2</param>-
