@@ -34,5 +34,22 @@ hook OnGameModeExit()
 	Veh_Destroy
 }
 
+hook OnVehicleStreamIn(vehicleid, forplayerid)
+{
+	if (Veh_ShouldCreateLabel(vehicleid, forplayerid, buf144)) {
+		new PlayerText3D:labelid
+		labelid = CreatePlayer3DTextLabel(forplayerid, buf144, 0xFFFFFF00, 0.0, 0.0, 0.0, 100.0, INVALID_PLAYER_ID, vehicleid, .testLOS=1)
+		Veh_RegisterLabel vehicleid, forplayerid, labelid
+	}
+}
+
+hook OnVehicleStreamOut(vehicleid, forplayerid)
+{
+	new PlayerText3D:labelid
+	if (Veh_ShouldDeleteLabel(vehicleid, forplayerid, labelid)) {
+		DeletePlayer3DTextLabel forplayerid, labelid
+	}
+}
+
 #printhookguards
 

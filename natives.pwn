@@ -515,3 +515,23 @@ native Veh_Destroy();
 //@seealso Veh_Destroy
 native Veh_Init(dbvehiclecount)
 
+//@summary Let the plugin know a label was created on a vehicle for a player
+//@param vehicleid the vehicle the label is attached to
+//@param playerid the player the label was made for
+//@param labelid the label id assigned to the newly created label
+native Veh_RegisterLabel(vehicleid, playerid, PlayerText3D:labelid)
+
+//@summary Check if a label should be created on a vehicle for a player
+//@param vehicleid vehicle on which the label would be attached
+//@param playerid player for which the label would show
+//@param buf buffer to store the label text in, if this returns positive
+//@returns {@code 1} if a label should be made, with given text in {@param buf}
+native Veh_ShouldCreateLabel(vehicleid, playerid, buf[])
+
+//@summary Check if there is a label on given vehicle for given player, {@b and unregister it}
+//@param vehicleid vehicle on which a label might be
+//@param playerid player for which the label would have been created
+//@param labelid the label id will be put in this variable if this returns positive
+//@returns {@code 1} if there is a label to delete, its id will be put in {@param labelid}
+native Veh_ShouldDeleteLabel(vehicleid, playerid, &PlayerText3D:labelid)
+

@@ -476,6 +476,20 @@ public OnVehicleSpawn(vehicleid)
 ##endsection
 }
 
+public OnVehicleStreamIn(vehicleid, forplayerid)
+{
+##section OnVehicleStreamIn
+###include "vehicles"
+##endsection
+}
+
+public OnVehicleStreamOut(vehicleid, forplayerid)
+{
+##section OnVehicleStreamOut
+###include "vehicles"
+##endsection
+}
+
 public OnObjectMoved(objectid)
 {
 ##section OnObjectMoved
