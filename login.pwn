@@ -8,124 +8,8 @@
 #define LOGGED_GUEST 2
 
 #define MAX_LOGIN_ATTEMPTS 4
-#define PARSE5BYTENONNULL(%0,%1) ((%0[%1]&0x7F)|((%0[%1+1]&0x7F)<<7)|\
-			((%0[%1+2]&0x7F)<<14)|((%0[%1+3]&0x7F)<<21)|((%0[%1+4]&0x0F)<<28))
 
 #define BCRYPT_COST 12
-
-// on join, [loginusercheck]
-
-// -- [loginusercheck]
-//    what: query check usr registered (get id & pw), check if ip should be blocked
-//    transaction: TRANSACTION_LOGIN
-//    msg: "~b~Contacting login server..."
-//    note: done by calling checkUserExist with callback
-//    cb: PUB_LOGIN_USERCHECK_CB
-
-// -- [PUB_LOGIN_USERCHECK_CB]
-//    what: cb from usr check query
-//    transaction: TRANSACTION_LOGIN
-//    - fail > spawn as guest
-//    - blocked ip > spawn as guest
-//    - not registered > [initialregisterbox] TRANSACTION_LOGIN
-//    - registered > [loginbox] TRANSACTION_LOGIN
-//                   password is stored in plugin so it can be retrieved later for checking
-
-// -- [initialregisterbox]
-//    what: dialog that asks for password
-//    dialog: DIALOG_REGISTER_FIRSTPASS
-//    transaction: TRANSACTION_LOGIN
-//    buttons: "Next", "Play as guest"
-
-// -- [DIALOG_REGISTER_FIRSTPASS]
-//    what: response from dialog that asks for password
-//    - cancel > give player guest name and spawn
-//    - next > store given password hash, [confirmpwregisterbox]
-
-// -- [confirmpwregisterbox]
-//    what: dialog that asks for password confirmation
-//    dialog: DIALOG_REGISTER_CONFIRMPASS
-//    transaction: TRANSACTION_LOGIN
-//    buttons: "Confirm", "Cancel"
-
-// -- [DIALOG_REGISTER_CONFIRMPASS]
-//    what: response from dialog that asks for password confirmation
-//    - Confirm > match given password hash
-//              - match > TODO: [registeraccount] TRANSACTION_LOGIN
-//              - nomatch > [initialregisterbox] TRANSACTION_LOGIN
-//    - Cancel > [initialregisterbox] TRANSACTION_LOGIN
-
-// on guest session, guest does /register, [guestregister]
-
-// -- [guestregister]
-//    what: dialog to change guest name before registering
-//    dialog: DIALOG_GUESTREGISTER_CHOOSENAME
-
-// -- [DIALOG_GUESTREGISTER_CHOOSENAME]
-//    what: dialog to change guest name before registering
-//    - rejected name > halt
-//    - approved name > [guestregisterusercheck] TRANSACTION_GUESTREGISTER
-
-// -- [guestregisterusercheck]
-//    what: query check usr registered (get id & pw), check if ip should be blocked
-//    transaction: TRANSACTION_GUESTREGISTER
-//    msg: "~b~Contacting login server..."
-//    note: done by calling checkUserExist with callback
-//    cb: PUB_LOGIN_GUESTREGISTERUSERCHECK_CB
-
-// -- [PUB_LOGIN_GUESTREGISTERUSERCHECK_CB]
-//    transaction: TRANSACTION_GUESTREGISTER
-//    - fail > give guest name and halt
-//    - blocked ip > give guest name and halt
-//    - not registered > [guestregisterbox]
-//    - registered > give guest name and halt
-
-// -- [guestergisterbox]
-//    what: dialog that asks first password to register existing guest account
-//    dialog: DIALOG_GUESTREGISTER_FIRSTPASS
-//    transaction: TRANSACTION_GUESTREGISTER
-//    buttons: "Next", "Cancel"
-
-// -- [DIALOG_GUESTREGISTER_FIRSTPASS]
-//    what: response from dialog that asks first password to register guest account
-//    - Next > [guestregisterboxconfirmpass] hash password and store in plugin to check confirm pass later
-//    - Cancel > give player guest name, save name and halt
-
-// -- [guestregisterboxconfirmpass]
-//    what: dialog that asks confirm password to register existing guest account
-//    dialog: DIALOG_GUESTREGISTER_CONFIRMPASS
-//    transaction: TRANSACTION_GUESTREGISTER
-//    buttons: "Next", "Cancel"
-
-// -- [DIALOG_GUESTREGISTER_CONFIRMPASS]
-//    what: response from dialog to confirm first entered password
-//    Next > TODO [PUB_LOGIN_GUESTREGISTER_CB] check pass confirm, create account
-//    Cancel > remove stored password, give guest name, save name in db, halt
-
-// -- [loginbox]
-//    what: dialog that asks password for registered account
-//    dialog: DIALOG_LOGIN_LOGIN_OR_NAMECHANGE
-//    transaction: TRANSACTION_LOGIN
-//    buttons: "Login", "Change name"
-
-// -- [DIALOG_LOGIN_LOGIN_OR_NAMECHANGE]
-//    what: response from dialog that asks password
-//    - Login > [PUB_LOGIN_PWVERIFY_CB] match given password with password stored in plugin
-//    - Change name > [loginnamechangebox]
-
-// -- [loginnamechangebox]
-//    what: dialog to change name
-//    dialog: DIALOG_LOGIN_NAMECHANGE
-//    transaction: TRANSACTION_LOGIN
-//    buttons: "Change", "Play as guest"
-
-// -- [DIALOG_LOGIN_NAMECHANGE]
-//    what: response from dialog to change name during login
-//    Change > failed to change > [loginnamechangebox]
-//             successfully changed > checkUserExist [PUB_LOGIN_USERCHECK_CB] TRANSACTION_LOGIN
-//    Play as guest > give guest name, start guest session
-
-// on registered session, user does /changepassword, TODO [changepasswordcurrent]
 
 varinit
 {
@@ -351,8 +235,8 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			{
 				endDialogTransaction playerid, TRANSACTION_LOGIN
 				hideGameTextForPlayer(playerid)
-				loginPlayer playerid, LOGGED_IN
 				sessionid[playerid] = cache_insert_id()
+				loginPlayer playerid, LOGGED_IN
 				/*
 				if (sessionid[playerid] == -1) {
 					// failed to create session
@@ -380,6 +264,79 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		Login_GetPassword playerid, pw
 		bcrypt_check inputtext, pw, #PUB_LOGIN_PWVERIFY_CB, "i", playerid
 		ensureDialogTransaction playerid, TRANSACTION_LOGIN
+
+		#outline
+		//@summary Callback for login password verification call
+		//@param playerid player that wanted to login
+		export __SHORTNAMED PUB_LOGIN_PWVERIFY_CB(playerid)
+		{
+			endDialogTransaction playerid, TRANSACTION_LOGIN
+			hideGameTextForPlayer(playerid)
+
+			if (!bcrypt_is_equal()) {
+				// failed login
+				if ((failedlogins{playerid} += 2) > (MAX_LOGIN_ATTEMPTS - 1) * 2) {
+					SendClientMessage playerid, COL_WARN, #WARN"Too many failed login attempts!"
+					KickDelayed playerid
+					return
+				}
+				showLoginDialog playerid, .show_invalid_pw_error=1
+				return
+			}
+
+			// great, correct password, do stuff
+			GameTextForPlayer playerid, "~b~Loading account...", 0x800000, 3
+			PlayerData_SetUserId playerid, userid[playerid]
+			Login_FormatLoadAccountData userid[playerid], buf4096
+			mysql_tquery 1, buf4096, #PUB_LOGIN_LOADACCOUNT_CB, "i", playerid
+
+			#outline
+			//@summary Callback for loading account data
+			//@param playerid player
+			export __SHORTNAMED PUB_LOGIN_LOADACCOUNT_CB(playerid)
+			{
+				hideGameTextForPlayer(playerid)
+
+				if (!cache_get_row_count() ||
+					!Login_FormatCreateUserSession(playerid, buf4096))
+				{
+					ShowPlayerDialog\
+						playerid,
+						DIALOG_LOGIN_LOADACCOUNTERROR,
+						DIALOG_STYLE_MSGBOX,
+						LOGIN_CAPTION,
+						""#ECOL_WARN"An error occured, please try again",
+						"Ok", ""
+					return
+				}
+
+				GameTextForPlayer playerid, "~b~Creating game session...", 0x800000, 3
+				new score
+				cache_get_field_int(0, 0, score)
+				SetPlayerScore playerid, score
+
+				mysql_tquery 1, buf4096[1]
+				mysql_tquery 1, buf4096[buf4096[0]], #PUB_LOGIN_CREATEGAMESESSION_CB, "i", playerid
+			}
+
+			#outline
+			//@summary Callback when creating game session
+			//@param playerid player
+			//@remarks spawns the player at the end
+			export __SHORTNAMED PUB_LOGIN_CREATEGAMESESSION_CB(playerid)
+			{
+				sessionid[playerid] = cache_insert_id()
+				loginPlayer playerid, LOGGED_IN
+				format\
+					buf144,
+					sizeof(buf144),
+					"%s[%d] just logged in, welcome back!",
+					NAMEOF(playerid),
+					playerid
+				SendClientMessageToAll COL_JOIN, buf144
+			}
+		}
+
 		#return 1
 	}
 	case DIALOG_LOGIN_LOADACCOUNTERROR: {
@@ -429,6 +386,63 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		}
 		checkUserExist playerid, ""#PUB_LOGIN_GUESTREGISTERUSERCHECK_CB""
 		ensureDialogTransaction playerid, TRANSACTION_GUESTREGISTER
+
+		#outline
+		//@summary Callback for usercheck done after renaming while guest is registering from existing guest session.
+		//@param playerid player that has been checked
+		export __SHORTNAMED PUB_LOGIN_GUESTREGISTERUSERCHECK_CB(playerid)
+		{
+			endDialogTransaction playerid, TRANSACTION_GUESTREGISTER
+			hideGameTextForPlayer(playerid)
+
+			if (!cache_get_row_count()) {
+				printf "E-U12"
+				ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
+					""#ECOL_WARN"An error occurred, you will be spawned as a guest", "Ok", ""
+				WARNMSG("An error occured while contacting the login server.")
+				goto giveguestname
+			}
+
+			new failedattempts, pw[65]
+
+			cache_get_field_int(0, 0, failedattempts)
+			if (failedattempts > 10) {
+				ShowPlayerDialog\
+					playerid,
+					DIALOG_DUMMY,
+					DIALOG_STYLE_MSGBOX,
+					LOGIN_CAPTION,
+					""#ECOL_WARN"You cannot register right now because there"\
+						" are too many failed logins from your location",
+					"Ok", ""
+				goto giveguestname
+			}
+
+			cache_get_field_str(0, 1, pw)
+			if (ismysqlnull(pw)) {
+				// user doesn't exist
+				Login_FormatGuestRegisterBox playerid, buf4096, .step=1
+				ShowPlayerDialog\
+					playerid,
+					DIALOG_GUESTREGISTER_FIRSTPASS,
+					DIALOG_STYLE_PASSWORD,
+					REGISTER_CAPTION,
+					buf4096,
+					"Next", "Cancel",
+					TRANSACTION_GUESTREGISTER
+				return
+			}
+
+			// user does exist
+			ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
+				""#ECOL_WARN"This name is registered, please retry with a different name.",
+				"Ok", "", TRANSACTION_GUESTREGISTER
+		giveguestname:
+			if (giveGuestName(playerid)) {
+				savePlayerName playerid
+			}
+		}
+
 		#return 1
 	}
 	case DIALOG_GUESTREGISTER_FIRSTPASS: {
@@ -742,29 +756,6 @@ showLoginNamechangeDialog(playerid, show_invalid_name_error=0)
 		TRANSACTION_LOGIN
 }
 
-//@summary Report api err response to console
-//@param response_code response code from HTTP callback
-//@param data data from HTTP callback
-//@param errcode the errorcode associated with this error
-report_api_err(response_code, data[], errcode[])
-{
-	LIMITSTRLEN(data, 500)
-	printf "%s: %d, %s", errcode, response_code, data
-}
-
-//@summary Report api unknown response to console
-//@param data data from HTTP callback
-//@param errcode the errorcode associated with this error
-report_api_unknown_response(data[], errcode[])
-{
-	LIMITSTRLEN(data, 500)
-	printf "%s: %s", errcode, data
-}
-
-#define COMMON_CHECKRESPONSECODE_NOHIDETEXT(%0) if(response_code!=200){report_api_err(response_code,data,%0);goto err;}
-#define COMMON_CHECKRESPONSECODE(%0) hideGameTextForPlayer(playerid);COMMON_CHECKRESPONSECODE_NOHIDETEXT(%0)
-#define COMMON_UNKNOWNRESPONSE(%0) report_api_unknown_response(data,%0)
-
 //@summary Callback for usercheck done in {@link OnPlayerConnect} and after changing name during login.
 //@param playerid player that has been checked
 export __SHORTNAMED PUB_LOGIN_USERCHECK_CB(playerid)
@@ -807,130 +798,6 @@ asguest:
 	cache_get_field_int(0, 2, id)
 	userid[playerid] = id
 	showLoginDialog playerid
-}
-
-//@summary Callback for login call
-//@param playerid player that wanted to login
-export __SHORTNAMED PUB_LOGIN_PWVERIFY_CB(playerid)
-{
-	endDialogTransaction playerid, TRANSACTION_LOGIN
-	hideGameTextForPlayer(playerid)
-
-	if (bcrypt_is_equal()) {
-		// great, correct password, do stuff
-		GameTextForPlayer playerid, "~b~Loading account...", 0x800000, 3
-		PlayerData_SetUserId playerid, userid[playerid]
-		Login_FormatLoadAccountData userid[playerid], buf4096
-		mysql_tquery 1, buf4096, #PUB_LOGIN_LOADACCOUNT_CB, "i", playerid
-	} else {
-		// failed login
-		if ((failedlogins{playerid} += 2) > (MAX_LOGIN_ATTEMPTS - 1) * 2) {
-			SendClientMessage playerid, COL_WARN, #WARN"Too many failed login attempts!"
-			KickDelayed playerid
-			return
-		}
-		showLoginDialog playerid, .show_invalid_pw_error=1
-	}
-}
-
-//@summary Callback for loading account data
-//@param playerid player
-export __SHORTNAMED PUB_LOGIN_LOADACCOUNT_CB(playerid)
-{
-	hideGameTextForPlayer(playerid)
-
-	if (!cache_get_row_count()) {
-		printf "E-U1A"
-err:
-		ShowPlayerDialog\
-			playerid,
-			DIALOG_LOGIN_LOADACCOUNTERROR,
-			DIALOG_STYLE_MSGBOX,
-			LOGIN_CAPTION,
-			""#ECOL_WARN"An error occured, please try again",
-			"Ok", ""
-		return
-	}
-
-	if (!Login_FormatCreateUserSession(playerid, buf4096)) {
-		printf "E-U1B"
-		goto err
-	}
-
-	GameTextForPlayer playerid, "~b~Creating game session...", 0x800000, 3
-	new score
-	cache_get_field_int(0, 0, score)
-	SetPlayerScore playerid, score
-
-	mysql_tquery 1, buf4096[1]
-	mysql_tquery 1, buf4096[buf4096[0]], #PUB_LOGIN_CREATEGAMESESSION_CB, "i", playerid
-}
-
-//@summary Callback when creating game session
-//@param playerid player
-//@remarks spawns the player at the end
-export __SHORTNAMED PUB_LOGIN_CREATEGAMESESSION_CB(playerid)
-{
-	sessionid[playerid] = cache_insert_id()
-	loginPlayer playerid, LOGGED_IN
-	new str[MAX_PLAYER_NAME + 6 + 30 + 1]
-	format str, sizeof(str), "%s[%d] just logged in, welcome back!", NAMEOF(playerid), playerid
-	SendClientMessageToAll COL_JOIN, str
-}
-
-//@summary Callback for usercheck done after renaming while guest is registering from existing guest session.
-//@param playerid player that has been checked
-export __SHORTNAMED PUB_LOGIN_GUESTREGISTERUSERCHECK_CB(playerid, response_code, data[])
-{
-	endDialogTransaction playerid, TRANSACTION_GUESTREGISTER
-	hideGameTextForPlayer(playerid)
-
-	if (!cache_get_row_count()) {
-		printf "E-U12"
-		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-			""#ECOL_WARN"An error occurred, you will be spawned as a guest", "Ok", ""
-		SendClientMessage playerid, COL_WARN, WARN"An error occured while contacting the login server."
-		goto giveguestname
-	}
-
-	new failedattempts, pw[65]
-
-	cache_get_field_int(0, 0, failedattempts)
-	if (failedattempts > 10) {
-		ShowPlayerDialog\
-			playerid,
-			DIALOG_DUMMY,
-			DIALOG_STYLE_MSGBOX,
-			LOGIN_CAPTION,
-			""#ECOL_WARN"You cannot register right now because there"\
-				" are too many failed logins from your location",
-			"Ok", ""
-		goto giveguestname
-	}
-
-	cache_get_field_str(0, 1, pw)
-	if (ismysqlnull(pw)) {
-		// user doesn't exist
-		Login_FormatGuestRegisterBox playerid, buf4096, .step=1
-		ShowPlayerDialog\
-			playerid,
-			DIALOG_GUESTREGISTER_FIRSTPASS,
-			DIALOG_STYLE_PASSWORD,
-			REGISTER_CAPTION,
-			buf4096,
-			"Next", "Cancel",
-			TRANSACTION_GUESTREGISTER
-		return
-	}
-
-	// user does exist
-	ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
-		""#ECOL_WARN"This name is registered, please retry with a different name.",
-		"Ok", "", TRANSACTION_GUESTREGISTER
-giveguestname:
-	if (giveGuestName(playerid)) {
-		savePlayerName playerid
-	}
 }
 
 //@summary Saves a player's name in db

@@ -24,13 +24,6 @@
 #endif
 #define SLOTS MAX_PLAYERS
 
-#ifndef PROD
-// NO http:// PREFIX!
-#define API_URL "localhost:8080/sap"
-#else
-#error "no prod API_URL defined yet"
-#endif
-
 #define export%0\32%1(%2) forward %1(%2);public %1(%2)
 
 #define cos(%0) floatcos(%0, degrees)
@@ -60,7 +53,7 @@
 #define PUB_LOGIN_CHANGEPASS_HASHPW_CB t // login
 #define PUB_LOGIN_CREATE_GUEST_USR u // login
 #define PUB_LOGIN_REGISTER_HASHPW_CB v // login
-#define PUB_LOGIN_CREATE_USER_SES w // login
+#define PUB_LOGIN_CREATE_NEWUSER_SES w // login
 
 #namespace "basdon"
 
