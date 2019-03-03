@@ -12,8 +12,6 @@
 varinit
 {
 	new obj_radar_la, obj_radar_lv, obj_radar_sf
-	new Float:obj_radar_z_rot = 0.0
-	new obj_loop_idx = 0
 }
 
 hook OnGameModeInit()
@@ -43,6 +41,8 @@ hook OnPlayerConnect(playerid)
 
 hook loop5000()
 {
+	static Float:obj_radar_z_rot = 0.0
+	static obj_loop_idx = 0
 	obj_loop_idx ^= 1
 	obj_radar_z_rot += 179.99
 	if (obj_radar_z_rot > 360.0) {
