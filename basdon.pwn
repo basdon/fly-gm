@@ -81,9 +81,6 @@ new TXT_EMPTY[] = "_"
 //@seealso TXT_EMPTY
 stock const TXT_EMPTY_CONST[] = "_"
 
-//@summary {@code "%d"}
-new _pd[] = "%d"
-
 new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
 
 #define SetPlayerPos SetPlayerPosHook

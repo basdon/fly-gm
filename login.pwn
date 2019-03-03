@@ -39,15 +39,6 @@ varinit
 		"Enter your new name (3-20 length, 0-9a-zA-Z=()[]$@._).\n"\
 		"Names starting with @ are reserved for guests."
 	#define NAMECHANGE_TEXT_NOERR_OFFSET 60
-
-	new ninespaces[] = "         "
-}
-
-hook loop30s()
-{
-	foreach (new playerid : players) {
-		updatePlayerLastseen playerid, .isdisconnect=0
-	}
 }
 
 hook OnPlayerDisconnect(playerid, reason)
@@ -58,7 +49,6 @@ hook OnPlayerDisconnect(playerid, reason)
 		format str, sizeof(str), "%s[%d] left the server (%s)", NAMEOF(playerid), playerid, reasons[reasons[reason & 3]]
 		SendClientMessageToAll COL_QUIT, str
 	}
-	updatePlayerLastseen playerid, .isdisconnect=1
 	loggedstatus[playerid] = LOGGED_NO
 	Login_PasswordConfirmFree playerid
 	Login_FreePassword playerid
@@ -899,36 +889,6 @@ spawnWithoutGuestSession(playerid)
 	WARNMSG("An error occurred while creating a guest session.")
 	WARNMSG("You can play, but you won't be able to save your stats later.")
 	loginPlayer playerid, LOGGED_GUEST
-}
-
-//@summary Updates a player's last seen (usr and ses) and total/actual time value in db
-//@param playerid playerid to update
-//@param isdisconnect is this call made from {@link OnPlayerDisconnect}?
-//@remarks This function first checks if the player has a valid userid and sessionid
-//@remarks If {@param isdisconnect} is {@code 0}, {@code 30} gets added to player's total time (inaccurate), \
-otherwise player's totaltime is set to sum of session times (accurate)
-updatePlayerLastseen(playerid, isdisconnect)
-{
-	static sessionquery1[] = "UPDATE usr SET l=UNIX_TIMESTAMP(),t=t+30,a=a+__________ WHERE i=__________"
-	static sessionquery2[] = "UPDATE ses SET e=UNIX_TIMESTAMP() WHERE i=__________"
-	static sessionquery3[] = "UPDATE usr SET t=(SELECT SUM(e-s) FROM ses WHERE u=usr.i) WHERE i=__________"
-	if (userid[playerid] != -1 && sessionid[playerid] != -1) {
-		if (isdisconnect) {
-			memcpy sessionquery3, ninespaces, 67 * 4, 9 * 4
-			format sessionquery3[66], 10, _pd, userid[playerid]
-			mysql_tquery 1, sessionquery3
-			sessionquery1[38] = '0'
-		}
-		memcpy sessionquery1, ninespaces, 46 * 4, 9 * 4
-		format sessionquery1[45], 10, _pd, getAndClearUncommittedPlaytime(playerid)
-		sessionquery1[45 + strlen(sessionquery1[45])] = ' '
-		memcpy sessionquery1, ninespaces, 65 * 4, 9 * 4
-		format sessionquery1[64], 10, _pd, userid[playerid]
-		format sessionquery2[42], 10, _pd, sessionid[playerid]
-		mysql_tquery 1, sessionquery1
-		mysql_tquery 1, sessionquery2
-		sessionquery1[38] = '3'
-	}
 }
 
 //@summary Sets a player's logged status and triggers class selection for them

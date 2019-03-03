@@ -98,7 +98,7 @@ hook loop100()
 			}
 loop30s:
 ##section loop30s
-##include "login"
+##include "playtime"
 
 ##endsection
 		}

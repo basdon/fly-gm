@@ -31,6 +31,13 @@ hook loop100()
 	}
 }
 
+hook loop30s()
+{
+	foreach (new playerid : players) {
+		updatePlayerLastseen playerid, .isdisconnect=0
+	}
+}
+
 hook onPlayerNowAfk(playerid)
 {
 	uncommittedplaytime[playerid] = gettime() - uncommittedplaytime[playerid]
@@ -50,23 +57,38 @@ hook OnPlayerConnect(playerid)
 hook OnPlayerDisconnect(playerid)
 {
 	iter_remove(afkplayers, playerid)
+	updatePlayerLastseen playerid, .isdisconnect=1
 }
 
-//@summary Gets the amounf of seconds a player has played since the last call to this function
-//@param playerid the playerid to get the uncommitted playtime of
-//@returns the amount of seconds this player has played (not afk) since the last call
-getAndClearUncommittedPlaytime(playerid)
+//@summary Updates a player's last seen (usr and ses) and total/actual time value in db
+//@param playerid playerid to update
+//@param isdisconnect is this call made from {@link OnPlayerDisconnect}?
+//@remarks This function first checks if the player has a valid userid and sessionid
+//@remarks If {@param isdisconnect} is {@code 0}, {@code 30} gets added to player's total time (inaccurate), \
+otherwise player's totaltime is set to sum of session times (accurate)
+updatePlayerLastseen(playerid, isdisconnect)
 {
-	new time
+	new playtimetoadd
 	if (isAfk(playerid)) {
-		time = uncommittedplaytime[playerid]
+		playtimetoadd = uncommittedplaytime[playerid]
 		uncommittedplaytime[playerid] = 0
 	} else {
 		new now = gettime()
-		time = now - uncommittedplaytime[playerid]
+		playtimetoadd = now - uncommittedplaytime[playerid]
 		uncommittedplaytime[playerid] = now
 	}
-	return time
+
+	if (Playtime_FormatUpdateTimes(userid[playerid], sessionid[playerid], playtimetoadd, isdisconnect, buf4096)) {
+		mysql_tquery 1, buf4096[2]
+		new pos
+		if ((pos = buf4096[0])) {
+			mysql_tquery 1, buf4096[pos]
+		}
+		if ((pos = buf4096[1])) {
+			mysql_tquery 1, buf4096[pos]
+		}
+
+	}
 }
 
 #printhookguards
