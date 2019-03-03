@@ -46,7 +46,7 @@ hook OnVehicleStreamIn(vehicleid, forplayerid)
 hook OnVehicleStreamOut(vehicleid, forplayerid)
 {
 	new PlayerText3D:labelid
-	if (Veh_ShouldDeleteLabel(vehicleid, forplayerid, labelid)) {
+	if (Veh_GetLabelToDelete(vehicleid, forplayerid, labelid)) {
 		DeletePlayer3DTextLabel forplayerid, labelid
 	}
 }
