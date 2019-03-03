@@ -43,6 +43,7 @@ varinit
 
 hook OnPlayerDisconnect(playerid, reason)
 {
+	cc[playerid]++
 	if (isPlaying(playerid)) {
 		new reasons[] = "\4\12\17\4timeout\0quit\0kicked"
 		new str[MAX_PLAYER_NAME + 6 + 21 + 8 + 1]
@@ -185,24 +186,30 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		}
 
 		GameTextForPlayer playerid, "~b~Making your account...", 0x800000, 3
-		bcrypt_hash inputtext, BCRYPT_COST, #PUB_LOGIN_REGISTER_HASHPW_CB, "i", playerid
+		bcrypt_hash inputtext, BCRYPT_COST, #PUB_LOGIN_REGISTER_HASHPW_CB, "ii", playerid, cc[playerid]
 		ensureDialogTransaction playerid, TRANSACTION_LOGIN
 
 		#outline
 		//@summary Callback for hashing password during register process
 		//@param playerid player that wants to register
-		export __SHORTNAMED PUB_LOGIN_REGISTER_HASHPW_CB(playerid)
+		//@param cid cc of playerid (see {@link isValidPlayer})
+		export __SHORTNAMED PUB_LOGIN_REGISTER_HASHPW_CB(playerid, cid)
 		{
+			if (!isValidPlayer(playerid, cid)) return
+
 			bcrypt_get_hash buf144
 			Login_UsePassword playerid, buf144
 			Login_FormatCreateUser playerid, buf4096, .password=buf144, .group=4
-			mysql_tquery 1, buf4096, #PUB_LOGIN_REGISTER_CB, "i", playerid
+			mysql_tquery 1, buf4096, #PUB_LOGIN_REGISTER_CB, "ii", playerid, cc[playerid]
 
 			#outline
 			//@summary Callback for register call
 			//@param playerid player that wants to register
-			export __SHORTNAMED PUB_LOGIN_REGISTER_CB(playerid)
+			//@param cid cc of playerid (see {@link isValidPlayer})
+			export __SHORTNAMED PUB_LOGIN_REGISTER_CB(playerid, cid)
 			{
+				if (!isValidPlayer(playerid, cid)) return
+
 				userid[playerid] = cache_insert_id()
 				PlayerData_SetUserId playerid, userid[playerid]
 				if (userid[playerid] == -1 || !Login_FormatCreateSession(playerid, buf4096)) {
@@ -214,14 +221,17 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 					}
 					return
 				}
-				mysql_tquery 1, buf4096, #PUB_LOGIN_CREATE_NEWUSER_SES, "i", playerid
+				mysql_tquery 1, buf4096, #PUB_LOGIN_CREATE_NEWUSER_SES, "ii", playerid, cc[playerid]
 				GameTextForPlayer playerid, "~b~Creating game session...", 0x800000, 3
 
 				#outline
 				//@summary Callback for creating game session for just registered account
 				//@param playerid player that just registered and needs game session
-				export __SHORTNAMED PUB_LOGIN_CREATE_NEWUSER_SES(playerid)
+				//@param cid cc of playerid (see {@link isValidPlayer})
+				export __SHORTNAMED PUB_LOGIN_CREATE_NEWUSER_SES(playerid, cid)
 				{
+					if (!isValidPlayer(playerid, cid)) return
+
 					endDialogTransaction playerid, TRANSACTION_LOGIN
 					hideGameTextForPlayer(playerid)
 					sessionid[playerid] = cache_insert_id()
@@ -252,14 +262,17 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		GameTextForPlayer playerid, "~b~Logging in...", 0x800000, 3
 		new pw[65]
 		Login_GetPassword playerid, pw
-		bcrypt_check inputtext, pw, #PUB_LOGIN_PWVERIFY_CB, "i", playerid
+		bcrypt_check inputtext, pw, #PUB_LOGIN_PWVERIFY_CB, "ii", playerid, cc[playerid]
 		ensureDialogTransaction playerid, TRANSACTION_LOGIN
 
 		#outline
 		//@summary Callback for login password verification call
 		//@param playerid player that wanted to login
-		export __SHORTNAMED PUB_LOGIN_PWVERIFY_CB(playerid)
+		//@param cid cc of playerid (see {@link isValidPlayer})
+		export __SHORTNAMED PUB_LOGIN_PWVERIFY_CB(playerid, cid)
 		{
+			if (!isValidPlayer(playerid, cid)) return
+
 			endDialogTransaction playerid, TRANSACTION_LOGIN
 			hideGameTextForPlayer(playerid)
 
@@ -278,13 +291,16 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			GameTextForPlayer playerid, "~b~Loading account...", 0x800000, 3
 			PlayerData_SetUserId playerid, userid[playerid]
 			Login_FormatLoadAccountData userid[playerid], buf4096
-			mysql_tquery 1, buf4096, #PUB_LOGIN_LOADACCOUNT_CB, "i", playerid
+			mysql_tquery 1, buf4096, #PUB_LOGIN_LOADACCOUNT_CB, "ii", playerid, cc[playerid]
 
 			#outline
 			//@summary Callback for loading account data
 			//@param playerid player
-			export __SHORTNAMED PUB_LOGIN_LOADACCOUNT_CB(playerid)
+			//@param cid cc of playerid (see {@link isValidPlayer})
+			export __SHORTNAMED PUB_LOGIN_LOADACCOUNT_CB(playerid, cid)
 			{
+				if (!isValidPlayer(playerid, cid)) return
+
 				hideGameTextForPlayer(playerid)
 
 				if (!cache_get_row_count() ||
@@ -306,14 +322,17 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 				SetPlayerScore playerid, score
 
 				mysql_tquery 1, buf4096[1]
-				mysql_tquery 1, buf4096[buf4096[0]], #PUB_LOGIN_CREATEGAMESESSION_CB, "i", playerid
+				mysql_tquery 1, buf4096[buf4096[0]], #PUB_LOGIN_CREATEGAMESESSION_CB, "ii", playerid, cc[playerid]
 
 				#outline
 				//@summary Callback when creating game session
 				//@param playerid player
+				//@param cid cc of playerid (see {@link isValidPlayer})
 				//@remarks spawns the player at the end
-				export __SHORTNAMED PUB_LOGIN_CREATEGAMESESSION_CB(playerid)
+				export __SHORTNAMED PUB_LOGIN_CREATEGAMESESSION_CB(playerid, cid)
 				{
+					if (!isValidPlayer(playerid, cid)) return
+
 					sessionid[playerid] = cache_insert_id()
 					loginPlayer playerid, LOGGED_IN
 					format\
@@ -380,8 +399,11 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		#outline
 		//@summary Callback for usercheck done after renaming while guest is registering from existing guest session.
 		//@param playerid player that has been checked
-		export __SHORTNAMED PUB_LOGIN_GUESTREGISTERUSERCHECK_CB(playerid)
+		//@param cid cc of playerid (see {@link isValidPlayer})
+		export __SHORTNAMED PUB_LOGIN_GUESTREGISTERUSERCHECK_CB(playerid, cid)
 		{
+			if (!isValidPlayer(playerid, cid)) return
+
 			endDialogTransaction playerid, TRANSACTION_GUESTREGISTER
 			hideGameTextForPlayer(playerid)
 
@@ -481,26 +503,32 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		}
 		GameTextForPlayer playerid, "~b~Making your account...", 0x800000, 3
 		ensureDialogTransaction playerid, TRANSACTION_GUESTREGISTER
-		bcrypt_hash inputtext, BCRYPT_COST, #PUB_LOGIN_GUESTREGISTER_HASHPW_CB, "i", playerid
+		bcrypt_hash inputtext, BCRYPT_COST, #PUB_LOGIN_GUESTREGISTER_HASHPW_CB, "ii", playerid, cc[playerid]
 
 		#outline
 		//@summary Callback after hash pw when guest wants to register their account
 		//@param playerid player
-		export __SHORTNAMED PUB_LOGIN_GUESTREGISTER_HASHPW_CB(playerid)
+		//@param cid cc of playerid (see {@link isValidPlayer})
+		export __SHORTNAMED PUB_LOGIN_GUESTREGISTER_HASHPW_CB(playerid, cid)
 		{
+			if (!isValidPlayer(playerid, cid)) return
+
 			// dialog transaction should still be active (TRANSACTION_GUESTREGISTER)
 			bcrypt_get_hash buf144
 			Login_UsePassword playerid, buf144
 			if (Login_FormatUpgradeGuestAcc(playerid, buf144, buf4096)) {
 				// it should always return 1
-				mysql_tquery 1, buf4096, #PUB_LOGIN_GUESTREGISTER_CB, "i", playerid
+				mysql_tquery 1, buf4096, #PUB_LOGIN_GUESTREGISTER_CB, "ii", playerid, cc[playerid]
 			}
 
 			#outline
 			//@summary Callback after query to upgrade guest account to real registered account
 			//@param playerid player that wanted to register
-			export __SHORTNAMED PUB_LOGIN_GUESTREGISTER_CB(playerid)
+			//@param cid cc of playerid (see {@link isValidPlayer})
+			export __SHORTNAMED PUB_LOGIN_GUESTREGISTER_CB(playerid, cid)
 			{
+				if (!isValidPlayer(playerid, cid)) return
+
 				endDialogTransaction playerid, TRANSACTION_GUESTREGISTER
 				hideGameTextForPlayer(playerid)
 
@@ -560,13 +588,16 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 		}
 		GameTextForPlayer playerid, "~b~Verifying...", 0x800000, 3
 		ensureDialogTransaction playerid, TRANSACTION_CHANGEPASS
-		bcrypt_check inputtext, buf144, #PUB_LOGIN_CHANGEPASS_CHECK_CB, "i", playerid
+		bcrypt_check inputtext, buf144, #PUB_LOGIN_CHANGEPASS_CHECK_CB, "ii", playerid, cc[playerid]
 
 		#outline
 		//@summary Callback after checking a player's current password during change password process
 		//@param playerid player that wanted to change password
-		export __SHORTNAMED PUB_LOGIN_CHANGEPASS_CHECK_CB(playerid)
+		//@param cid cc of playerid (see {@link isValidPlayer})
+		export __SHORTNAMED PUB_LOGIN_CHANGEPASS_CHECK_CB(playerid, cid)
 		{
+			if (!isValidPlayer(playerid, cid)) return
+
 			hideGameTextForPlayer(playerid)
 			endDialogTransaction playerid, TRANSACTION_CHANGEPASS
 			if (bcrypt_is_equal()) {
@@ -633,25 +664,31 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 
 		GameTextForPlayer playerid, "~b~Updating...", 0x800000, 3
 
-		bcrypt_hash inputtext, BCRYPT_COST, #PUB_LOGIN_CHANGEPASS_HASHPW_CB, "i", playerid
+		bcrypt_hash inputtext, BCRYPT_COST, #PUB_LOGIN_CHANGEPASS_HASHPW_CB, "ii", playerid, cc[playerid]
 		ensureDialogTransaction playerid, TRANSACTION_CHANGEPASS
 
 		#outline
 		//@summary Callback after hash pw when guest wants to register their account
 		//@param playerid player
-		export __SHORTNAMED PUB_LOGIN_CHANGEPASS_HASHPW_CB(playerid)
+		//@param cid cc of playerid (see {@link isValidPlayer})
+		export __SHORTNAMED PUB_LOGIN_CHANGEPASS_HASHPW_CB(playerid, cid)
 		{
+			if (!isValidPlayer(playerid, cid)) return
+
 			// dialog transaction should still be active (TRANSACTION_CHANGEPASS)
 			bcrypt_get_hash buf144
 			Login_UsePassword playerid, buf144
 			Login_FormatChangePassword userid[playerid], buf144, buf4096
-			mysql_tquery 1, buf4096, #PUB_LOGIN_CHANGEPASS_CHANGE_CB, "i", playerid
+			mysql_tquery 1, buf4096, #PUB_LOGIN_CHANGEPASS_CHANGE_CB, "ii", playerid, cc[playerid]
 
 			#outline
 			//@summary Callback after call to change a player's password
 			//@param playerid player that wanted to change password
-			export __SHORTNAMED PUB_LOGIN_CHANGEPASS_CHANGE_CB(playerid)
+			//@param cid connectioncount of playerid (see {@link isValidPlayer})
+			export __SHORTNAMED PUB_LOGIN_CHANGEPASS_CHANGE_CB(playerid, cid)
 			{
+				if (!isValidPlayer(playerid, cid)) return
+
 				hideGameTextForPlayer(playerid)
 				if (cache_affected_rows(1)) {
 					ShowPlayerDialog\
@@ -698,7 +735,7 @@ checkUserExist(playerid, callback[])
 {
 	GameTextForPlayer playerid, "~b~Contacting login server...", 0x800000, 3
 	Login_FormatCheckUserExist playerid, buf4096
-	mysql_tquery 1, buf4096, callback, "i", playerid
+	mysql_tquery 1, buf4096, callback, "ii", playerid, cc[playerid]
 }
 
 //@summary Shows register dialog for player
@@ -748,8 +785,11 @@ showLoginNamechangeDialog(playerid, show_invalid_name_error=0)
 
 //@summary Callback for usercheck done in {@link OnPlayerConnect} and after changing name during login.
 //@param playerid player that has been checked
-export __SHORTNAMED PUB_LOGIN_USERCHECK_CB(playerid)
+//@param cid cc of playerid (see {@link isValidPlayer})
+export __SHORTNAMED PUB_LOGIN_USERCHECK_CB(playerid, cid)
 {
+	if (!isValidPlayer(playerid, cid)) return
+
 	endDialogTransaction playerid, TRANSACTION_LOGIN
 	hideGameTextForPlayer(playerid)
 
@@ -835,13 +875,16 @@ loginAndSpawnAsGuest(playerid)
 		spawnWithoutGuestSession playerid
 		return
 	}
-	mysql_tquery 1, buf4096, #PUB_LOGIN_CREATE_GUEST_USR, "i", playerid
+	mysql_tquery 1, buf4096, #PUB_LOGIN_CREATE_GUEST_USR, "ii", playerid, cc[playerid]
 
 	#outline
 	//@summary Callback after create a guest user account
 	//@param playerid the player a guest account was made for
-	export __SHORTNAMED PUB_LOGIN_CREATE_GUEST_USR(playerid)
+	//@param cid cc of playerid (see {@link isValidPlayer})
+	export __SHORTNAMED PUB_LOGIN_CREATE_GUEST_USR(playerid, cid)
 	{
+		if (!isValidPlayer(playerid, cid)) return
+
 		GameTextForPlayer playerid, "~b~Creating game session...", 0x800000, 3
 		userid[playerid] = cache_insert_id()
 		PlayerData_SetUserId playerid, userid[playerid]
@@ -849,13 +892,16 @@ loginAndSpawnAsGuest(playerid)
 			spawnWithoutGuestSession playerid
 			return
 		}
-		mysql_tquery 1, buf4096, #PUB_LOGIN_CREATE_GUEST_SES, "i", playerid
+		mysql_tquery 1, buf4096, #PUB_LOGIN_CREATE_GUEST_SES, "ii", playerid, cc[playerid]
 
 		#outline
 		//@summary Callback for query to create guest account
 		//@param playerid player that needed a guest account
-		export __SHORTNAMED PUB_LOGIN_CREATE_GUEST_SES(playerid)
+		//@param cid cc of playerid (see {@link isValidPlayer})
+		export __SHORTNAMED PUB_LOGIN_CREATE_GUEST_SES(playerid, cid)
 		{
+			if (!isValidPlayer(playerid, cid)) return
+
 			hideGameTextForPlayer(playerid)
 			loginPlayer playerid, LOGGED_GUEST
 			sessionid[playerid] = cache_insert_id()

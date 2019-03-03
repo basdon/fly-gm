@@ -15,6 +15,7 @@ varinit
 {
 	new kickprogress[MAX_PLAYERS]
 	new floodcount[MAX_PLAYERS]
+	new cc[MAX_PLAYERS]
 }
 
 hook OnPlayerConnect(playerid)
@@ -68,8 +69,9 @@ flood(playerid, amount)
 //@param playerid the player to kick
 //@param delay the delay, in how many times a client should be synced before kicking (optional={@code 1})
 //@remarks if KickDelayed was called previously, player will be kicked immediately
-//@remarks is player is afk, {@param delay} will be clamped to {@code [3,cellmax]} for use in 100loop instead of OnPlayerUpdate
-KickDelayed(playerid, delay=1) {
+//@remarks is player is afk, {@param delay} will be clamped to {@code [4,cellmax]} for use in 100loop instead of OnPlayerUpdate
+KickDelayed(playerid, delay=1)
+{
 	if (kickprogress[playerid]) {
 		Kick playerid
 		return
@@ -78,6 +80,18 @@ KickDelayed(playerid, delay=1) {
 		delay = clamp(delay, 4, cellmax)
 	}
 	kickprogress[playerid] = delay
+}
+
+//@summary When passing playerid to callbacks (for example for a database query), when the callback is \
+		called the player with {@param playerid} might be disconnected or even a different player. \
+		This func checks if the player with given id is still the same player by counting the amount \
+		of disconnects per playerid.
+//@param playerid player id to check
+//@param cid connection id that was assigned to the player, use {@code cc[playerid]} {@b when passing the callback's params}
+//@returns {@code 0} if {@param playerid} is now assigned to a different player
+isValidPlayer(playerid, cid)
+{
+	return cc[playerid] == cid
 }
 
 #printhookguards
