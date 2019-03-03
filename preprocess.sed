@@ -45,7 +45,7 @@ s/^\s*\(memcpy[ \|(]\?[^,]\+\[\)/#error possible memcpy bug (#allowmemcpywitharr
         /\\$/ {
                 N
                 s/\\\n//
-                a//(concatted line)
+                a/// 
         }
 	s-^\s*//@summary \(.*\)$-/// <summary>\1</summary>-
 	s-^\s*//@param \([^ \t]\+\) \(.*\)$-/// <param name="\1">\2</param>-
