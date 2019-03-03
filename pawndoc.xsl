@@ -63,7 +63,7 @@
 </HEAD>
 <BODY>
 	<h1><xsl:value-of select="doc/assembly/name"/></h1>
-	<xsl:apply-templates select="doc/general"/>
+	<!--<xsl:apply-templates select="doc/general"/>-->
 	<xsl:call-template name="index">
 		<xsl:with-param name="name" select="'enumeration'" />
 		<xsl:with-param name="type" select="'T:'" />
