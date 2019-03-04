@@ -499,9 +499,11 @@ native Timecyc_GetCurrentWeatherMsg(buf[]);
 //@param col1 first color
 //@param col2 second color
 //@param ownername name of the owner
+//@returns the position of the vehicle in the vehicle table
 //@remarks table will be resized and reallocated if it's already full
 //@seealso Veh_Destroy
 //@seealso Veh_Init
+//@seealso Veh_UpdateSlot
 native Veh_Add(id, model, owneruserid, Float:x, Float:y, Float:z, Float:r, col1, col2, ownername[])
 
 //@summary Destroys the db vehicle table and frees used memory
@@ -534,4 +536,10 @@ native Veh_RegisterLabel(vehicleid, playerid, PlayerText3D:labelid)
 //@param buf buffer to store the label text in, if this returns positive
 //@returns {@code 1} if a label should be made, with given text in {@param buf}
 native Veh_ShouldCreateLabel(vehicleid, playerid, buf[])
+
+//@summary Let the plugin know a vehicle was created or destroyed
+//@param vehicleid the id of the vehicle in SA-MP
+//@param dbid id of the vehicle in the vehicle table (returned by {@link Veh_Add}), or {@code -1} if slot is now free
+//@seealso Veh_Add
+native Veh_UpdateSlot(vehicleid, dbid)
 

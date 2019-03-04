@@ -5,11 +5,12 @@
 
 varinit
 {
+	#define RESPAWN_DELAY 300 // in seconds
 }
 
 hook OnGameModeInit()
 {
-	new Cache:veh = mysql_query(1, !"SELECT veh.i,veh.m,veh.o,veh.x,veh.y,veh.z,veh.r,veh.c,veh.d,usr.n FROM veh JOIN usr ON veh.o = usr.i WHERE veh.e=1")
+	new Cache:veh = mysql_query(1, !"SELECT veh.i,veh.m,veh.o,veh.x,veh.y,veh.z,veh.r,veh.c,veh.d,usr.n FROM veh LEFT OUTER JOIN usr ON veh.o = usr.i WHERE veh.e=1")
 	rowcount = cache_get_row_count()
 	Veh_Init rowcount
 	while (rowcount--) {
@@ -24,7 +25,15 @@ hook OnGameModeInit()
 		cache_get_field_int(rowcount, 7, col1)
 		cache_get_field_int(rowcount, 8, col2)
 		cache_get_field_str(rowcount, 9, ownername)
-		Veh_Add id, model, owneruserid, x, y, z, r, col1, col2, ownername
+		new dbid, vehicleid;
+		dbid = Veh_Add(id, model, owneruserid, x, y, z, r, col1, col2, ownername)
+		// spawn public vehicles
+		if (owneruserid != 0) {
+			vehicleid = AddStaticVehicleEx(model, x, y, z, r, col1, col2, RESPAWN_DELAY)
+			if (vehicleid != INVALID_VEHICLE_ID) {
+				Veh_UpdateSlot vehicleid, dbid
+			}
+		}
 	}
 	cache_delete veh
 }

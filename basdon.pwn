@@ -46,7 +46,7 @@
 #define PUB_LOGIN_GUESTREGISTER_CB g // login
 #define PUB_LOGIN_CHANGEPASS_CHECK_CB h // login
 #define PUB_LOGIN_CHANGEPASS_CHANGE_CB o // login
-#define PUB_TIMECYC_NEXTWEATHER p // timcyc
+#define PUB_TIMECYC_NEXTWEATHER ab // timcyc
 #define PUB_LOGIN_LOADACCOUNT_CB q // login
 #define PUB_LOGIN_CREATEGAMESESSION_CB aa // login
 #define PUB_LOGIN_GUESTREGISTER_HASHPW_CB s // login
@@ -387,12 +387,6 @@ public OnGameModeInit()
 
 	UsePlayerPedAnims
 	EnableStuntBonusForAll 0
-
-	AddStaticVehicle(MODEL_HYDRA + 1, 1477.4471, 1220.7747, 10.8281, 0.0, 0, 0)
-	AddStaticVehicle(MODEL_HYDRA, 1477.4471, 1240.7747, 10.8281, 0.0, 0, 0)
-	AddStaticVehicle(MODEL_DODO, 1477.4471, 1260.7747, 10.8281, 0.0, 0, 0)
-	AddStaticVehicle(MODEL_MAVERICK, 1477.4471, 1280.7747, 10.8281, 0.0, 0, 0)
-	AddStaticVehicle(MODEL_ANDROM, 1477.4471, 1310.7747, 10.8281, 0.0, 0, 0)
 
 	new rowcount // used in airprot, vehicles
 
