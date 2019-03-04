@@ -43,15 +43,26 @@ hook OnGameModeExit()
 	Veh_Destroy
 }
 
+hook OnPlayerDisconnect(playerid, reason)
+{
+	Veh_OnPlayerDisconnect playerid
+}
+
 hook OnVehicleStreamIn(vehicleid, forplayerid)
 {
+	for (new p : players) {
+		if (IsPlayerInVehicle(p, vehicleid) && GetPlayerVehicleSeat(p) == 0) {
+			goto vehiclehasdriver
+		}
+	}
 	if (Veh_ShouldCreateLabel(vehicleid, forplayerid, buf144)) {
 		new PlayerText3D:labelid
-		labelid = CreatePlayer3DTextLabel(forplayerid, buf144, 0xFFFFFF00, 0.0, 0.0, 0.0, 100.0, INVALID_PLAYER_ID, vehicleid, .testLOS=1)
+		labelid = CreatePlayer3DTextLabel(forplayerid, buf144, 0xFFFF00FF, 0.0, 0.0, 0.0, 100.0, INVALID_PLAYER_ID, vehicleid, .testLOS=1)
 		if (_:labelid != INVALID_3DTEXT_ID) {
 			Veh_RegisterLabel vehicleid, forplayerid, labelid
 		}
 	}
+vehiclehasdriver:
 }
 
 hook OnVehicleStreamOut(vehicleid, forplayerid)

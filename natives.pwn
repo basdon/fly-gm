@@ -524,6 +524,10 @@ native Veh_Init(dbvehiclecount)
 //@returns {@code 1} if there is a label to delete, its id will be put in {@param labelid}
 native Veh_GetLabelToDelete(vehicleid, playerid, &PlayerText3D:labelid)
 
+//@summary Clears data when a player disconnects
+//@param playerid the player that disconnected
+native Veh_OnPlayerDisconnect(playerid)
+
 //@summary Let the plugin know a label was created on a vehicle for a player
 //@param vehicleid the vehicle the label is attached to
 //@param playerid the player the label was made for

@@ -177,6 +177,7 @@ public OnPlayerDisconnect(playerid, reason)
 ###include "playtime"
 ###include "dialog"
 ###include "airport"
+###include "vehicles"
 ###include "playername" // keep this last-ish (clears data)
 ###include "pm"
 ##endsection
