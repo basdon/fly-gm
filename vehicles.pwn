@@ -27,8 +27,8 @@ hook OnGameModeInit()
 		cache_get_field_str(rowcount, 9, ownername)
 		new dbid, vehicleid;
 		dbid = Veh_Add(id, model, owneruserid, x, y, z, r, col1, col2, ownername)
-		// spawn public vehicles
-		if (owneruserid != 0) {
+		// only spawn public vehicles statically
+		if (owneruserid == 0) {
 			vehicleid = AddStaticVehicleEx(model, x, y, z, r, col1, col2, RESPAWN_DELAY)
 			if (vehicleid != INVALID_VEHICLE_ID) {
 				Veh_UpdateSlot vehicleid, dbid
