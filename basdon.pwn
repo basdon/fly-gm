@@ -187,6 +187,15 @@ public OnPlayerDisconnect(playerid, reason)
 	return 1
 }
 
+//@summary Function that gets called when a player logs in
+//@param playerid the player that just logged in
+OnPlayerLogin(playerid)
+{
+##section OnPlayerLogin
+###include "vehicles"
+##endsection
+}
+
 public OnPlayerRequestClass(playerid, classid)
 {
 ##section OnPlayerRequestClass

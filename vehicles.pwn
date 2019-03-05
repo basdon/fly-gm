@@ -16,8 +16,8 @@ hook OnGameModeInit()
 	rowcount = cache_get_row_count()
 	Veh_Init rowcount
 	while (rowcount--) {
-		new id, model, owneruserid, Float:x, Float:y, Float:z, Float:r, col1, col2, ownername[MAX_PLAYER_NAME + 1]
-		cache_get_field_int(rowcount, 0, id)
+		new dbid, model, owneruserid, Float:x, Float:y, Float:z, Float:r, col1, col2, ownername[MAX_PLAYER_NAME + 1]
+		cache_get_field_int(rowcount, 0, dbid)
 		cache_get_field_int(rowcount, 1, model)
 		cache_get_field_int(rowcount, 2, owneruserid)
 		cache_get_field_flt(rowcount, 3, x)
@@ -27,8 +27,8 @@ hook OnGameModeInit()
 		cache_get_field_int(rowcount, 7, col1)
 		cache_get_field_int(rowcount, 8, col2)
 		cache_get_field_str(rowcount, 9, ownername)
-		new dbid, vehicleid;
-		dbid = Veh_Add(id, model, owneruserid, x, y, z, r, col1, col2, ownername)
+		new vehicleid;
+		Veh_Add(dbid, model, owneruserid, x, y, z, r, col1, col2, ownername)
 		// only spawn public vehicles statically
 		if (owneruserid == 0) {
 			vehicleid = AddStaticVehicleEx(model, x, y, z, r, col1, col2, RESPAWN_DELAY)
@@ -49,6 +49,27 @@ hook OnPlayerDisconnect(playerid, reason)
 {
 	Veh_OnPlayerDisconnect playerid
 	lastvehicle[playerid] = 0
+	new vehamount = Veh_CollectSpawnedVehicles(userid[playerid], buf144)
+	new idx = 0
+	while (vehamount--) {
+		DestroyVehicle buf144[idx]
+		// destroyvehicle will stream out vehicle for players, so no need to destroy label here
+		Veh_UpdateSlot buf144[idx], -1
+		idx++
+	}
+}
+
+hook OnPlayerLogin(playerid)
+{
+	new vehamount = Veh_CollectPlayerVehicles(userid[playerid], buf4096)
+	new idx = 0, vid
+	while (vehamount--) {
+		vid = CreateVehicle(buf4096[idx], Float:buf4096[idx+1], Float:buf4096[idx+2], Float:buf4096[idx+3], Float:buf4096[idx+4], buf4096[idx+5], buf4096[idx+6], RESPAWN_DELAY)
+		if (vid != INVALID_VEHICLE_ID) {
+			Veh_UpdateSlot vid, buf4096[idx+7]
+		}
+		idx += 8
+	}
 }
 
 hook OnPlayerStateChange(playerid, newstate, oldstate)

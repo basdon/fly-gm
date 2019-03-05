@@ -937,14 +937,21 @@ spawnWithoutGuestSession(playerid)
 	loginPlayer playerid, LOGGED_GUEST
 }
 
-//@summary Sets a player's logged status and triggers class selection for them
+//@summary Sets a player's logged status, calls {@link OnPlayerLogin} and triggers class selection for them
 //@param playerid The player to login
 //@param status the logged status to give, should be either {@code LOGGED_IN} or {@code LOGGED_GUEST}
 loginPlayer(playerid, status)
 {
+	if (status == LOGGED_IN && userid[playerid] == -1) {
+		printf "ERR: tried to login player without userid!"
+		WARNMSG("Sorry, but something broke badly. Please reconnect.")
+		KickDelayed playerid
+		return
+	}
 	loggedstatus[playerid] = status
 	iter_add(players, playerid)
 	OnPlayerRequestClassImpl playerid
+	OnPlayerLogin playerid
 }
 
 #printhookguards
