@@ -409,7 +409,8 @@ public OnPlayerUpdate(playerid)
 ##section OnPlayerUpdate
 ###include "playtime"
 ###include "timecyc"
-###include "anticheat"
+###include "vehicles"
+###include "anticheat" // keep this last (lastvehicle updated in vehicles)
 ##endsection
 	return 1
 }
@@ -443,6 +444,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 {
 ##section OnPlayerStateChange
 ###include "panel"
+###include "vehicles"
 ##endsection
     return 1
 }

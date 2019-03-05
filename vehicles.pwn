@@ -6,6 +6,8 @@
 varinit
 {
 	#define RESPAWN_DELAY 300 // in seconds
+
+	new lastvehicle[MAX_PLAYERS]
 }
 
 hook OnGameModeInit()
@@ -46,31 +48,87 @@ hook OnGameModeExit()
 hook OnPlayerDisconnect(playerid, reason)
 {
 	Veh_OnPlayerDisconnect playerid
+	lastvehicle[playerid] = 0
+}
+
+hook OnPlayerStateChange(playerid, newstate, oldstate)
+{
+	new vid
+	if (oldstate == PLAYER_STATE_DRIVER &&
+		(vid = lastvehicle[playerid]) &&
+		findPlayerInVehicleSeat(vid, .seatid=0) == INVALID_PLAYER_ID)
+	{
+		for (new p : players) {
+			if (IsVehicleStreamedIn(vid, p)) {
+				createVehicleOwnerLabel vid, p
+			}
+		}
+	}
+
+	if (newstate == PLAYER_STATE_DRIVER && (vid = GetPlayerVehicleID(playerid))) {
+		for (new p : players) {
+			destroyVehicleOwnerLabel vid, p
+		}
+	}
+}
+
+hook OnPlayerUpdate(playerid)
+{
+	new vid = GetPlayerVehicleID(playerid)
+	if (vid) {
+		lastvehicle[playerid] = vid
+	}
 }
 
 hook OnVehicleStreamIn(vehicleid, forplayerid)
 {
-	for (new p : players) {
-		if (IsPlayerInVehicle(p, vehicleid) && GetPlayerVehicleSeat(p) == 0) {
-			goto vehiclehasdriver
-		}
+	if (findPlayerInVehicleSeat(vehicleid, .seatid=0) == INVALID_PLAYER_ID) {
+		createVehicleOwnerLabel vehicleid, forplayerid
 	}
-	if (Veh_ShouldCreateLabel(vehicleid, forplayerid, buf144)) {
-		new PlayerText3D:labelid
-		labelid = CreatePlayer3DTextLabel(forplayerid, buf144, 0xFFFF00FF, 0.0, 0.0, 0.0, 100.0, INVALID_PLAYER_ID, vehicleid, .testLOS=1)
-		if (_:labelid != INVALID_3DTEXT_ID) {
-			Veh_RegisterLabel vehicleid, forplayerid, labelid
-		}
-	}
-vehiclehasdriver:
 }
 
 hook OnVehicleStreamOut(vehicleid, forplayerid)
 {
-	new PlayerText3D:labelid
-	if (Veh_GetLabelToDelete(vehicleid, forplayerid, labelid)) {
-		DeletePlayer3DTextLabel forplayerid, labelid
+	destroyVehicleOwnerLabel vehicleid, forplayerid
+}
+
+//@summary Created an owner label on a vehicle for a player if needed
+//@param vehicleid vehicle of whom to create the owner label for
+//@param playerid player for who to create the owner label for
+createVehicleOwnerLabel(vehicleid, playerid)
+{
+	if (Veh_ShouldCreateLabel(vehicleid, playerid, buf144)) {
+		new PlayerText3D:labelid
+		labelid = CreatePlayer3DTextLabel(playerid, buf144, 0xFFFF00FF, 0.0, 0.0, 0.0, 100.0, INVALID_PLAYER_ID, vehicleid, .testLOS=1)
+		if (_:labelid != INVALID_3DTEXT_ID) {
+			Veh_RegisterLabel vehicleid, playerid, labelid
+		}
 	}
+}
+
+//@summary Destroys an owner label on a vehicle for a player if needed
+//@param vehicleid vehicle of whom to destroy the owner label for
+//@param playerid player for who to destroy the owner label for
+destroyVehicleOwnerLabel(vehicleid, playerid)
+{
+	new PlayerText3D:labelid
+	if (Veh_GetLabelToDelete(vehicleid, playerid, labelid)) {
+		DeletePlayer3DTextLabel playerid, labelid
+	}
+}
+
+//@summary Finds the player that is in the given seat in the vehicle
+//@param vehicleid vehicle where the player should be
+//@param seatid seat where the player should be
+//@returns {@code INVALID_PLAYER_ID} if there's no player in that seat, playerid otherwise
+findPlayerInVehicleSeat(vehicleid, seatid)
+{
+	for (new p : players) {
+		if (IsPlayerInVehicle(p, vehicleid) && GetPlayerVehicleSeat(p) == seatid) {
+			return p;
+		}
+	}
+	return INVALID_PLAYER_ID
 }
 
 #printhookguards
