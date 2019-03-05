@@ -99,7 +99,7 @@ createVehicleOwnerLabel(vehicleid, playerid)
 {
 	if (Veh_ShouldCreateLabel(vehicleid, playerid, buf144)) {
 		new PlayerText3D:labelid
-		labelid = CreatePlayer3DTextLabel(playerid, buf144, 0xFFFF00FF, 0.0, 0.0, 0.0, 100.0, INVALID_PLAYER_ID, vehicleid, .testLOS=1)
+		labelid = CreatePlayer3DTextLabel(playerid, buf144, 0xFFFF00FF, 0.0, 0.0, 0.0, 75.0, INVALID_PLAYER_ID, vehicleid, .testLOS=1)
 		if (_:labelid != INVALID_3DTEXT_ID) {
 			Veh_RegisterLabel vehicleid, playerid, labelid
 		}
