@@ -92,15 +92,15 @@ hook loop100()
 				PlayerTextDrawDestroy(playerid, TDVAR)
 			}
 			if (vx < 640.0) {
-				TDVAR = CreatePlayerTextDraw(playerid, vx, 407.0, "i")
-				PlayerTextDrawAlignment(playerid, TDVAR, 2)
-				PlayerTextDrawFont(playerid, TDVAR, 2)
-				PlayerTextDrawLetterSize(playerid, TDVAR, 0.4, 1.6)
-				PlayerTextDrawColor(playerid, TDVAR, 0xff00ffff)
-				PlayerTextDrawSetOutline(playerid, TDVAR, 0)
-				PlayerTextDrawSetProportional(playerid, TDVAR, 1)
-				PlayerTextDrawSetShadow(playerid, TDVAR, 0)
-				PlayerTextDrawShow(playerid, TDVAR)
+				new PlayerText:tmp_ = TDVAR = CreatePlayerTextDraw(playerid, vx, 407.0, "i")
+				PlayerTextDrawAlignment(playerid, tmp_, 2)
+				PlayerTextDrawFont(playerid, tmp_, 2)
+				PlayerTextDrawLetterSize(playerid, tmp_, 0.4, 1.6)
+				PlayerTextDrawColor(playerid, tmp_, 0xff00ffff)
+				PlayerTextDrawSetOutline(playerid, tmp_, 0)
+				PlayerTextDrawSetProportional(playerid, tmp_, 1)
+				PlayerTextDrawSetShadow(playerid, tmp_, 0)
+				PlayerTextDrawShow(playerid, tmp_)
 			} else {
 				TDVAR = PlayerText:-1;
 			}
@@ -192,135 +192,115 @@ hook OnPlayerConnect(playerid)
 #define METER_COLOR 0x989898FF
 #define METER2_COLOR 0x585858FF
 
-#define TDVAR playerpnltxt[playerid][PNLTXT_SPD_METER]
-	TDVAR = CreatePlayerTextDraw(playerid, 220.0, 360.0, TXT_EMPTY);
-	PlayerTextDrawAlignment(playerid, TDVAR, 3);
-	PlayerTextDrawFont(playerid, TDVAR, 2);
-	PlayerTextDrawLetterSize(playerid, TDVAR, 0.25, 1.0);
-	PlayerTextDrawColor(playerid, TDVAR, METER_COLOR);
-	PlayerTextDrawSetOutline(playerid, TDVAR, 0);
-	PlayerTextDrawSetShadow(playerid, TDVAR, 0);
-	PlayerTextDrawSetProportional(playerid, TDVAR, 0);
-#undef TDVAR
+	new PlayerText:tmp
 
-#define TDVAR playerpnltxt[playerid][PNLTXT_SPD_METER2]
-	TDVAR = CreatePlayerTextDraw(playerid, 217.0, 380.0, TXT_EMPTY);
-	PlayerTextDrawAlignment(playerid, TDVAR, 2);
-	PlayerTextDrawFont(playerid, TDVAR, 2);
-	PlayerTextDrawLetterSize(playerid, TDVAR, 0.3, 1.2);
-	PlayerTextDrawColor(playerid, TDVAR, METER2_COLOR);
-	PlayerTextDrawSetOutline(playerid, TDVAR, 0);
-	PlayerTextDrawSetShadow(playerid, TDVAR, 0);
-	PlayerTextDrawSetProportional(playerid, TDVAR, 0);
-#undef TDVAR
+	tmp = playerpnltxt[playerid][PNLTXT_SPD_METER] = CreatePlayerTextDraw(playerid, 220.0, 360.0, TXT_EMPTY);
+	PlayerTextDrawAlignment(playerid, tmp, 3);
+	PlayerTextDrawFont(playerid, tmp, 2);
+	PlayerTextDrawLetterSize(playerid, tmp, 0.25, 1.0);
+	PlayerTextDrawColor(playerid, tmp, METER_COLOR);
+	PlayerTextDrawSetOutline(playerid, tmp, 0);
+	PlayerTextDrawSetShadow(playerid, tmp, 0);
+	PlayerTextDrawSetProportional(playerid, tmp, 0);
 
-#define TDVAR playerpnltxt[playerid][PNLTXT_SPD]
-	TDVAR = CreatePlayerTextDraw(playerid, 222.0, 389.0, TXT_EMPTY);
-	PlayerTextDrawAlignment(playerid, TDVAR, 3);
-	PlayerTextDrawFont(playerid, TDVAR, 2);
-	PlayerTextDrawLetterSize(playerid, TDVAR, 0.4, 1.6);
-	PlayerTextDrawColor(playerid, TDVAR, 0xFFFFFFFF);
-	PlayerTextDrawSetOutline(playerid, TDVAR, 0);
-	PlayerTextDrawSetShadow(playerid, TDVAR, 0);
-	PlayerTextDrawSetProportional(playerid, TDVAR, 0);
-#undef TDVAR
+	tmp = playerpnltxt[playerid][PNLTXT_SPD_METER2] = CreatePlayerTextDraw(playerid, 217.0, 380.0, TXT_EMPTY);
+	PlayerTextDrawAlignment(playerid, tmp, 2);
+	PlayerTextDrawFont(playerid, tmp, 2);
+	PlayerTextDrawLetterSize(playerid, tmp, 0.3, 1.2);
+	PlayerTextDrawColor(playerid, tmp, METER2_COLOR);
+	PlayerTextDrawSetOutline(playerid, tmp, 0);
+	PlayerTextDrawSetShadow(playerid, tmp, 0);
+	PlayerTextDrawSetProportional(playerid, tmp, 0);
 
-#define TDVAR playerpnltxt[playerid][PNLTXT_ALT_METER]
-	TDVAR = CreatePlayerTextDraw(playerid, 453.0, 360.0, TXT_EMPTY);
-	PlayerTextDrawAlignment(playerid, TDVAR, 3);
-	PlayerTextDrawFont(playerid, TDVAR, 2);
-	PlayerTextDrawLetterSize(playerid, TDVAR, 0.25, 1.0);
-	PlayerTextDrawColor(playerid, TDVAR, METER_COLOR);
-	PlayerTextDrawSetOutline(playerid, TDVAR, 0);
-	PlayerTextDrawSetShadow(playerid, TDVAR, 0);
-	PlayerTextDrawSetProportional(playerid, TDVAR, 0);
-#undef TDVAR
+	tmp = playerpnltxt[playerid][PNLTXT_SPD] = CreatePlayerTextDraw(playerid, 222.0, 389.0, TXT_EMPTY);
+	PlayerTextDrawAlignment(playerid, tmp, 3);
+	PlayerTextDrawFont(playerid, tmp, 2);
+	PlayerTextDrawLetterSize(playerid, tmp, 0.4, 1.6);
+	PlayerTextDrawColor(playerid, tmp, 0xFFFFFFFF);
+	PlayerTextDrawSetOutline(playerid, tmp, 0);
+	PlayerTextDrawSetShadow(playerid, tmp, 0);
+	PlayerTextDrawSetProportional(playerid, tmp, 0);
 
-#define TDVAR playerpnltxt[playerid][PNLTXT_ALT_METER2]
-	TDVAR = CreatePlayerTextDraw(playerid, 442.0, 380.0, TXT_EMPTY);
-	PlayerTextDrawAlignment(playerid, TDVAR, 2);
-	PlayerTextDrawFont(playerid, TDVAR, 2);
-	PlayerTextDrawLetterSize(playerid, TDVAR, 0.3, 1.2);
-	PlayerTextDrawColor(playerid, TDVAR, METER2_COLOR);
-	PlayerTextDrawSetOutline(playerid, TDVAR, 0);
-	PlayerTextDrawSetShadow(playerid, TDVAR, 0);
-	PlayerTextDrawSetProportional(playerid, TDVAR, 0);
-#undef TDVAR
+	tmp = playerpnltxt[playerid][PNLTXT_ALT_METER] = CreatePlayerTextDraw(playerid, 453.0, 360.0, TXT_EMPTY);
+	PlayerTextDrawAlignment(playerid, tmp, 3);
+	PlayerTextDrawFont(playerid, tmp, 2);
+	PlayerTextDrawLetterSize(playerid, tmp, 0.25, 1.0);
+	PlayerTextDrawColor(playerid, tmp, METER_COLOR);
+	PlayerTextDrawSetOutline(playerid, tmp, 0);
+	PlayerTextDrawSetShadow(playerid, tmp, 0);
+	PlayerTextDrawSetProportional(playerid, tmp, 0);
 
-#define TDVAR playerpnltxt[playerid][PNLTXT_ALT]
-	TDVAR = CreatePlayerTextDraw(playerid, 455.0, 389.0, TXT_EMPTY);
-	PlayerTextDrawAlignment(playerid, TDVAR, 3);
-	PlayerTextDrawFont(playerid, TDVAR, 2);
-	PlayerTextDrawLetterSize(playerid, TDVAR, 0.4, 1.6);
-	PlayerTextDrawColor(playerid, TDVAR, 0xFFFFFFFF);
-	PlayerTextDrawSetOutline(playerid, TDVAR, 0);
-	PlayerTextDrawSetShadow(playerid, TDVAR, 0);
-	PlayerTextDrawSetProportional(playerid, TDVAR, 0);
-#undef TDVAR
+	tmp = playerpnltxt[playerid][PNLTXT_ALT_METER2] = CreatePlayerTextDraw(playerid, 442.0, 380.0, TXT_EMPTY);
+	PlayerTextDrawAlignment(playerid, tmp, 2);
+	PlayerTextDrawFont(playerid, tmp, 2);
+	PlayerTextDrawLetterSize(playerid, tmp, 0.3, 1.2);
+	PlayerTextDrawColor(playerid, tmp, METER2_COLOR);
+	PlayerTextDrawSetOutline(playerid, tmp, 0);
+	PlayerTextDrawSetShadow(playerid, tmp, 0);
+	PlayerTextDrawSetProportional(playerid, tmp, 0);
 
-#define TDVAR playerpnltxt[playerid][PNLTXT_HDG_METER]
-	TDVAR = CreatePlayerTextDraw(playerid, 320.0, 423.0, TXT_EMPTY);
-	PlayerTextDrawAlignment(playerid, TDVAR, 2);
-	PlayerTextDrawFont(playerid, TDVAR, 2);
-	PlayerTextDrawLetterSize(playerid, TDVAR, 0.22, 1.0);
-	PlayerTextDrawColor(playerid, TDVAR, METER_COLOR);
-	PlayerTextDrawSetOutline(playerid, TDVAR, 0);
-	PlayerTextDrawSetShadow(playerid, TDVAR, 0);
-	PlayerTextDrawSetProportional(playerid, TDVAR, 0);
-#undef TDVAR
+	tmp = playerpnltxt[playerid][PNLTXT_ALT] = CreatePlayerTextDraw(playerid, 455.0, 389.0, TXT_EMPTY);
+	PlayerTextDrawAlignment(playerid, tmp, 3);
+	PlayerTextDrawFont(playerid, tmp, 2);
+	PlayerTextDrawLetterSize(playerid, tmp, 0.4, 1.6);
+	PlayerTextDrawColor(playerid, tmp, 0xFFFFFFFF);
+	PlayerTextDrawSetOutline(playerid, tmp, 0);
+	PlayerTextDrawSetShadow(playerid, tmp, 0);
+	PlayerTextDrawSetProportional(playerid, tmp, 0);
 
-#define TDVAR playerpnltxt[playerid][PNLTXT_HDG]
-	TDVAR = CreatePlayerTextDraw(playerid, 320.0, 420.0, TXT_EMPTY);
-	PlayerTextDrawAlignment(playerid, TDVAR, 2);
-	PlayerTextDrawFont(playerid, TDVAR, 2);
-	PlayerTextDrawLetterSize(playerid, TDVAR, 0.4, 1.6);
-	PlayerTextDrawColor(playerid, TDVAR, 0xFFFFFFFF);
-	PlayerTextDrawSetOutline(playerid, TDVAR, 0);
-	PlayerTextDrawSetShadow(playerid, TDVAR, 0);
-	PlayerTextDrawSetProportional(playerid, TDVAR, 0);
-#undef TDVAR
+	tmp = playerpnltxt[playerid][PNLTXT_HDG_METER] = CreatePlayerTextDraw(playerid, 320.0, 423.0, TXT_EMPTY);
+	PlayerTextDrawAlignment(playerid, tmp, 2);
+	PlayerTextDrawFont(playerid, tmp, 2);
+	PlayerTextDrawLetterSize(playerid, tmp, 0.22, 1.0);
+	PlayerTextDrawColor(playerid, tmp, METER_COLOR);
+	PlayerTextDrawSetOutline(playerid, tmp, 0);
+	PlayerTextDrawSetShadow(playerid, tmp, 0);
+	PlayerTextDrawSetProportional(playerid, tmp, 0);
 
-#define TDVAR playerpnltxt[playerid][PNLTXT_ADF_DIS]
-	TDVAR = CreatePlayerTextDraw(playerid, 265.0, 360.0, "-");
-	PlayerTextDrawAlignment(playerid, TDVAR, 2);
-	PlayerTextDrawFont(playerid, TDVAR, 2);
-	PlayerTextDrawLetterSize(playerid, TDVAR, 0.25, 1.0);
-	PlayerTextDrawColor(playerid, TDVAR, 0xff00ffff);
-	PlayerTextDrawSetOutline(playerid, TDVAR, 0);
-	PlayerTextDrawSetShadow(playerid, TDVAR, 0);
-#undef TDVAR
+	tmp = playerpnltxt[playerid][PNLTXT_HDG] = CreatePlayerTextDraw(playerid, 320.0, 420.0, TXT_EMPTY);
+	PlayerTextDrawAlignment(playerid, tmp, 2);
+	PlayerTextDrawFont(playerid, tmp, 2);
+	PlayerTextDrawLetterSize(playerid, tmp, 0.4, 1.6);
+	PlayerTextDrawColor(playerid, tmp, 0xFFFFFFFF);
+	PlayerTextDrawSetOutline(playerid, tmp, 0);
+	PlayerTextDrawSetShadow(playerid, tmp, 0);
+	PlayerTextDrawSetProportional(playerid, tmp, 0);
 
-#define TDVAR playerpnltxt[playerid][PNLTXT_ADF_ALT]
-	TDVAR = CreatePlayerTextDraw(playerid, 330.0, 360.0, "-");
-	PlayerTextDrawAlignment(playerid, TDVAR, 2);
-	PlayerTextDrawFont(playerid, TDVAR, 2);
-	PlayerTextDrawLetterSize(playerid, TDVAR, 0.25, 1.0);
-	PlayerTextDrawColor(playerid, TDVAR, 0xff00ffff);
-	PlayerTextDrawSetOutline(playerid, TDVAR, 0);
-	PlayerTextDrawSetShadow(playerid, TDVAR, 0);
-#undef TDVAR
+	tmp = playerpnltxt[playerid][PNLTXT_ADF_DIS] = CreatePlayerTextDraw(playerid, 265.0, 360.0, "-");
+	PlayerTextDrawAlignment(playerid, tmp, 2);
+	PlayerTextDrawFont(playerid, tmp, 2);
+	PlayerTextDrawLetterSize(playerid, tmp, 0.25, 1.0);
+	PlayerTextDrawColor(playerid, tmp, 0xff00ffff);
+	PlayerTextDrawSetOutline(playerid, tmp, 0);
+	PlayerTextDrawSetShadow(playerid, tmp, 0);
 
-#define TDVAR playerpnltxt[playerid][PNLTXT_ADF_CRS]
-	TDVAR = CreatePlayerTextDraw(playerid, 395.0, 360.0, "-");
-	PlayerTextDrawAlignment(playerid, TDVAR, 2);
-	PlayerTextDrawFont(playerid, TDVAR, 2);
-	PlayerTextDrawLetterSize(playerid, TDVAR, 0.25, 1.0);
-	PlayerTextDrawColor(playerid, TDVAR, 0xff00ffff);
-	PlayerTextDrawSetOutline(playerid, TDVAR, 0);
-	PlayerTextDrawSetShadow(playerid, TDVAR, 0);
-#undef TDVAR
+	tmp = playerpnltxt[playerid][PNLTXT_ADF_ALT] = CreatePlayerTextDraw(playerid, 330.0, 360.0, "-");
+	PlayerTextDrawAlignment(playerid, tmp, 2);
+	PlayerTextDrawFont(playerid, tmp, 2);
+	PlayerTextDrawLetterSize(playerid, tmp, 0.25, 1.0);
+	PlayerTextDrawColor(playerid, tmp, 0xff00ffff);
+	PlayerTextDrawSetOutline(playerid, tmp, 0);
+	PlayerTextDrawSetShadow(playerid, tmp, 0);
+
+	tmp = playerpnltxt[playerid][PNLTXT_ADF_CRS] = CreatePlayerTextDraw(playerid, 395.0, 360.0, "-");
+	PlayerTextDrawAlignment(playerid, tmp, 2);
+	PlayerTextDrawFont(playerid, tmp, 2);
+	PlayerTextDrawLetterSize(playerid, tmp, 0.25, 1.0);
+	PlayerTextDrawColor(playerid, tmp, 0xff00ffff);
+	PlayerTextDrawSetOutline(playerid, tmp, 0);
+	PlayerTextDrawSetShadow(playerid, tmp, 0);
 
 /*
 	// ILS
-	TDVAR = CreatePlayerTextDraw(playerid, 320.0, 100.0, "-")
+	tmp = CreatePlayerTextDraw(playerid, 320.0, 100.0, "-")
 	//"~w~X~n~~w~X~n~~w~X~n~~w~X~n~~w~X ~w~X ~w~X ~w~X ~w~X ~w~X ~w~X ~w~X ~w~X~n~~w~X~n~~w~X~n~~w~X~n~~w~X")
-	PlayerTextDrawAlignment(playerid, TDVAR, 2)
-	PlayerTextDrawBackgroundColor(playerid, TDVAR, 0x000000FF)
-	PlayerTextDrawFont(playerid, playerid, TDVAR, 2)
-	PlayerTextDrawLetterSize(playerid, TDVAR, 0.45, 2.5)
-	PlayerTextDrawColor(playerid, TDVAR, -1)
-	PlayerTextDrawSetOutline(playerid, TDVAR, 1)
-	PlayerTextDrawSetProportional(playerid, TDVAR, 1)
+	PlayerTextDrawAlignment(playerid, tmp, 2)
+	PlayerTextDrawBackgroundColor(playerid, tmp, 0x000000FF)
+	PlayerTextDrawFont(playerid, playerid, tmp, 2)
+	PlayerTextDrawLetterSize(playerid, tmp, 0.45, 2.5)
+	PlayerTextDrawColor(playerid, tmp, -1)
+	PlayerTextDrawSetOutline(playerid, tmp, 1)
+	PlayerTextDrawSetProportional(playerid, tmp, 1)
 */
 }
 
