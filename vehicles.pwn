@@ -61,15 +61,7 @@ hook OnPlayerDisconnect(playerid, reason)
 
 hook OnPlayerLogin(playerid)
 {
-	new vehamount = Veh_CollectPlayerVehicles(userid[playerid], buf4096)
-	new idx = 0, vid
-	while (vehamount--) {
-		vid = CreateVehicle(buf4096[idx], Float:buf4096[idx+1], Float:buf4096[idx+2], Float:buf4096[idx+3], Float:buf4096[idx+4], buf4096[idx+5], buf4096[idx+6], RESPAWN_DELAY)
-		if (vid != INVALID_VEHICLE_ID) {
-			Veh_UpdateSlot vid, buf4096[idx+7]
-		}
-		idx += 8
-	}
+	spawnPlayerVehicles userid[playerid]
 }
 
 hook OnPlayerStateChange(playerid, newstate, oldstate)
@@ -150,6 +142,87 @@ findPlayerInVehicleSeat(vehicleid, seatid)
 		}
 	}
 	return INVALID_PLAYER_ID
+}
+
+//@summary Spawns vehicles owned by a player
+//@param usrid user id of the player for who their vehicles should be spawned
+spawnPlayerVehicles(usrid)
+{
+	new vehamount = Veh_CollectPlayerVehicles(usrid, buf4096)
+	new vid
+	#emit CONST.pri buf4096
+	#emit STOR.pri tmp1
+	while (vehamount--) {
+		#emit PUSH.C 0 // addsiren
+		#assert RESPAWN_DELAY == 300
+		#emit PUSH.C 300 // respawn delay
+		#emit LOAD.pri tmp1
+		#emit LREF.alt tmp1
+		#emit PUSH.alt // col2
+		#emit ADD.C 4
+		#emit STOR.pri tmp1
+		#emit LREF.alt tmp1
+		#emit PUSH.alt // col1
+		#emit ADD.C 4
+		#emit STOR.pri tmp1
+		#emit LREF.alt tmp1
+		#emit PUSH.alt // r
+		#emit ADD.C 4
+		#emit STOR.pri tmp1
+		#emit LREF.alt tmp1
+		#emit PUSH.alt // z
+		#emit ADD.C 4
+		#emit STOR.pri tmp1
+		#emit LREF.alt tmp1
+		#emit PUSH.alt // y
+		#emit ADD.C 4
+		#emit STOR.pri tmp1
+		#emit LREF.alt tmp1
+		#emit PUSH.alt // x
+		#emit ADD.C 4
+		#emit STOR.pri tmp1
+		#emit LREF.alt tmp1
+		#emit PUSH.alt // model
+		#emit ADD.C 4
+		#emit STOR.pri tmp1
+		#emit PUSH.C 36
+		#emit SYSREQ.C CreateVehicle
+		#emit STACK 40
+		#emit STOR.S.pri vid
+
+		if (vid != INVALID_VEHICLE_ID) {
+			#emit LREF.alt tmp1
+			#emit PUSH.alt
+			#emit PUSH.S vid
+			#emit PUSH.C 8
+			#emit SYSREQ.C Veh_UpdateSlot
+			#emit STACK 12
+		}
+
+		numargs // NOP, inline asm direcly after conditionals get included in the conditional
+		#emit LOAD.pri tmp1
+		#emit ADD.C 4
+		#emit STOR.pri tmp1
+	}
+
+	/*
+	new idx = 0
+	while (vehamount--) {
+		vid = CreateVehicle(\
+			buf4096[idx+6],
+			Float:buf4096[idx+5],
+			Float:buf4096[idx+4],
+			Float:buf4096[idx+3],
+			Float:buf4096[idx+2],
+			buf4096[idx+1],
+			buf4096[idx],
+			300)
+		if (vid != INVALID_VEHICLE_ID) {
+			Veh_UpdateSlot vid, buf4096[idx+7]
+		}
+		idx += 8
+	}
+	*/
 }
 
 #printhookguards

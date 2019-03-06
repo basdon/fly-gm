@@ -81,6 +81,7 @@ new TXT_EMPTY[] = "_"
 //@seealso TXT_EMPTY
 stock const TXT_EMPTY_CONST[] = "_"
 
+new tmp1
 new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
 
 #define SetPlayerPos SetPlayerPosHook
@@ -113,6 +114,13 @@ main()
 ##section init
 ##endsection
 	SetTimer #PUB_LOOP25, 25, .repeating=1
+}
+
+//@summary Function that should never be called, does dummy calls to natives to make {@code SYSREQ.C} happy
+export dummies()
+{
+	CreateVehicle 0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0
+	Veh_UpdateSlot 0, 0
 }
 
 //@summary Basic loop that handles (almost) all timed stuff.
