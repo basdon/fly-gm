@@ -195,6 +195,13 @@ public OnPlayerDisconnect(playerid, reason)
 	return 1
 }
 
+public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
+{
+##section OnPlayerEnterVehicle
+###include "vehicles"
+##endsection
+}
+
 //@summary Function that gets called when a player logs in
 //@param playerid the player that just logged in
 OnPlayerLogin(playerid)

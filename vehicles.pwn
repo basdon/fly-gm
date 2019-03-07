@@ -59,6 +59,14 @@ hook OnPlayerDisconnect(playerid, reason)
 	}
 }
 
+hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
+{
+	if (!Veh_IsPlayerAllowedInVehicle(userid[playerid], vehicleid, buf144)) {
+		ClearAnimations playerid, .forcesync=1
+		SendClientMessage playerid, COL_WARN, buf144
+	}
+}
+
 hook OnPlayerLogin(playerid)
 {
 	spawnPlayerVehicles userid[playerid]
