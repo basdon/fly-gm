@@ -147,6 +147,7 @@ export __SHORTNAMED PUB_LOOP25()
 ##section loop5000
 ###include "dialog"
 ###include "objects"
+###include "anticheat"
 ##endsection
 		lastinvoctime = _tc
 	}

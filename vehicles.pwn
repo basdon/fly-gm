@@ -10,6 +10,16 @@ varinit
 	new lastvehicle[MAX_PLAYERS]
 }
 
+hook loop1splayers()
+{
+	new vid = GetPlayerVehicleID(playerid)
+	if (vid && !Veh_IsPlayerAllowedInVehicle(userid[playerid], vid, buf144)) {
+		ClearAnimations playerid, .forcesync=1 // should remove from vehicle
+		SendClientMessage playerid, COL_WARN, buf144
+		ac_disallowedVehicle1s playerid
+	}
+}
+
 hook OnGameModeInit()
 {
 	new Cache:veh = mysql_query(1, !"SELECT veh.i,veh.m,veh.o,veh.x,veh.y,veh.z,veh.r,veh.c,veh.d,usr.n FROM veh LEFT OUTER JOIN usr ON veh.o = usr.i WHERE veh.e=1")

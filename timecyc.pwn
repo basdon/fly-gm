@@ -73,6 +73,8 @@ hook loop100()
 ##endsection
 ##section loop1splayers
 	foreach (new playerid : players) {
+##include "vehicles"
+
 ##include "zones"
 
 	}

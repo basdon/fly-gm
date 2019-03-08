@@ -15,6 +15,7 @@ varinit
 {
 	new kickprogress[MAX_PLAYERS]
 	new floodcount[MAX_PLAYERS]
+	new disallowedvehicleinfractions[MAX_PLAYERS char]
 	new cc[MAX_PLAYERS]
 }
 
@@ -22,6 +23,7 @@ hook OnPlayerConnect(playerid)
 {
 	kickprogress[playerid] = 0
 	floodcount[playerid] = 0
+	disallowedvehicleinfractions{playerid} = 0
 }
 
 hook OnPlayerUpdate(playerid)
@@ -43,6 +45,15 @@ hook loop100(playerid)
 		}
 		if (floodcount[playerid] > 0) {
 			floodcount[playerid] = clamp(floodcount[playerid] - FLOOD_DECLINE, 0, cellmax)
+		}
+	}
+}
+
+hook loop5000()
+{
+	foreach (new playerid : players) {
+		if (disallowedvehicleinfractions{playerid}) {
+			disallowedvehicleinfractions{playerid}--
 		}
 	}
 }
@@ -92,6 +103,20 @@ KickDelayed(playerid, delay=1)
 isValidPlayer(playerid, cid)
 {
 	return cc[playerid] == cid
+}
+
+//@summary Should be called at most every second when a player is in a vehicle they aren't allowed to be in,\
+		player will be kicked if this happens too often
+//@param playerid the offending player
+ac_disallowedVehicle1s(playerid)
+{
+	// value gets decreased in loop5000
+	if ((disallowedvehicleinfractions{playerid} += 3) > 15) {
+		// TODO: log
+		format buf144, sizeof(buf144), "%s[%d] was kicked by system (unauthorized vehicle access)", NAMEOF(playerid), playerid
+		SendClientMessageToAll COL_WARN, buf144
+		KickDelayed playerid
+	}
 }
 
 #printhookguards
