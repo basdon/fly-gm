@@ -43,7 +43,6 @@ varinit
 
 hook OnPlayerDisconnect(playerid, reason)
 {
-	cc[playerid]++
 	if (isPlaying(playerid)) {
 		new reasons[] = "\4\12\17\4timeout\0quit\0kicked"
 		new str[MAX_PLAYER_NAME + 6 + 21 + 8 + 1]

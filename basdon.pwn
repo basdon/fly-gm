@@ -180,6 +180,7 @@ public OnPlayerConnect(playerid)
 public OnPlayerDisconnect(playerid, reason)
 {
 ##section OnPlayerDisconnect
+###include "anticheat"
 ###include "login"
 ###include "spawn"
 ###include "panel"

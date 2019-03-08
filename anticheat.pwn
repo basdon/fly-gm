@@ -26,6 +26,11 @@ hook OnPlayerConnect(playerid)
 	disallowedvehicleinfractions{playerid} = 0
 }
 
+hook OnPlayerDisconnect(playerid, reason)
+{
+	cc[playerid]++
+}
+
 hook OnPlayerUpdate(playerid)
 {
 	if (kickprogress[playerid]) {
