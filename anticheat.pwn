@@ -7,8 +7,9 @@
 
 // TODO: check animation (swimming, parachute), in conjunction with z-coord and z-velocity
 
-#define FLOOD_DECLINE 3
+#define FLOOD_DECLINE 3 // per 100ms
 #define FLOOD_DIALOG 10
+#define FLOOD_CHAT 30
 #define FLOOD_LIMIT 100
 
 varinit
@@ -29,6 +30,14 @@ hook OnPlayerConnect(playerid)
 hook OnPlayerDisconnect(playerid, reason)
 {
 	cc[playerid]++
+}
+
+hook OnPlayerText(playerid, text[])
+{
+	flood playerid, FLOOD_CHAT
+	if (floodcount[playerid] > FLOOD_LIMIT - FLOOD_CHAT - FLOOD_CHAT / 2) {
+		WARNMSG("Don't spam!")
+	}
 }
 
 hook OnPlayerUpdate(playerid)

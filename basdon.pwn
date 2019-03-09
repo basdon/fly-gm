@@ -449,6 +449,7 @@ public OnPlayerText(playerid, text[])
 {
 ##section OnPlayerText
 ###include "login" // login needs to be first! (to block if not logged)
+###include "anticheat"
 ##endsection
 	return 1
 }
