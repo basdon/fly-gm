@@ -22,6 +22,8 @@ varinit
 	new userid[MAX_PLAYERS]
 	new sessionid[MAX_PLAYERS]
 
+	#define MAX_ALLOWED_FAILEDLOGINS_IN_30_MINS 10
+
 	new REGISTER_CAPTION[] = "Register"
 
 	new LOGIN_CAPTION[] = "Login"
@@ -420,7 +422,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			new failedattempts, pw[65]
 
 			cache_get_field_int(0, 0, failedattempts)
-			if (failedattempts > 10) {
+			if (failedattempts > MAX_ALLOWED_FAILEDLOGINS_IN_30_MINS) {
 				ShowPlayerDialog\
 					playerid,
 					DIALOG_DUMMY,
@@ -806,7 +808,7 @@ export __SHORTNAMED PUB_LOGIN_USERCHECK_CB(playerid, cid)
 	new failedattempts, id, pw[65]
 
 	cache_get_field_int(0, 0, failedattempts)
-	if (failedattempts > 10) {
+	if (failedattempts > MAX_ALLOWED_FAILEDLOGINS_IN_30_MINS) {
 		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
 			""#ECOL_WARN"You will be spawned as guest due to too many failed logins from your location", "Ok", ""
 asguest:
