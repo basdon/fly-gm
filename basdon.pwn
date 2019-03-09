@@ -153,135 +153,96 @@ export __SHORTNAMED PUB_LOOP25()
 	}
 }
 
-public OnPlayerConnect(playerid)
+public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
-	DisablePlayerCheckpoint(playerid)
-	DisablePlayerRaceCheckpoint(playerid)
-
-	iter_add(allplayers, playerid)
-
-##section OnPlayerConnect
-###include "dialog" // keep this first
-###include "playername" // keep this second (sets data: name, ip, ..)
-###include "login"
-###include "panel"
-###include "spawn"
-###include "timecyc"
+##section OnDialogResponse
 ###include "anticheat"
-###include "playtime"
-###include "objects"
-###include "pm"
-###include "zones"
-##endsection
-
-	return 1
-}
-
-public OnPlayerDisconnect(playerid, reason)
-{
-##section OnPlayerDisconnect
-###include "anticheat"
-###include "spawn"
-###include "panel"
-###include "playtime"
 ###include "dialog"
+##endsection
+
+##section OnDialogResponseCase
+	switch (dialogid) {
+	case DIALOG_DUMMY: return 1
+###include "login"
 ###include "airport"
-###include "vehicles"
-###include "login" // keep this last-ish (clears logged in status)
-###include "playername" // keep this last-ish (clears data)
-###include "pm"
-##endsection
-	iter_remove(players, playerid)
-	iter_remove(allplayers, playerid)
-
-	return 1
-}
-
-public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
-{
-##section OnPlayerEnterVehicle
-###include "vehicles"
-##endsection
-}
-
-//@summary Function that gets called when a player logs in
-//@param playerid the player that just logged in
-OnPlayerLogin(playerid)
-{
-##section OnPlayerLogin
-###include "vehicles"
-##endsection
-}
-
-public OnPlayerRequestClass(playerid, classid)
-{
-##section OnPlayerRequestClass
-###include "timecyc"
-###include "spawn"
-##endsection
-	return 1
-}
-
-public OnPlayerRequestSpawn(playerid)
-{
-##section OnPlayerRequestSpawn
-###include "login" // login needs to be first! (to block if not logged)
-###include "timecyc"
-###include "spawn" // spawn needs to be last! (to set things when actually spawning)
-##endsection
-}
-
-public OnPlayerSpawn(playerid)
-{
-	if (!isPlaying(playerid)) {
-		return 0
 	}
-
-##section OnPlayerSpawn
-###include "spawn"
-###include "zones"
 ##endsection
-
-	return 1
+	return 0
 }
 
-public OnPlayerDeath(playerid, killerid, reason)
+public OnGameModeInit()
 {
-	if (!isPlaying(playerid)) {
-		return 0
+	new File:mysqlfile = fopen("mysql.dat", io_read)
+	if (!mysqlfile) {
+		printf "file mysql.dat not found"
+		SendRconCommand "exit"
+		return 1
 	}
+	new creds[100]
+	fblockread mysqlfile, creds
+	fclose mysqlfile
 
-##section OnPlayerDeath
+	mysql_log LOG_ERROR | LOG_WARNING
+	if (!mysql_connect("127.0.0.1", creds[creds[0]], creds[creds[1]], creds[creds[2]]) || mysql_errno() != 0) {
+		printf "no db connection"
+		SendRconCommand "exit"
+		return 1
+	}
+	//mysql_set_charset "Windows-1252"
+
+	SetGameModeText VERSION
+
+	UsePlayerPedAnims
+	EnableStuntBonusForAll 0
+
+	new rowcount // used in airprot, vehicles
+
+##section OnGameModeInit
+###include "objects"
+###include "panel"
 ###include "spawn"
 ###include "timecyc"
-###include "zones"
+###include "tracker"
+###include "vehicles"
+###include "airport"
 ##endsection
 
+	return 1;
+}
+
+public OnGameModeExit()
+{
+##section OnGameModeExit
+###include "airport"
+###include "tracker"
+###include "vehicles"
+##endsection
+
+	if (mysql_unprocessed_queries() > 0) {
+		new starttime = gettime()
+		do {
+			if (gettime() - starttime > 10) {
+				print "queries are taking > 10s, exiting anyways"
+				goto fuckit
+			}
+			print "waiting on queries before exiting"
+			for (new i = 0; i < 80_000_000; i++) {}
+		} while (mysql_unprocessed_queries() > 0)
+		print "done"
+	}
+fuckit:
+	mysql_close()
 	return 1
 }
 
-//@summary Hooks {@link SetPlayerPos} to do stuff
-//@param playerid see {@link SetPlayerPos}
-//@param x see {@link SetPlayerPos}
-//@param y see {@link SetPlayerPos}
-//@param z see {@link SetPlayerPos}
-//@returns see {@link SetPlayerPos}
-//@remarks see {@link SetPlayerPos}
-//@remarks has {@code onSetPlayerPos} section
-//@seealso SetPlayerPos
-SetPlayerPosHook(playerid, Float:x, Float:y, Float:z)
+public OnObjectMoved(objectid)
 {
-##section onSetPlayerPos
-###include "zones"
+##section OnObjectMoved
 ##endsection
-#undef SetPlayerPos
-	SetPlayerPos playerid, x, y, z
-#define SetPlayerPos SetPlayerPosHook
 }
 
 public OnPlayerCommandText(playerid, cmdtext[])
 {
-
 #ifndef PROD
 	if (strcicmp("/jetpack", cmdtext) == 0) {
 		SetPlayerSpecialAction playerid, SPECIAL_ACTION_USEJETPACK
@@ -355,12 +316,79 @@ public OnPlayerCommandText(playerid, cmdtext[])
 	return 0
 }
 
-public OnPlayerText(playerid, text[])
+public OnPlayerConnect(playerid)
 {
-##section OnPlayerText
-###include "login" // login needs to be first! (to block if not logged)
+	DisablePlayerCheckpoint(playerid)
+	DisablePlayerRaceCheckpoint(playerid)
+
+	iter_add(allplayers, playerid)
+
+##section OnPlayerConnect
+###include "dialog" // keep this first
+###include "playername" // keep this second (sets data: name, ip, ..)
+###include "login"
+###include "panel"
+###include "spawn"
+###include "timecyc"
+###include "anticheat"
+###include "playtime"
+###include "objects"
+###include "pm"
+###include "zones"
 ##endsection
+
 	return 1
+}
+
+public OnPlayerDeath(playerid, killerid, reason)
+{
+	if (!isPlaying(playerid)) {
+		return 0
+	}
+
+##section OnPlayerDeath
+###include "spawn"
+###include "timecyc"
+###include "zones"
+##endsection
+
+	return 1
+}
+
+public OnPlayerDisconnect(playerid, reason)
+{
+##section OnPlayerDisconnect
+###include "anticheat"
+###include "spawn"
+###include "panel"
+###include "playtime"
+###include "dialog"
+###include "airport"
+###include "vehicles"
+###include "login" // keep this last-ish (clears logged in status)
+###include "playername" // keep this last-ish (clears data)
+###include "pm"
+##endsection
+	iter_remove(players, playerid)
+	iter_remove(allplayers, playerid)
+
+	return 1
+}
+
+public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
+{
+##section OnPlayerEnterVehicle
+###include "vehicles"
+##endsection
+}
+
+//@summary Function that gets called when a player logs in
+//@param playerid the player that just logged in
+OnPlayerLogin(playerid)
+{
+##section OnPlayerLogin
+###include "vehicles"
+##endsection
 }
 
 //@summary Called when a player goes afk
@@ -376,58 +404,53 @@ onPlayerNowAfk(playerid)
 ##endsection
 }
 
-//@summary Gets called when a player comes back from being afk
-//@param playerid the playerid that is now back
-//@remarks {@b A player is also marked afk when they are not spawned (dead or in class select)!}
-//@seealso onPlayerNowAfk
-//@seealso isAfk
-onPlayerWasAfk(playerid)
+public OnPlayerRequestClass(playerid, classid)
 {
-##section onPlayerWasAfk
-###include "playtime"
-###include "panel"
+##section OnPlayerRequestClass
 ###include "timecyc"
+###include "spawn"
+##endsection
+	return 1
+}
+
+public OnPlayerRequestSpawn(playerid)
+{
+##section OnPlayerRequestSpawn
+###include "login" // login needs to be first! (to block if not logged)
+###include "timecyc"
+###include "spawn" // spawn needs to be last! (to set things when actually spawning)
 ##endsection
 }
 
-public OnGameModeInit()
+public OnPlayerSpawn(playerid)
 {
-	new File:mysqlfile = fopen("mysql.dat", io_read)
-	if (!mysqlfile) {
-		printf "file mysql.dat not found"
-		SendRconCommand "exit"
-		return 1
+	if (!isPlaying(playerid)) {
+		return 0
 	}
-	new creds[100]
-	fblockread mysqlfile, creds
-	fclose mysqlfile
 
-	mysql_log LOG_ERROR | LOG_WARNING
-	if (!mysql_connect("127.0.0.1", creds[creds[0]], creds[creds[1]], creds[creds[2]]) || mysql_errno() != 0) {
-		printf "no db connection"
-		SendRconCommand "exit"
-		return 1
-	}
-	//mysql_set_charset "Windows-1252"
-
-	SetGameModeText VERSION
-
-	UsePlayerPedAnims
-	EnableStuntBonusForAll 0
-
-	new rowcount // used in airprot, vehicles
-
-##section OnGameModeInit
-###include "objects"
-###include "panel"
+##section OnPlayerSpawn
 ###include "spawn"
-###include "timecyc"
-###include "tracker"
-###include "vehicles"
-###include "airport"
+###include "zones"
 ##endsection
 
-	return 1;
+	return 1
+}
+
+public OnPlayerStateChange(playerid, newstate, oldstate)
+{
+##section OnPlayerStateChange
+###include "panel"
+###include "vehicles"
+##endsection
+    return 1
+}
+
+public OnPlayerText(playerid, text[])
+{
+##section OnPlayerText
+###include "login" // login needs to be first! (to block if not logged)
+##endsection
+	return 1
 }
 
 public OnPlayerUpdate(playerid)
@@ -441,55 +464,18 @@ public OnPlayerUpdate(playerid)
 	return 1
 }
 
-public OnGameModeExit()
+//@summary Gets called when a player comes back from being afk
+//@param playerid the playerid that is now back
+//@remarks {@b A player is also marked afk when they are not spawned (dead or in class select)!}
+//@seealso onPlayerNowAfk
+//@seealso isAfk
+onPlayerWasAfk(playerid)
 {
-##section OnGameModeExit
-###include "airport"
-###include "tracker"
-###include "vehicles"
-##endsection
-
-	if (mysql_unprocessed_queries() > 0) {
-		new starttime = gettime()
-		do {
-			if (gettime() - starttime > 10) {
-				print "queries are taking > 10s, exiting anyways"
-				goto fuckit
-			}
-			print "waiting on queries before exiting"
-			for (new i = 0; i < 80_000_000; i++) {}
-		} while (mysql_unprocessed_queries() > 0)
-		print "done"
-	}
-fuckit:
-	mysql_close()
-	return 1
-}
-
-public OnPlayerStateChange(playerid, newstate, oldstate)
-{
-##section OnPlayerStateChange
+##section onPlayerWasAfk
+###include "playtime"
 ###include "panel"
-###include "vehicles"
+###include "timecyc"
 ##endsection
-    return 1
-}
-
-public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
-##section OnDialogResponse
-###include "anticheat"
-###include "dialog"
-##endsection
-
-##section OnDialogResponseCase
-	switch (dialogid) {
-	case DIALOG_DUMMY: return 1
-###include "login"
-###include "airport"
-	}
-##endsection
-	return 0
 }
 
 public OnVehicleSpawn(vehicleid)
@@ -513,15 +499,28 @@ public OnVehicleStreamOut(vehicleid, forplayerid)
 ##endsection
 }
 
-public OnObjectMoved(objectid)
-{
-##section OnObjectMoved
-##endsection
-}
-
 public OnQueryError(errorid, error[], callback[], query[], connectionHandle)
 {
 	printf "query err %d - %s - %s - %s", errorid, error, callback, query
+}
+
+//@summary Hooks {@link SetPlayerPos} to do stuff
+//@param playerid see {@link SetPlayerPos}
+//@param x see {@link SetPlayerPos}
+//@param y see {@link SetPlayerPos}
+//@param z see {@link SetPlayerPos}
+//@returns see {@link SetPlayerPos}
+//@remarks see {@link SetPlayerPos}
+//@remarks has {@code onSetPlayerPos} section
+//@seealso SetPlayerPos
+SetPlayerPosHook(playerid, Float:x, Float:y, Float:z)
+{
+##section onSetPlayerPos
+###include "zones"
+##endsection
+#undef SetPlayerPos
+	SetPlayerPos playerid, x, y, z
+#define SetPlayerPos SetPlayerPosHook
 }
 
 #include "anticheat"
