@@ -7,7 +7,8 @@
 #define LOGGED_IN 1
 #define LOGGED_GUEST 2
 
-#define MAX_LOGIN_ATTEMPTS 4
+#define MAX_ALLOWED_FAILEDLOGINS_IN_30_MINS 10
+#define MAX_LOGIN_ATTEMPTS_IN_ONE_SESSION 4
 
 #define BCRYPT_COST 12
 
@@ -21,8 +22,6 @@ varinit
 	new failedlogins[MAX_PLAYERS char]
 	new userid[MAX_PLAYERS]
 	new sessionid[MAX_PLAYERS]
-
-	#define MAX_ALLOWED_FAILEDLOGINS_IN_30_MINS 10
 
 	new REGISTER_CAPTION[] = "Register"
 
@@ -283,7 +282,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 					mysql_tquery 1, buf4096
 				}
 				// failed login
-				if ((failedlogins{playerid} += 2) > (MAX_LOGIN_ATTEMPTS - 1) * 2) {
+				if (++failedlogins{playerid} > MAX_LOGIN_ATTEMPTS_IN_ONE_SESSION) {
 					SendClientMessage playerid, COL_WARN, #WARN"Too many failed login attempts!"
 					KickDelayed playerid
 					return
@@ -433,6 +432,10 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 					"Ok", ""
 				goto giveguestname
 			}
+			failedlogins{playerid} = max(\
+				MAX_LOGIN_ATTEMPTS_IN_ONE_SESSION -
+					(MAX_ALLOWED_FAILEDLOGINS_IN_30_MINS - failedattempts),
+				failedlogins{playerid})
 
 			cache_get_field_str(0, 1, pw)
 			if (ismysqlnull(pw)) {
@@ -818,6 +821,10 @@ asguest:
 		}
 		return
 	}
+	failedlogins{playerid} = max(
+		MAX_LOGIN_ATTEMPTS_IN_ONE_SESSION -
+			(MAX_ALLOWED_FAILEDLOGINS_IN_30_MINS - failedattempts),
+		failedlogins{playerid})
 
 	cache_get_field_str(0, 1, pw)
 	if (ismysqlnull(pw)) {
