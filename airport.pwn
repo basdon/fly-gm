@@ -63,14 +63,14 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 
 hook OnPlayerCommandTextCase(playerid, cmdtext[])
 {
-	case 2133486927: if (IsCommand(cmdtext, "/nearest", idx)) {
+	case 2133486927: if (Command_Is(cmdtext, "/nearest", idx)) {
 		new Float: x, Float: y, Float:z;
 		GetPlayerPos playerid, x, y, z
 		APT_FormatNearestList playerid, x, y, buf4096
 		ShowPlayerDialog playerid, DIALOG_NEAREST, DIALOG_STYLE_TABLIST, "Nearest airports", buf4096, "Info", "Close"
 		#return 1
 	}
-	case 72939936: if (IsCommand(cmdtext, "/beacons", idx)) {
+	case 72939936: if (Command_Is(cmdtext, "/beacons", idx)) {
 		APT_FormatBeaconList buf4096
 		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, "Beacons", buf4096, "Close", ""
 		#return 1

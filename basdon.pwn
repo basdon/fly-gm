@@ -87,18 +87,18 @@ new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
 #define SetPlayerPos SetPlayerPosHook
 
 ##section varinit
+###include "anticheat"
 ###include "dialog"
-###include "playername"
-###include "panel"
 ###include "game_sa"
-###include "playtime"
 ###include "login"
 ###include "objects"
+###include "panel"
+###include "playername"
+###include "playtime"
 ###include "pm"
 ###include "spawn"
 ###include "timecyc"
 ###include "tracker"
-###include "anticheat"
 ###include "vehicles"
 ###include "zones"
 ##endsection
@@ -133,10 +133,10 @@ export __SHORTNAMED PUB_LOOP25()
 	invoc = (++invoc & 0x3)
 	if (!invoc) {
 ##section loop100
+###include "anticheat"
 ###include "panel"
 ###include "playtime"
 ###include "timecyc"
-###include "anticheat"
 ##endsection
 		invoc = 0
 	}
@@ -145,9 +145,9 @@ export __SHORTNAMED PUB_LOOP25()
 		// this should be 4985-5010(+5)
 		// 1s,30s,1m loop is inside timecyc
 ##section loop5000
+###include "anticheat"
 ###include "dialog"
 ###include "objects"
-###include "anticheat"
 ##endsection
 		lastinvoctime = _tc
 	}
@@ -163,8 +163,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 ##section OnDialogResponseCase
 	switch (dialogid) {
 	case DIALOG_DUMMY: return 1
-###include "login"
 ###include "airport"
+###include "login"
 	}
 ##endsection
 	return 0
@@ -198,13 +198,13 @@ public OnGameModeInit()
 	new rowcount // used in airprot, vehicles
 
 ##section OnGameModeInit
+###include "airport"
 ###include "objects"
 ###include "panel"
 ###include "spawn"
 ###include "timecyc"
 ###include "tracker"
 ###include "vehicles"
-###include "airport"
 ##endsection
 
 	return 1;
@@ -288,10 +288,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 ##endsection
 
 	new idx
-	switch (CommandHash(cmdtext)) {
+	switch (Command_Hash(cmdtext)) {
 ##section OnPlayerCommandTextCase
-###include "login"
 ###include "airport"
+###include "login"
 ###include "nav"
 ###include "pm"
 ###include "timecyc"
@@ -299,17 +299,17 @@ public OnPlayerCommandText(playerid, cmdtext[])
 ##endsection
 
 #ifndef PROD
-	case 48476: if (IsCommand(cmdtext, "/gt", idx)) {
-		if (Params_GetString(cmdtext, idx, buf32) && Params_GetString(cmdtext, idx, buf144)) {
+	case 48476: if (Command_Is(cmdtext, "/gt", idx)) {
+		if (Command_GetStringParam(cmdtext, idx, buf32) && Command_GetStringParam(cmdtext, idx, buf144)) {
 			GameTextForPlayer(playerid, buf144, 4000, strval(buf32))
 		}
 		return 1
 	}
-	case 608035061: if (IsCommand(cmdtext, "/nweather", idx)) {
+	case 608035061: if (Command_Is(cmdtext, "/nweather", idx)) {
 		PUB_TIMECYC_NEXTWEATHER
 		return 1
 	}
-	default: printf "command '%s' hash: %d", cmdtext, CommandHash(cmdtext)
+	default: printf "command '%s' hash: %d", cmdtext, Command_Hash(cmdtext)
 #endif
 	}
 
@@ -326,14 +326,14 @@ public OnPlayerConnect(playerid)
 ##section OnPlayerConnect
 ###include "dialog" // keep this first
 ###include "playername" // keep this second (sets data: name, ip, ..)
+###include "anticheat"
 ###include "login"
+###include "objects"
 ###include "panel"
+###include "playtime"
+###include "pm"
 ###include "spawn"
 ###include "timecyc"
-###include "anticheat"
-###include "playtime"
-###include "objects"
-###include "pm"
 ###include "zones"
 ##endsection
 
@@ -358,12 +358,12 @@ public OnPlayerDeath(playerid, killerid, reason)
 public OnPlayerDisconnect(playerid, reason)
 {
 ##section OnPlayerDisconnect
+###include "airport"
 ###include "anticheat"
-###include "spawn"
+###include "dialog"
 ###include "panel"
 ###include "playtime"
-###include "dialog"
-###include "airport"
+###include "spawn"
 ###include "vehicles"
 ###include "login" // keep this last-ish (clears logged in status)
 ###include "playername" // keep this last-ish (clears data)
@@ -399,16 +399,16 @@ OnPlayerLogin(playerid)
 onPlayerNowAfk(playerid)
 {
 ##section onPlayerNowAfk
-###include "playtime"
 ###include "panel"
+###include "playtime"
 ##endsection
 }
 
 public OnPlayerRequestClass(playerid, classid)
 {
 ##section OnPlayerRequestClass
-###include "timecyc"
 ###include "spawn"
+###include "timecyc"
 ##endsection
 	return 1
 }
@@ -472,8 +472,8 @@ public OnPlayerUpdate(playerid)
 onPlayerWasAfk(playerid)
 {
 ##section onPlayerWasAfk
-###include "playtime"
 ###include "panel"
+###include "playtime"
 ###include "timecyc"
 ##endsection
 }
@@ -526,17 +526,17 @@ SetPlayerPosHook(playerid, Float:x, Float:y, Float:z)
 #include "anticheat"
 #include "playername" // try to keep this top-ish (for onPlayerNameChange section)
 #include "timecyc" // also try to keep this top-ish (because 1s 30s loop hooks)
-#include "panel"
-#include "nav"
+#include "airport"
 #include "dialog"
-#include "login"
 #include "game_sa"
+#include "login"
 #include "playtime"
+#include "nav"
 #include "objects"
+#include "panel"
 #include "pm"
 #include "spawn"
 #include "tracker"
-#include "airport"
 #include "vehicles"
 #include "zones"
 

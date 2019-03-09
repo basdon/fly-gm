@@ -38,15 +38,15 @@ hook OnPlayerConnect(playerid)
 
 hook OnPlayerDisconnect(playerid)
 {
-	DropDialogQueue playerid
+	Dialog_DropQueue playerid
 }
 
 hook loop5000()
 {
 	foreach (new playerid : allplayers) {
-		if (!dialogtransaction[playerid] && HasDialogsInQueue(playerid)) {
+		if (!dialogtransaction[playerid] && Dialog_HasInQueue(playerid)) {
 			new dialogid, style, transactionid
-			PopDialogQueue playerid, dialogid, style, buf64, buf4096, buf32, buf32_1, transactionid
+			Dialog_PopQueue playerid, dialogid, style, buf64, buf4096, buf32, buf32_1, transactionid
 			ShowPlayerDialogSafe playerid, dialogid, style, buf64, buf4096, buf32, buf32_1, transactionid
 		}
 	}
@@ -114,7 +114,7 @@ ShowPlayerDialogSafe(playerid, dialogid, style, caption[], info[], button1[], bu
 	if (dialogtransaction[playerid] && dialogtransaction[playerid] != transactionid) {
 		if (transactionid != TRANSACTION_OVERRIDE) {
 			printf "I-D03: %d, %d", dialogid, dialogtransaction[playerid]
-			QueueDialog playerid, dialogid, style, caption, info, button1, button2, transactionid
+			Dialog_Queue playerid, dialogid, style, caption, info, button1, button2, transactionid
 			return
 		}
 		printf "W-D02: %d", dialogtransaction[playerid]

@@ -13,9 +13,9 @@ hook OnVehicleSpawn(vehicleid)
 
 hook OnPlayerCommandTextCase(playerid, cmdtext[])
 {
-	case 1496596: if (IsCommand(cmdtext, "/adf", idx)) {
+	case 1496596: if (Command_Is(cmdtext, "/adf", idx)) {
 		new vid = GetPlayerVehicleID(playerid)
-		if (vid == 0 || !IsAirVehicle(GetVehicleModel(vid))) {
+		if (vid == 0 || !Game_IsAirVehicle(GetVehicleModel(vid))) {
 			WARNMSG("You're not in an ADF capable vehicle")
 			#return 1
 		}
@@ -36,9 +36,9 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 		}
 		#return 1
 	}
-	case 1517130: if (IsCommand(cmdtext, "/vor", idx)) {
+	case 1517130: if (Command_Is(cmdtext, "/vor", idx)) {
 		new vid = GetPlayerVehicleID(playerid)
-		if (vid == 0 || !IsPlane(GetVehicleModel(vid))) {
+		if (vid == 0 || !Game_IsPlane(GetVehicleModel(vid))) {
 			WARNMSG("You're not in a VOR capable vehicle")
 			#return 1
 		}
@@ -59,9 +59,9 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 		}
 		#return 1
 	}
-	case 1504545: if (IsCommand(cmdtext, "/ils", idx)) {
+	case 1504545: if (Command_Is(cmdtext, "/ils", idx)) {
 		new vid = GetPlayerVehicleID(playerid)
-		if (vid == 0 || !IsPlane(GetVehicleModel(vid))) {
+		if (vid == 0 || !Game_IsPlane(GetVehicleModel(vid))) {
 			WARNMSG("You're not in an ILS capable vehicle")
 			#return 1
 		}

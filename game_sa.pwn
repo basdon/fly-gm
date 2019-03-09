@@ -5,7 +5,7 @@
 
 varinit
 {
-	#define isInAirVehicle(%0) IsAirVehicle(GetVehicleModel(GetPlayerVehicleID(%0)))
+	#define isInAirVehicle(%0) Game_IsAirVehicle(GetVehicleModel(GetPlayerVehicleID(%0)))
 }
 
 #printhookguards

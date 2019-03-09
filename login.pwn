@@ -105,7 +105,7 @@ hook OnPlayerText(playerid, text[])
 
 hook OnPlayerCommandTextCase(playerid, cmdtext[])
 {
-	case 258772946: if (IsCommand(cmdtext, "/register", idx)) if (isGuest(playerid)) {
+	case 258772946: if (Command_Is(cmdtext, "/register", idx)) if (isGuest(playerid)) {
 		if (sessionid[playerid] == -1 || userid[playerid] == -1) {
 			ShowPlayerDialog\
 				playerid,
@@ -131,7 +131,7 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 		SendClientMessage playerid, COL_WARN, #WARN"You're already registered!"
 		#return 1
 	}
-	case -1292722118: if (!isGuest(playerid) && IsCommand(cmdtext, "/changepassword", idx)) {
+	case -1292722118: if (!isGuest(playerid) && Command_Is(cmdtext, "/changepassword", idx)) {
 		Login_FormatChangePasswordBox buf4096, .step=0
 		ShowPlayerDialog\
 			playerid,

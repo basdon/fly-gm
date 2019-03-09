@@ -26,9 +26,9 @@ hook OnPlayerDisconnect(playerid, reason)
 
 hook OnPlayerCommandTextCase(playerid, cmdtext[])
 {
-	case 48748: if (IsCommand(cmdtext, "/pm", idx)) {
+	case 48748: if (Command_Is(cmdtext, "/pm", idx)) {
 		new targetid;
-		if (!Params_GetPlayer(cmdtext, idx, targetid)) {
+		if (!Command_GetPlayerParam(cmdtext, idx, targetid)) {
 msg_synerr:
 			WARNMSG("Syntax: /pm [id/name] [message]")
 			#return 1
@@ -46,7 +46,7 @@ msg_synerr:
 		sendpm playerid, targetid, cmdtext[idx]
 		#return 1
 	}
-	case 1571: if (IsCommand(cmdtext, "/r", idx)) {
+	case 1571: if (Command_Is(cmdtext, "/r", idx)) {
 		while (cmdtext[idx] == ' ') {
 			idx++
 		}

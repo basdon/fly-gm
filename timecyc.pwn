@@ -181,7 +181,7 @@ hook OnPlayerUpdate(playerid)
 
 hook OnPlayerCommandTextCase(playerid, cmdtext[])
 {
-	case 1531147493, 1449357374: if (IsCommand(cmdtext, "/weather", idx) || IsCommand(cmdtext, "/metar", idx)) {
+	case 1531147493, 1449357374: if (Command_Is(cmdtext, "/weather", idx) || Command_Is(cmdtext, "/metar", idx)) {
 		Timecyc_GetCurrentWeatherMsg buf144
 		SendClientMessage playerid, COLOR_METAR, buf144
 		#return 1
