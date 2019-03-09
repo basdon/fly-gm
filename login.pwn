@@ -274,8 +274,12 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 
 			endDialogTransaction playerid, TRANSACTION_LOGIN
 			hideGameTextForPlayer(playerid)
+			PlayerData_SetUserId playerid, userid[playerid] // needed for failed login too
 
 			if (!bcrypt_is_equal()) {
+				if (Login_FormatAddFailedLogin(playerid, buf4096)) {
+					mysql_tquery 1, buf4096
+				}
 				// failed login
 				if ((failedlogins{playerid} += 2) > (MAX_LOGIN_ATTEMPTS - 1) * 2) {
 					SendClientMessage playerid, COL_WARN, #WARN"Too many failed login attempts!"
@@ -288,7 +292,6 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 
 			// great, correct password, do stuff
 			GameTextForPlayer playerid, "~b~Loading account...", 0x800000, 3
-			PlayerData_SetUserId playerid, userid[playerid]
 			Login_FormatLoadAccountData userid[playerid], buf4096
 			mysql_tquery 1, buf4096, #PUB_LOGIN_LOADACCOUNT_CB, "ii", playerid, cc[playerid]
 
