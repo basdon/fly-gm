@@ -74,9 +74,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 flood(playerid, amount)
 {
 	if ((floodcount[playerid] += amount) >= FLOOD_LIMIT) {
-		new msg[38 + MAX_PLAYER_NAME + 2 + 4 + 1]
-		format msg, sizeof(msg), "%s[%d] was kicked by system (excess flood)", NAMEOF(playerid), playerid
-		SendClientMessageToAll COL_WARN, msg
+		format buf144, sizeof(buf144), "%s[%d] was kicked by system (excess flood)", NAMEOF(playerid), playerid
+		SendClientMessageToAll COL_WARN, buf144
 		KickDelayed playerid
 	}
 }
