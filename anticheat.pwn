@@ -74,6 +74,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 flood(playerid, amount)
 {
 	if ((floodcount[playerid] += amount) >= FLOOD_LIMIT) {
+		ac_log playerid, "excess flood"
 		format buf144, sizeof(buf144), "%s[%d] was kicked by system (excess flood)", NAMEOF(playerid), playerid
 		SendClientMessageToAll COL_WARN, buf144
 		KickDelayed playerid
@@ -116,11 +117,20 @@ ac_disallowedVehicle1s(playerid)
 {
 	// value gets decreased in loop5000
 	if ((disallowedvehicleinfractions{playerid} += 3) > 15) {
-		// TODO: log
+		ac_log playerid, "unauthorized vehicle access"
 		format buf144, sizeof(buf144), "%s[%d] was kicked by system (unauthorized vehicle access)", NAMEOF(playerid), playerid
 		SendClientMessageToAll COL_WARN, buf144
 		KickDelayed playerid
 	}
+}
+
+//@summary Log something to db (acl table)
+//@param playerid player
+//@param message message (don't sqli yourself)
+ac_log(playerid, const message[])
+{
+	Ac_FormatLog playerid, loggedstatus[playerid], message, buf4096
+	mysql_tquery 1, buf4096
 }
 
 #printhookguards

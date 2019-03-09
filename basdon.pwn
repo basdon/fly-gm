@@ -162,7 +162,7 @@ public OnPlayerConnect(playerid)
 
 ##section OnPlayerConnect
 ###include "dialog" // keep this first
-###include "playername" // keep this second
+###include "playername" // keep this second (sets data: name, ip, ..)
 ###include "login"
 ###include "panel"
 ###include "spawn"
@@ -181,13 +181,13 @@ public OnPlayerDisconnect(playerid, reason)
 {
 ##section OnPlayerDisconnect
 ###include "anticheat"
-###include "login"
 ###include "spawn"
 ###include "panel"
 ###include "playtime"
 ###include "dialog"
 ###include "airport"
 ###include "vehicles"
+###include "login" // keep this last-ish (clears logged in status)
 ###include "playername" // keep this last-ish (clears data)
 ###include "pm"
 ##endsection
