@@ -37,23 +37,23 @@
 #define WARNMSG(%0) SendClientMessage(playerid, COL_WARN, WARN%0)
 
 // public symbols
-#define PUB_LOOP25 a // main
-#define PUB_LOGIN_USERCHECK_CB b // login
-#define PUB_LOGIN_REGISTER_CB c // login
-#define PUB_LOGIN_PWVERIFY_CB d // login
-#define PUB_LOGIN_CREATE_GUEST_SES e // login
-#define PUB_LOGIN_GUESTREGISTERUSERCHECK_CB f // login
-#define PUB_LOGIN_GUESTREGISTER_CB g // login
-#define PUB_LOGIN_CHANGEPASS_CHECK_CB h // login
-#define PUB_LOGIN_CHANGEPASS_CHANGE_CB o // login
-#define PUB_TIMECYC_NEXTWEATHER ab // timcyc
-#define PUB_LOGIN_LOADACCOUNT_CB q // login
-#define PUB_LOGIN_CREATEGAMESESSION_CB aa // login
-#define PUB_LOGIN_GUESTREGISTER_HASHPW_CB s // login
-#define PUB_LOGIN_CHANGEPASS_HASHPW_CB t // login
-#define PUB_LOGIN_CREATE_GUEST_USR u // login
-#define PUB_LOGIN_REGISTER_HASHPW_CB v // login
-#define PUB_LOGIN_CREATE_NEWUSER_SES w // login
+#define PUB_LOOP25 ba // basdon
+#define PUB_LOGIN_USERCHECK_CB la // login
+#define PUB_LOGIN_REGISTER_CB lb // login
+#define PUB_LOGIN_PWVERIFY_CB lc // login
+#define PUB_LOGIN_CREATE_GUEST_SES ld // login
+#define PUB_LOGIN_GUESTREGISTERUSERCHECK_CB le // login
+#define PUB_LOGIN_GUESTREGISTER_CB lf // login
+#define PUB_LOGIN_CHANGEPASS_CHECK_CB lg // login
+#define PUB_LOGIN_CHANGEPASS_CHANGE_CB lh // login
+#define PUB_LOGIN_LOADACCOUNT_CB li // login
+#define PUB_LOGIN_CREATEGAMESESSION_CB lj // login
+#define PUB_LOGIN_GUESTREGISTER_HASHPW_CB lk // login
+#define PUB_LOGIN_CHANGEPASS_HASHPW_CB ll // login
+#define PUB_LOGIN_CREATE_GUEST_USR lm // login
+#define PUB_LOGIN_REGISTER_HASHPW_CB ln // login
+#define PUB_LOGIN_CREATE_NEWUSER_SES lo // login
+#define PUB_TIMECYC_NEXTWEATHER ta // timcyc
 
 #namespace "basdon"
 
