@@ -411,7 +411,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			hideGameTextForPlayer(playerid)
 
 			if (!cache_get_row_count()) {
-				printf "E-U12"
+				printf "E-L02"
 				ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
 					""#ECOL_WARN"An error occurred, you will be spawned as a guest", "Ok", ""
 				WARNMSG("An error occured while contacting the login server.")
@@ -561,7 +561,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 					SendClientMessageToAll COL_JOIN, str
 					return
 				} else {
-					// TODO log
+					printf "E-L03 %d", userid[playerid]
 					ShowPlayerDialog\
 						playerid,
 						DIALOG_DUMMY,
@@ -707,7 +707,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 						"Ok", "",
 						TRANSACTION_CHANGEPASS
 				} else {
-					// TODO: log
+					printf "E-L04 %d", userid[playerid]
 					ShowPlayerDialog\
 						playerid,
 						DIALOG_DUMMY,
@@ -801,7 +801,7 @@ export __SHORTNAMED PUB_LOGIN_USERCHECK_CB(playerid, cid)
 	hideGameTextForPlayer(playerid)
 
 	if (!cache_get_row_count()) {
-		printf "E-U02"
+		printf "E-L01"
 		ShowPlayerDialog playerid, DIALOG_DUMMY, DIALOG_STYLE_MSGBOX, LOGIN_CAPTION,
 			""#ECOL_WARN"An error occurred, you will be spawned as a guest", "Ok", ""
 		SendClientMessage playerid, COL_WARN, WARN"An error occured while contacting the login server."
