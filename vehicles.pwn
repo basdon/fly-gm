@@ -12,8 +12,11 @@ varinit
 
 hook loop1splayers()
 {
-	new vid = GetPlayerVehicleID(playerid)
-	if (vid && GetPlayerVehicleSeat(playerid) == 0 && !Veh_IsPlayerAllowedInVehicle(userid[playerid], vid, buf144)) {
+	new vid
+	if (GetPlayerVehicleSeat(playerid) == 0 &&
+		(vid = GetPlayerVehicleID(playerid)) &&
+		!Veh_IsPlayerAllowedInVehicle(userid[playerid], vid, buf144))
+	{
 		ClearAnimations playerid, .forcesync=1 // should remove from vehicle
 		SendClientMessage playerid, COL_WARN, buf144
 		ac_disallowedVehicle1s playerid
