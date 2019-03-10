@@ -8,6 +8,7 @@ ppfile = preprocess.sed
 ppfileoutline = preprocess-outline.sed
 
 #FILE basdon
+#FILE dev
 #FILE natives
 #FILE sharedsymbols
 #FILE panel
@@ -35,11 +36,14 @@ ppfileoutline = preprocess-outline.sed
 #START
 #S2
 
-build: p/sharedsymbols.p p/objects.p p/vehicles.p p/nav.p p/zones.p p/airport.p p/dummies.p p/anticheat.p p/tracker.p p/timecyc.p p/spawn.p p/dialog.p p/colors.p p/settings.p p/util.p p/login.p p/playername.p p/playtime.p p/game_sa.p p/simpleiter.p p/pm.p p/panel.p p/sharedsymbols.p p/natives.p p/basdon.p
+build: p/sharedsymbols.p p/objects.p p/vehicles.p p/nav.p p/zones.p p/airport.p p/dummies.p p/anticheat.p p/tracker.p p/timecyc.p p/spawn.p p/dialog.p p/colors.p p/settings.p p/util.p p/login.p p/playername.p p/playtime.p p/game_sa.p p/simpleiter.p p/pm.p p/panel.p p/sharedsymbols.p p/natives.p p/dev.p p/basdon.p
 	@echo.
 
 p/basdon.p: basdon.pwn $(ppfile) $(ppfileoutline)
 	$(bash) -c "sed -f $(ppfileoutline) basdon.pwn|sed -f $(ppfile)>p/basdon.p"
+
+p/dev.p: dev.pwn $(ppfile) $(ppfileoutline)
+	$(bash) -c "sed -f $(ppfileoutline) dev.pwn|sed -f $(ppfile)>p/dev.p"
 
 p/natives.p: natives.pwn $(ppfile) $(ppfileoutline)
 	$(bash) -c "sed -f $(ppfileoutline) natives.pwn|sed -f $(ppfile)>p/natives.p"

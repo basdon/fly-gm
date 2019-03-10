@@ -88,6 +88,7 @@ new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
 
 ##section varinit
 ###include "anticheat"
+###include "dev"
 ###include "dialog"
 ###include "game_sa"
 ###include "login"
@@ -291,6 +292,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 	switch (Command_Hash(cmdtext)) {
 ##section OnPlayerCommandTextCase
 ###include "airport"
+###include "dev"
 ###include "login"
 ###include "nav"
 ###include "pm"
@@ -528,6 +530,7 @@ SetPlayerPosHook(playerid, Float:x, Float:y, Float:z)
 #include "playername" // try to keep this top-ish (for onPlayerNameChange section)
 #include "timecyc" // also try to keep this top-ish (because 1s 30s loop hooks)
 #include "airport"
+#include "dev"
 #include "dialog"
 #include "game_sa"
 #include "login"
