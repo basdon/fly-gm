@@ -5,7 +5,7 @@
 
 // radar from base offsets: (base facing W, radar on E pos)
 // 4.7, -0.2, 12.8
-#define OBJ_RADAR_LA_POS 1383.3, -2422.4, 30.2
+#define OBJ_RADAR_LA_POS 1383.3, -2422.4, 29.0
 #define OBJ_RADAR_LV_POS 1296.7, 1502.5, 26.0
 #define OBJ_RADAR_SF_POS -1692.8, -620.9, 29.6
 
@@ -16,10 +16,10 @@ varinit
 
 hook OnGameModeInit()
 {
-	CreateObject 7981, 1388.0, -2422.2, 17.6, 0.0, 0.0, 180.0  // radar base LA
-	obj_radar_la = CreateObject(1682, OBJ_RADAR_LA_POS, 0.0, 0.0, 0.0)
-	obj_radar_lv = CreateObject(1682, OBJ_RADAR_LV_POS, 0.0, 0.0, 0.0)
-	obj_radar_sf = CreateObject(1682, OBJ_RADAR_SF_POS, 0.0, 0.0, 0.0)
+	CreateObject 7981, 1388.0, -2422.2, 17.6, 0.0, 0.0, 180.0, 200.0  // radar base LA
+	obj_radar_la = CreateObject(1682, OBJ_RADAR_LA_POS, 0.0, 0.0, 0.0, 200.0)
+	obj_radar_lv = CreateObject(1682, OBJ_RADAR_LV_POS, 0.0, 0.0, 0.0, 200.0)
+	obj_radar_sf = CreateObject(1682, OBJ_RADAR_SF_POS, 0.0, 0.0, 0.0, 200.0)
 }
 
 hook OnPlayerConnect(playerid)
