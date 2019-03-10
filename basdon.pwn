@@ -244,45 +244,6 @@ public OnObjectMoved(objectid)
 
 public OnPlayerCommandText(playerid, cmdtext[])
 {
-#ifndef PROD
-	if (strcicmp("/jetpack", cmdtext) == 0) {
-		SetPlayerSpecialAction playerid, SPECIAL_ACTION_USEJETPACK
-		return 1
-	}
-	if (strcicmp("/kill", cmdtext) == 0) {
-		SetPlayerHealth playerid, 0.0
-		return 1
-	}
-	if (strcicmp("/tweather", cmdtext, .length=9) == 0) {
-		setWeather atoi(cmdtext[10])
-		SendClientMessageToAll -1, "changing weather"
-		return 1
-	}
-	if (strcicmp("/fweather", cmdtext, .length=9) == 0) {
-		lockedweather = upcomingweather = currentweather = atoi(cmdtext[10]) // timecyc hack
-		forceTimecycForPlayer playerid
-		SendClientMessageToAll -1, "changing weather"
-		return 1
-	}
-	if (strcicmp("/sound", cmdtext, .length=6) == 0) {
-		PlayerPlaySound playerid, atoi(cmdtext[7]), 0.0, 0.0, 0.0
-		return 1
-	}
-	if (strcicmp("/timex", cmdtext, .length=6) == 0) {
-		SetPlayerTime playerid, atoi(cmdtext[7]), atoi(cmdtext[9])
-		return 1
-	}
-	if (strcicmp("/kickme", cmdtext, .length=7) == 0) {
-		SendClientMessage playerid, -1, "you're kicked, bye"
-		KickDelayed playerid
-		return 1
-	}
-	if (strcicmp("/crashme", cmdtext, .length=8) == 0) {
-		GameTextForPlayer playerid, "Wasted~~k~SWITCH_DEBUG_CAM_ON~~k~~TOGGLE_DPAD~~k~~NETWORK_TALK~~k~~SHOW_MOUSE_POINTER_TOGGLE~", 5, 5
-		return 1
-	}
-#endif
-
 ##section OnPlayerCommandText
 ###include "login" // login needs to be first! (to block if not logged)
 ###include "spawn" // block if not spawned
@@ -292,27 +253,13 @@ public OnPlayerCommandText(playerid, cmdtext[])
 	switch (Command_Hash(cmdtext)) {
 ##section OnPlayerCommandTextCase
 ###include "airport"
-###include "dev"
 ###include "login"
 ###include "nav"
 ###include "pm"
 ###include "timecyc"
 ###include "zones"
+###include "dev" // keep this last (it has the default case)
 ##endsection
-
-#ifndef PROD
-	case 48476: if (Command_Is(cmdtext, "/gt", idx)) {
-		if (Command_GetStringParam(cmdtext, idx, buf32) && Command_GetStringParam(cmdtext, idx, buf144)) {
-			GameTextForPlayer(playerid, buf144, 4000, strval(buf32))
-		}
-		return 1
-	}
-	case 608035061: if (Command_Is(cmdtext, "/nweather", idx)) {
-		PUB_TIMECYC_NEXTWEATHER
-		return 1
-	}
-	default: printf "command '%s' hash: %d", cmdtext, Command_Hash(cmdtext)
-#endif
 	}
 
 	return 0

@@ -14,18 +14,72 @@ varinit
 
 hook OnPlayerCommandTextCase(playerid, cmdtext[])
 {
+	case -1399044829: if (Command_Is(cmdtext, "/jetpack", idx)) {
+		SetPlayerSpecialAction playerid, SPECIAL_ACTION_USEJETPACK
+		#return 1
+	}
+	case 46697485: if (Command_Is(cmdtext, "/kill", idx)) {
+		SetPlayerHealth playerid, 0.0
+		#return 1
+	}
+	case -449545731: if (Command_Is(cmdtext, "/fweather", idx)) {
+		new weatherid
+		if (!Command_GetIntParam(cmdtext, idx, weatherid)) {
+			#return WARNMSG("Syntax: /fweather <weatherid>")
+		}
+		lockedweather = upcomingweather = currentweather = weatherid // timecyc hack
+		forceTimecycForPlayer playerid
+		SendClientMessageToAll -1, "forced weather"
+		#return 1
+	}
+	case -1820004817: if (Command_Is(cmdtext, "/tweather", idx)) {
+		new weatherid
+		if (!Command_GetIntParam(cmdtext, idx, weatherid)) {
+			#return WARNMSG("Syntax: /tweather <weatherid>")
+		}
+		setWeather weatherid
+		SendClientMessageToAll -1, "changing weather"
+		#return 1
+	}
+	case 608035061: if (Command_Is(cmdtext, "/nweather", idx)) {
+		PUB_TIMECYC_NEXTWEATHER
+		#return 1
+	}
+	case 1455197760: if (Command_Is(cmdtext, "/sound", idx)) {
+		new soundid
+		if (!Command_GetIntParam(cmdtext, idx, soundid)) {
+			#return WARNMSG("Syntax: /sound <soundid>")
+		}
+		PlayerPlaySound playerid, soundid, 0.0, 0.0, 0.0
+		#return 1
+	}
+	case 1455934588: if (Command_Is(cmdtext, "/timex", idx)) {
+		new h, m
+		if (!Command_GetIntParam(cmdtext, idx, h) || !Command_GetIntParam(cmdtext, idx, m)) {
+			#return WARNMSG("Syntax: /timex <h> <m>")
+		}
+		SetPlayerTime playerid, h, m
+		#return 1
+	}
+	case 1926344525: if (Command_Is(cmdtext, "/kickme", idx)) {
+		SendClientMessage playerid, -1, "you're kicked, bye"
+		KickDelayed playerid
+		#return 1
+	}
+	case 1333092464: if (Command_Is(cmdtext, "/crashme", idx)) {
+		GameTextForPlayer playerid, "Wasted~~k~SWITCH_DEBUG_CAM_ON~~k~~TOGGLE_DPAD~~k~~NETWORK_TALK~~k~~SHOW_MOUSE_POINTER_TOGGLE~", 5, 5
+		#return 1
+	}
 	case 1575: if (Command_Is(cmdtext, "/v", idx)) {
 		new modelid
 		if (!Command_GetIntParam(cmdtext, idx, modelid)) {
 			WARNMSG("Syntax: /v <modelid>")
 			#return 1
 		}
-		printf "value %d", modelid
 		if (dev_vehicle != 0) {
 			DestroyVehicle dev_vehicle
 		}
-		new Float:x, Float:y, Float:z
-		new Float:r
+		new Float:x, Float:y, Float:z, Float:r
 		GetPlayerPos playerid, x, y, z
 		GetPlayerFacingAngle playerid, r
 		dev_vehicle = CreateVehicle(modelid, x, y, z, r, 0, 0, -1)
@@ -36,6 +90,25 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 		}
 		#return 1
 	}
+	case 48348: if (Command_Is(cmdtext, "/cp", idx)) {
+		new Float:x, Float:y, Float:z
+		new vid
+		if ((vid = GetPlayerVehicleID(playerid))) {
+			GetVehiclePos vid, x, y, z
+		} else {
+			GetPlayerPos playerid, x, y, z
+		}
+		SetPlayerRaceCheckpoint playerid, 2, x, y, z, 0.0, 0.0, 0.0, 8.0
+		#return 1
+	}
+	case 48476: if (Command_Is(cmdtext, "/gt", idx)) {
+		new style
+		if (Command_GetStringParam(cmdtext, idx, buf32) && Command_GetIntParam(cmdtext, idx, style)) {
+			GameTextForPlayer playerid, buf144, 4000, style
+		}
+		#return 1
+	}
+	default: printf "command '%s' hash: %d", cmdtext, Command_Hash(cmdtext)
 }
 
 #printhookguards
