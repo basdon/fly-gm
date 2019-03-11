@@ -200,6 +200,7 @@ public OnGameModeInit()
 
 ##section OnGameModeInit
 ###include "airport"
+###include "missions" // 'airport' must be run somewhere before this
 ###include "objects"
 ###include "panel"
 ###include "spawn"
@@ -481,6 +482,7 @@ SetPlayerPosHook(playerid, Float:x, Float:y, Float:z)
 #include "dialog"
 #include "game_sa"
 #include "login"
+#include "missions"
 #include "playtime"
 #include "nav"
 #include "objects"

@@ -18,6 +18,7 @@ ppfileoutline = preprocess-outline.sed
 #FILE playtime
 #FILE playername
 #FILE login
+#FILE missions
 #FILE util
 #FILE settings
 #FILE colors
@@ -36,7 +37,7 @@ ppfileoutline = preprocess-outline.sed
 #START
 #S2
 
-build: p/sharedsymbols.p p/objects.p p/vehicles.p p/nav.p p/zones.p p/airport.p p/dummies.p p/anticheat.p p/tracker.p p/timecyc.p p/spawn.p p/dialog.p p/colors.p p/settings.p p/util.p p/login.p p/playername.p p/playtime.p p/game_sa.p p/simpleiter.p p/pm.p p/panel.p p/sharedsymbols.p p/natives.p p/dev.p p/basdon.p
+build: p/sharedsymbols.p p/objects.p p/vehicles.p p/nav.p p/zones.p p/airport.p p/dummies.p p/anticheat.p p/tracker.p p/timecyc.p p/spawn.p p/dialog.p p/colors.p p/settings.p p/util.p p/missions.p p/login.p p/playername.p p/playtime.p p/game_sa.p p/simpleiter.p p/pm.p p/panel.p p/sharedsymbols.p p/natives.p p/dev.p p/basdon.p
 	@echo.
 
 p/basdon.p: basdon.pwn $(ppfile) $(ppfileoutline)
@@ -71,6 +72,9 @@ p/playername.p: playername.pwn $(ppfile) $(ppfileoutline)
 
 p/login.p: login.pwn $(ppfile) $(ppfileoutline)
 	$(bash) -c "sed -f $(ppfileoutline) login.pwn|sed -f $(ppfile)>p/login.p"
+
+p/missions.p: missions.pwn $(ppfile) $(ppfileoutline)
+	$(bash) -c "sed -f $(ppfileoutline) missions.pwn|sed -f $(ppfile)>p/missions.p"
 
 p/util.p: util.pwn $(ppfile) $(ppfileoutline)
 	$(bash) -c "sed -f $(ppfileoutline) util.pwn|sed -f $(ppfile)>p/util.p"
