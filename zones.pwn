@@ -12,8 +12,7 @@ hook OnPlayerConnect(playerid)
 {
 	Zones_InvalidateForPlayer playerid
 
-#define TDVAR zonetext[playerid]
-	TDVAR = CreatePlayerTextDraw(playerid, 88.0, 320.0, TXT_EMPTY)
+	new PlayerText:TDVAR = zonetext[playerid] = CreatePlayerTextDraw(playerid, 88.0, 320.0, TXT_EMPTY)
 	PlayerTextDrawAlignment playerid, TDVAR, 2
 	PlayerTextDrawFont playerid, TDVAR, 1
 	PlayerTextDrawLetterSize playerid, TDVAR, 0.3, 1.0
@@ -21,7 +20,6 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawSetOutline playerid, TDVAR, 1
 	PlayerTextDrawSetShadow playerid, TDVAR, 0
 	PlayerTextDrawSetProportional playerid, TDVAR, 1
-#undef TDVAR
 }
 
 hook OnPlayerSpawn(playerid)
