@@ -255,6 +255,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 ##section OnPlayerCommandTextCase
 ###include "airport"
 ###include "login"
+###include "missions"
 ###include "nav"
 ###include "pm"
 ###include "timecyc"
