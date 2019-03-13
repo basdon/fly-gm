@@ -55,7 +55,7 @@ startMission(playerid)
 		SendClientMessage playerid, COL_WARN, buf144
 	} else {
 		SendClientMessage playerid, COL_MISSION, buf144
-		SetPlayerRaceCheckpoint playerid, 2, x, y, z, 0.0, 0.0, 0.0, 14.0
+		SetPlayerRaceCheckpoint playerid, 2, x, y, z, 0.0, 0.0, 0.0, 11.0
 	}
 }
 
