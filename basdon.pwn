@@ -106,7 +106,7 @@ new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
 
 main()
 {
-	if (!ValidateMaxPlayers(MAX_PLAYERS)) {
+	if (!Validate(MAX_PLAYERS)) {
 		SendRconCommand "exit"
 		return
 	}
@@ -115,6 +115,13 @@ main()
 ##section init
 ##endsection
 	SetTimer #PUB_LOOP25, 25, .repeating=1
+}
+
+//@summary Callback to provide random numbers into the plugin
+//@param max see {@link random}
+export getrandom(max)
+{
+	return random(max)
 }
 
 //@summary Function that should never be called, does dummy calls to natives to make {@code SYSREQ.C} happy
