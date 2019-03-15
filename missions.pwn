@@ -51,11 +51,13 @@ startMission(playerid)
 
 	vehiclemodel = GetVehicleModel(vehicleid)
 	GetPlayerPos playerid, x, y, z
-	if (!Missions_Start(x, y, z, vehiclemodel, buf144)) {
-		SendClientMessage playerid, COL_WARN, buf144
-	} else {
+	if (Missions_Start(x, y, z, vehiclemodel, buf144, buf4096)) {
 		SendClientMessage playerid, COL_MISSION, buf144
 		SetPlayerRaceCheckpoint playerid, 2, x, y, z, 0.0, 0.0, 0.0, 11.0
+		mysql_tquery 1, buf4096 // start msp outbound flights
+		mysql_tquery 1, buf4096[200] // end msp inbound flights
+	} else {
+		SendClientMessage playerid, COL_WARN, buf144
 	}
 }
 
