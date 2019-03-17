@@ -8,6 +8,7 @@ varinit
 	#define RESPAWN_DELAY 300 // in seconds
 
 	new lastvehicle[MAX_PLAYERS]
+	new vv[MAX_VEHICLES] // vehicle reincarnation value
 }
 
 hook loop1splayers()
@@ -111,6 +112,11 @@ hook OnPlayerUpdate(playerid)
 	if (vid) {
 		lastvehicle[playerid] = vid
 	}
+}
+
+hook OnVehicleSpawn(vehicleid)
+{
+	vv[vehicleid]++
 }
 
 hook OnVehicleStreamIn(vehicleid, forplayerid)

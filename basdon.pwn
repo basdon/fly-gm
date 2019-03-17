@@ -55,6 +55,8 @@
 #define PUB_LOGIN_CREATE_NEWUSER_SES lo // login
 #define PUB_TIMECYC_NEXTWEATHER ta // timcyc
 #define PUB_MISSION_CREATE ma // missions
+#define PUB_MISSION_LOADTIMER mb // missions
+#define PUB_MISSION_UNLOADTIMER mc // missions
 
 #namespace "basdon"
 
@@ -334,6 +336,14 @@ public OnPlayerDisconnect(playerid, reason)
 	return 1
 }
 
+public OnPlayerEnterRaceCheckpoint(playerid)
+{
+##section OnPlayerEnterRaceCP
+###include "missions"
+##endsection
+	return 1
+}
+
 public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
 ##section OnPlayerEnterVehicle
@@ -442,6 +452,7 @@ public OnVehicleSpawn(vehicleid)
 {
 ##section OnVehicleSpawn
 ###include "nav"
+###include "vehicles"
 ##endsection
 }
 

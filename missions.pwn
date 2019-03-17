@@ -3,6 +3,9 @@
 
 #namespace "msp"
 
+#define MISSION_LOAD_UNLOAD_TIME 2200
+#define MISSION_CHECKPOINT_SIZE 11.0
+
 hook OnGameModeInit()
 {
 	// msp id (i) should be selected DESC (since added first in linked list in plugin), but since rows are handled reversed here, sort ASC
@@ -44,6 +47,62 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 	}
 }
 
+hook OnPlayerEnterRaceCP(playerid)
+{
+	new Float:x, Float:y, Float:z
+	new vehicleid = GetPlayerVehicleID(playerid)
+	GetVehicleVelocity vehicleid, x, y, z
+	new res = Missions_EnterCheckpoint(playerid, vehicleid, vv[vehicleid], x, y, z, buf144)
+
+	if (res == MISSION_ENTERCHECKPOINTRES_LOAD) {
+		DisablePlayerRaceCheckpoint playerid
+		GameTextForPlayer playerid, "Loading...", 0x800000, 3
+		SetTimerEx #PUB_MISSION_LOADTIMER, MISSION_LOAD_UNLOAD_TIME, 0, "ii", playerid, cc[playerid]
+		TogglePlayerControllable playerid, 0
+
+		#outline
+		//@summary Callback after mission load timer
+		//@param playerid player that is loading cargo
+		//@param cid cc of playerid (see {@link isValidPlayer})
+		export __SHORTNAMED PUB_MISSION_LOADTIMER(playerid, cid)
+		{
+			if (!isValidPlayer(playerid, cid)) return
+
+			hideGameTextForPlayer(playerid)
+			TogglePlayerControllable playerid, 1
+			new Float:x, Float:y, Float:z
+			if (Missions_PostLoad(playerid, x, y, z, buf144)) {
+				SetPlayerRaceCheckpoint playerid, 2, x, y, z, 0.0, 0.0, 0.0, MISSION_CHECKPOINT_SIZE
+				mysql_tquery 1, buf144
+			}
+		}
+
+		#return 1
+	} else if (res == MISSION_ENTERCHECKPOINTRES_UNLOAD) {
+		DisablePlayerRaceCheckpoint(playerid)
+		GameTextForPlayer playerid, "Unloading...", 0x800000, 3
+		SetTimerEx #PUB_MISSION_UNLOADTIMER, MISSION_LOAD_UNLOAD_TIME, 0, "ii", playerid, cc[playerid]
+		TogglePlayerControllable playerid, 0
+
+		#outline
+		//@summary Callback after mission unload timer
+		//@param playerid player that is unloading cargo
+		//@param cid cc of playerid (see {@link isValidPlayer})
+		export __SHORTNAMED PUB_MISSION_UNLOADTIMER(playerid, cid)
+		{
+			if (!isValidPlayer(playerid, cid)) return
+
+			hideGameTextForPlayer(playerid)
+			TogglePlayerControllable playerid, 1
+		}
+
+		#return 1
+	} else if (res == MISSION_ENTERCHECKPOINTRES_ERR) {
+		SendClientMessage playerid, COL_WARN, buf144
+		#return 1
+	}
+}
+
 //@summary attempts to start a mission from closest mission point to a random point
 //@param playerid player to start mission for
 startMission(playerid)
@@ -57,7 +116,7 @@ startMission(playerid)
 	}
 
 	GetPlayerPos playerid, x, y, z
-	if (!Missions_Create(playerid, x, y, z, vehicleid, buf144, buf4096)) {
+	if (!Missions_Create(playerid, x, y, z, vehicleid, vv[vehicleid], buf144, buf4096)) {
 		SendClientMessage playerid, COL_WARN, buf144
 		return
 	}
@@ -77,7 +136,7 @@ startMission(playerid)
 		hideGameTextForPlayer(playerid)
 		new Float:x, Float:y, Float:z;
 		if (Missions_Start(playerid, cache_insert_id(), x, y, z, buf144)) {
-			SetPlayerRaceCheckpoint playerid, 2, x, y, z, 0.0, 0.0, 0.0, 11.0
+			SetPlayerRaceCheckpoint playerid, 2, x, y, z, 0.0, 0.0, 0.0, MISSION_CHECKPOINT_SIZE
 			SendClientMessage playerid, COL_MISSION, buf144
 		}
 	}
