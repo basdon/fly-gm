@@ -5,7 +5,8 @@
 
 hook OnGameModeInit()
 {
-	new Cache:msp = mysql_query(1, !"SELECT i,a,x,y,z,t FROM msp")
+	// msp id (i) should be selected DESC (since added first in linked list in plugin), but since rows are handled reversed here, sort ASC
+	new Cache:msp = mysql_query(1, !"SELECT i,a,x,y,z,t FROM msp ORDER BY a ASC,i ASC")
 	rowcount = cache_get_row_count()
 	while (rowcount--) {
 		new aptindex, id, Float:x, Float:y, Float:z, type
@@ -18,6 +19,9 @@ hook OnGameModeInit()
 		Missions_AddPoint aptindex, id, x, y, z, type
 	}
 	cache_delete msp
+	Missions_FinalizeAddPoints
+	// close unfinished dangling flights
+	mysql_query 1, !"UPDATE flg SET state=2 WHERE state=1", .use_cache=false
 }
 
 //hook OnGameModeExit()
@@ -27,6 +31,9 @@ hook OnGameModeInit()
 
 hook OnPlayerCommandTextCase(playerid, cmdtext[])
 {
+	case 1572: if (Command_Is(cmdtext, "/s", idx)) {
+		#return 1
+	}
 	case 1576: if (Command_Is(cmdtext, "/w", idx)) {
 		startMission playerid
 		#return 1
@@ -42,22 +49,37 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 startMission(playerid)
 {
 	new Float:x, Float:y, Float:z
-	new vehicleid, vehiclemodel
+	new vehicleid
 
 	if (!(vehicleid = GetPlayerVehicleID(playerid))) {
 		WARNMSG("Get in a vehicle before starting work!");
 		return
 	}
 
-	vehiclemodel = GetVehicleModel(vehicleid)
 	GetPlayerPos playerid, x, y, z
-	if (Missions_Start(x, y, z, vehiclemodel, buf144, buf4096)) {
-		SendClientMessage playerid, COL_MISSION, buf144
-		SetPlayerRaceCheckpoint playerid, 2, x, y, z, 0.0, 0.0, 0.0, 11.0
-		mysql_tquery 1, buf4096 // start msp outbound flights
-		mysql_tquery 1, buf4096[200] // end msp inbound flights
-	} else {
+	if (!Missions_Create(playerid, x, y, z, vehicleid, buf144, buf4096)) {
 		SendClientMessage playerid, COL_WARN, buf144
+		return
+	}
+
+	GameTextForPlayer playerid, "~b~Retrieving flight data...", 0x800000, 3
+	mysql_tquery 1, buf4096 // start msp outbound flights
+	mysql_tquery 1, buf4096[200] // end msp inbound flights
+	mysql_tquery 1, buf4096[400], #PUB_MISSION_CREATE, "ii", playerid, cc[playerid]
+
+	#outline
+	//@summary Callback from query that inserts a new mission into the flg table
+	//@param playerid player that created the mission
+	//@param cid cc of playerid (see {@link isValidPlayer})
+	export __SHORTNAMED PUB_MISSION_CREATE(playerid, cid)
+	{
+		if (!isValidPlayer(playerid, cid)) return
+		hideGameTextForPlayer(playerid)
+		new Float:x, Float:y, Float:z;
+		if (Missions_Start(playerid, cache_insert_id(), x, y, z, buf144)) {
+			SetPlayerRaceCheckpoint playerid, 2, x, y, z, 0.0, 0.0, 0.0, 11.0
+			SendClientMessage playerid, COL_MISSION, buf144
+		}
 	}
 }
 

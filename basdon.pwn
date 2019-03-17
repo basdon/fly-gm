@@ -54,6 +54,7 @@
 #define PUB_LOGIN_REGISTER_HASHPW_CB ln // login
 #define PUB_LOGIN_CREATE_NEWUSER_SES lo // login
 #define PUB_TIMECYC_NEXTWEATHER ta // timcyc
+#define PUB_MISSION_CREATE ma // missions
 
 #namespace "basdon"
 
