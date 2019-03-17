@@ -54,6 +54,11 @@ hook OnPlayerEnterRaceCP(playerid)
 	GetVehicleVelocity vehicleid, x, y, z
 	new res = Missions_EnterCheckpoint(playerid, vehicleid, vv[vehicleid], x, y, z, buf144)
 
+	if (res != 0 && GetPlayerVehicleSeat(playerid) != 0) {
+		WARNMSG("Get in the driver seat and re-enter the checkpoint.")
+		#return 1
+	}
+
 	if (res == MISSION_ENTERCHECKPOINTRES_LOAD) {
 		DisablePlayerRaceCheckpoint playerid
 		GameTextForPlayer playerid, "Loading...", 0x800000, 3
@@ -110,10 +115,11 @@ startMission(playerid)
 	new Float:x, Float:y, Float:z, Float:vehiclehp
 	new vehicleid
 
-	if (!(vehicleid = GetPlayerVehicleID(playerid))) {
-		WARNMSG("Get in a vehicle before starting work!");
+	if (GetPlayerVehicleSeat(playerid) != 0) {
+		WARNMSG("You must be the driver of a vehicle before starting work!")
 		return
 	}
+	vehicleid = GetPlayerVehicleID(playerid)
 
 	if (GetVehicleHealthSafe(playerid, vehicleid, vehiclehp)) return
 	GetPlayerPos playerid, x, y, z
