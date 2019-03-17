@@ -66,19 +66,15 @@ s/^\s*\(memcpy[ \|(]\?[^,]\+\[\)/#error possible memcpy bug (#allowmemcpywitharr
 
 # append namespace to doc comments (requires at least summary doc)
 /\/\/\/ *<summary/ {
-	G
+	x
 	/§ns§/ !{
-		s/^\(.*\)\n.*$/\1/
+		x
 		b nonsdoc
 	}
-	s/\n.*$//
-	H
-	g
-	s-[\n^]\([^§]\+\)§ns§.*-/// <namespace>\1</namespace>-p
-	g
-	s/^\(.*\)\n/\1/
 	x
-	s/^.*\n//
+	G
+	# ideally should print and leave summary for further processing but can't harm atm
+	s-\(^[^\n]*\)\n.*\n\([^§]*\)§ns§.*$-\1\n/// <namespace>\2</namespace>-
 :nonsdoc
 }
 
@@ -188,12 +184,13 @@ s/^varinit$/hook varinit()/
 
 # namespaces
 /^#namespace / {
+	# remove previous namespace, if there's one
+	x
+	s/\n[^§]*§ns§//
+	x
+	#and save it
 	s/^#namespace\s\+"\(.*\)"$/\1§ns§/
 	H
-	# remove previous namespace, if there's one
-	g
-	s/[^\n][^§]\+§ns§\(.*\)§ns§/\1§ns§/
-	x
 	c
 }
 
