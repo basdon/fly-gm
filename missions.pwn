@@ -107,7 +107,7 @@ hook OnPlayerEnterRaceCP(playerid)
 //@param playerid player to start mission for
 startMission(playerid)
 {
-	new Float:x, Float:y, Float:z
+	new Float:x, Float:y, Float:z, Float:vehiclehp
 	new vehicleid
 
 	if (!(vehicleid = GetPlayerVehicleID(playerid))) {
@@ -115,8 +115,9 @@ startMission(playerid)
 		return
 	}
 
+	if (GetVehicleHealthSafe(playerid, vehicleid, vehiclehp)) return
 	GetPlayerPos playerid, x, y, z
-	if (!Missions_Create(playerid, x, y, z, vehicleid, vv[vehicleid], buf144, buf4096)) {
+	if (!Missions_Create(playerid, x, y, z, vehicleid, vv[vehicleid], vehiclehp, buf144, buf4096)) {
 		SendClientMessage playerid, COL_WARN, buf144
 		return
 	}
