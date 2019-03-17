@@ -258,6 +258,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 ##section OnPlayerCommandText
 ###include "login" // login needs to be first! (to block if not logged)
 ###include "spawn" // block if not spawned
+###include "dev"
 ##endsection
 
 	new idx
@@ -347,6 +348,7 @@ public OnPlayerEnterRaceCheckpoint(playerid)
 public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
 ##section OnPlayerEnterVehicle
+###include "anticheat"
 ###include "vehicles"
 ##endsection
 }

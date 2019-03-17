@@ -68,6 +68,7 @@ stock iter_count(iter) {
 //@summary Get a random value from an iterator.
 //@param iter the iterator to get a random value of
 //@remarks Is implemented as a preprocessor replacement.
+//@remarks Check if {@link iter_count} is 0 first!
 //@returns A random value from {@param iter} or {@code undefined} if the iterator is empty.
 stock iter_random(iter) {
 	this_function _ should_not _ be_called

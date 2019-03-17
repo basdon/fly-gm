@@ -14,10 +14,16 @@
 
 varinit
 {
+	#define GetVehicleHealth@@ please_use_GetVehicleHealthSafe
+	#define GetVehicleHealth GetVehicleHealth@@
+	#define PutPlayerInVehicle@@ use_PutPlayerInVehicleSafe
+	#define PutPlayerInVehicle PutPlayerInVehicle@@
+
 	new kickprogress[MAX_PLAYERS]
 	new floodcount[MAX_PLAYERS]
 	new disallowedvehicleinfractions[MAX_PLAYERS char]
 	new cc[MAX_PLAYERS]
+	new vehicle_health_check_player_idx
 }
 
 hook OnPlayerConnect(playerid)
@@ -49,8 +55,18 @@ hook OnPlayerUpdate(playerid)
 	}
 }
 
-hook loop100(playerid)
+hook loop100()
 {
+	if (vehicle_health_check_player_idx >= iter_count(allplayers)) {
+		vehicle_health_check_player_idx = 0
+	} else {
+		new vehicleid, playerid = iter_access(allplayers, vehicle_health_check_player_idx++)
+		if ((vehicleid = GetPlayerVehicleID(playerid))) {
+			new Float:hp
+			GetVehicleHealthSafe playerid, vehicleid, hp
+		}
+	}
+
 	foreach (new playerid : allplayers) {
 		if (isAfk(playerid) && kickprogress[playerid]) {
 			if ((kickprogress[playerid] -= 3) <= 0) {
@@ -75,6 +91,19 @@ hook loop5000()
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	flood playerid, FLOOD_DIALOG
+}
+
+hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
+{
+	if (!ispassenger) {
+		new Float:hp
+#undef GetVehicleHealth
+		GetVehicleHealth vehicleid, hp
+#define GetVehicleHealth GetVehicleHelp@@
+		if (isNaN(hp) || hp < 0.0 || 1000.0 < hp) {
+			SetVehicleHealth vehicleid, 1000.0
+		}
+	}
 }
 
 //@summary Add {@param amount} of flood value to player. Players with a flood value of more than {@code FLOOD_LIMIT} will be kicked.
@@ -105,6 +134,66 @@ KickDelayed(playerid, delay=1)
 		delay = clamp(delay, 4, cellmax)
 	}
 	kickprogress[playerid] = delay
+}
+
+//@summary Gets the vehicle health, but checks first for NaN or unacceptable high/low values, and handling offenders
+//@param playerid the player in the vehicle, {@code INVALID_PLAYER_ID} is accepted
+//@param vehicleid vehicle id of which to get the hp
+//@param hp reference to store vehicel hp in
+//@returns {@code 1} if the player is being kicked because of invalid hp
+//@seealso GetVehicleHealth
+//@remarks macro makes sure {@link GetVehicleHealth} can't be used, don't worry
+GetVehicleHealthSafe(playerid, vehicleid, &Float:hp)
+{
+#undef GetVehicleHealth
+	GetVehicleHealth vehicleid, hp
+#define GetVehicleHealth GetVehicleHelp@@
+	// tested: passengers have no saying in what the vehicle hp is
+	if (isNaN(hp)) {
+		if (playerid != INVALID_PLAYER_ID && GetPlayerVehicleSeat(playerid) != 0) {
+			hp = 1000.0
+			return 0
+		}
+		ac_log playerid, "NaN vehicle hp"
+	} else if (hp > 1000.0) {
+		if (playerid != INVALID_PLAYER_ID && GetPlayerVehicleSeat(playerid) != 0) {
+			hp = 1000.0
+			return 0
+		}
+		format buf144, sizeof(buf144), "vehicle hp %.4f", hp
+		ac_log playerid, buf144
+	} else if (hp < 0.0) {
+		hp = 0.0
+		return 0
+	} else {
+		return 0
+	}
+	format buf144, sizeof(buf144), "%s[%d] was kicked by system (invalid vehicle hp)", NAMEOF(playerid), playerid
+	SendClientMessageToAll COL_WARN, buf144
+	KickDelayed playerid
+	SetVehicleHealth vehicleid, 1000.0
+	return 1
+}
+
+//@summary See {@link PutPlayerInVehicle}, but resets the vehicle's health to {@code 1000.0} first if it has an invalid value
+//@param playerid The ID of the player to put in a vehicle
+//@param vehicleid The ID of the vehicle to put the player in
+//@param seatid The ID of the seat to put the player in
+//@returns {@code 1 on success}
+PutPlayerInVehicleSafe(playerid, vehicleid, seatid)
+{
+	if (seatid == 0) {
+		new Float:hp
+#undef GetVehicleHealth
+		GetVehicleHealth vehicleid, hp
+#define GetVehicleHealth GetVehicleHelp@@
+		if (isNaN(hp) || hp < 0.0 || 1000.0 < hp) {
+			SetVehicleHealth vehicleid, 1000.0
+		}
+	}
+#undef PutPlayerInVehicle
+	PutPlayerInVehicle playerid, vehicleid, seatid
+#define PutPlayerInVehicle PutPlayerInVehicle@@
 }
 
 //@summary When passing playerid to callbacks (for example for a database query), when the callback is \

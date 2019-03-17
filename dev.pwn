@@ -12,6 +12,31 @@ varinit
 	new dev_vehicle
 }
 
+hook OnPlayerCommandText(playerid, cmdtext[])
+{
+	if (strcmp(cmdtext, "/vhpnan") == 0) {
+		SetVehicleHealth(GetPlayerVehicleID(playerid), Float:0x7F800100);
+		#return 1
+	}
+	if (strcmp(cmdtext, "/vhppinf") == 0) {
+		SetVehicleHealth(GetPlayerVehicleID(playerid), FLOAT_PINF);
+		#return 1
+	}
+	if (strcmp(cmdtext, "/vhpninf") == 0) {
+		SetVehicleHealth(GetPlayerVehicleID(playerid), FLOAT_NINF);
+		#return 1
+	}
+	if (strcmp(cmdtext, "/vhp") == 0) {
+		new Float:res
+#undef GetVehicleHealth
+		GetVehicleHealth(GetPlayerVehicleID(playerid), res)
+#define GetVehicleHealth GetVehicleHealth@@
+		format buf144, sizeof(buf144), "hp %f", res
+		SendClientMessage playerid, -1, buf144
+		#return 1
+	}
+}
+
 hook OnPlayerCommandTextCase(playerid, cmdtext[])
 {
 	case -1399044829: if (Command_Is(cmdtext, "/jetpack", idx)) {
@@ -86,7 +111,7 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 		if (dev_vehicle == INVALID_VEHICLE_ID) {
 			dev_vehicle = 0
 		} else {
-			PutPlayerInVehicle playerid, dev_vehicle, .seatid=0
+			PutPlayerInVehicleSafe playerid, dev_vehicle, .seatid=0
 		}
 		#return 1
 	}
