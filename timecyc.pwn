@@ -244,6 +244,7 @@ export __SHORTNAMED PUB_TIMECYC_NEXTWEATHER()
 	if (buf4096[0]) {
 		mysql_tquery 1, buf4096
 	}
+	Missions_OnWeatherChanged weather
 }
 
 #printhookguards
