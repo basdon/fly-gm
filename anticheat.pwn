@@ -36,6 +36,7 @@ hook OnPlayerConnect(playerid)
 	kickprogress[playerid] = 0
 	floodcount[playerid] = 0
 	disallowedvehicleinfractions{playerid} = 0
+	ResetPlayerMoney playerid
 }
 
 hook OnPlayerDisconnect(playerid, reason)
@@ -246,6 +247,9 @@ money_takeFrom(playerid, amount)
 		return 0
 	}
 	money[playerid] -= amount
+#undef GivePlayerMoney
+	GivePlayerMoney playerid, -amount
+#define GivePlayerMoney GivePlayerMoney@@
 	return amount
 }
 
@@ -259,6 +263,9 @@ money_giveTo(playerid, amount)
 		return 0
 	}
 	money[playerid] += amount
+#undef GivePlayerMoney
+	GivePlayerMoney playerid, amount
+#define GivePlayerMoney GivePlayerMoney@@
 	return amount
 }
 
