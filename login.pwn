@@ -44,6 +44,11 @@ varinit
 
 hook OnPlayerDisconnect(playerid, reason)
 {
+	if (userid[playerid] != -1) {
+		new score = GetPlayerScore(playerid)
+		PlayerData_FormatUpdateQuery userid[playerid], score, playermoney[playerid], buf4096
+		mysql_tquery 1, buf4096
+	}
 	if (isPlaying(playerid)) {
 		new reasons[] = "\4\12\17\4timeout\0quit\0kicked"
 		new str[MAX_PLAYER_NAME + 6 + 21 + 8 + 1]
@@ -320,9 +325,11 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 				}
 
 				GameTextForPlayer playerid, "~b~Creating game session...", 0x800000, 3
-				new score
+				new score, money
 				cache_get_field_int(0, 0, score)
+				cache_get_field_int(0, 1, money)
 				SetPlayerScore playerid, score
+				money_setFor playerid, money
 
 				mysql_tquery 1, buf4096[1]
 				mysql_tquery 1, buf4096[buf4096[0]], #PUB_LOGIN_CREATEGAMESESSION_CB, "ii", playerid, cc[playerid]
@@ -958,6 +965,9 @@ loginPlayer(playerid, status)
 		WARNMSG("Sorry, but something broke badly. Please reconnect.")
 		KickDelayed playerid
 		return
+	}
+	if (status == LOGGED_GUEST) {
+		money_setFor playerid, MONEY_DEFAULTAMOUNT
 	}
 	loggedstatus[playerid] = status
 	iter_add(players, playerid)

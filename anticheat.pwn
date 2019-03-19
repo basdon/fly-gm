@@ -18,7 +18,7 @@ varinit
 	#define GetVehicleHealth GetVehicleHealth@@
 	#define PutPlayerInVehicle@@ use_PutPlayerInVehicleSafe
 	#define PutPlayerInVehicle PutPlayerInVehicle@@
-	#define GetPlayerMoney@@ please_use_money_var
+	#define GetPlayerMoney@@ please_use_playermoney_var
 	#define GetPlayerMoney GetPlayerMoney@@
 	#define GivePlayerMoney@@ please_use_money_funcs
 	#define GivePlayerMoney GivePlayerMoney@@
@@ -28,7 +28,7 @@ varinit
 	new disallowedvehicleinfractions[MAX_PLAYERS char]
 	new cc[MAX_PLAYERS]
 	new vehicle_health_check_player_idx
-	new money[MAX_PLAYERS]
+	new playermoney[MAX_PLAYERS]
 }
 
 hook OnPlayerConnect(playerid)
@@ -37,6 +37,7 @@ hook OnPlayerConnect(playerid)
 	floodcount[playerid] = 0
 	disallowedvehicleinfractions{playerid} = 0
 	ResetPlayerMoney playerid
+	playermoney[playerid] = 0
 }
 
 hook OnPlayerDisconnect(playerid, reason)
@@ -243,10 +244,10 @@ ac_log(playerid, const message[])
 //@remarks will not take any money when it would cause an underflow
 money_takeFrom(playerid, amount)
 {
-	if (money[playerid] - amount > money[playerid]) {
+	if (playermoney[playerid] - amount > playermoney[playerid]) {
 		return 0
 	}
-	money[playerid] -= amount
+	playermoney[playerid] -= amount
 #undef GivePlayerMoney
 	GivePlayerMoney playerid, -amount
 #define GivePlayerMoney GivePlayerMoney@@
@@ -259,14 +260,25 @@ money_takeFrom(playerid, amount)
 //@remarks will not give any money when it would cause an overflow
 money_giveTo(playerid, amount)
 {
-	if (money[playerid] + amount < money[playerid]) {
+	if (playermoney[playerid] + amount < playermoney[playerid]) {
 		return 0
 	}
-	money[playerid] += amount
+	playermoney[playerid] += amount
 #undef GivePlayerMoney
 	GivePlayerMoney playerid, amount
 #define GivePlayerMoney GivePlayerMoney@@
 	return amount
+}
+
+//@summary Sets the money of a player
+//@param playerid player to set the money for
+money_setFor(playerid, amount)
+{
+#undef GivePlayerMoney
+	ResetPlayerMoney playerid
+	GivePlayerMoney playerid, amount
+#define GivePlayerMoney GivePlayerMoney@@
+	playermoney[playerid] = amount
 }
 
 #printhookguards

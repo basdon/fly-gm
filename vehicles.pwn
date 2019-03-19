@@ -202,13 +202,13 @@ repairVehicleForPlayer(playerid)
 	}
 	// base price 150 + cost 2 * missing hp
 	new cost = 150 + floatround((1000.0 - hp) * 2.0), Float:newhp = 1000.0
-	if (cost > money[playerid]) {
-		new maxpossible = (money[playerid] - 150) / 2
+	if (cost > playermoney[playerid]) {
+		new maxpossible = (playermoney[playerid] - 150) / 2
 		if (maxpossible <= 0) {
 			WARNMSG("You can't pay the repair fee!")
 			return
 		}
-		cost = money[playerid]
+		cost = playermoney[playerid]
 		newhp = hp + float(maxpossible)
 		strunpack buf32, !"partially"
 	} else {
