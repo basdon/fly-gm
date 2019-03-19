@@ -97,6 +97,7 @@ hook OnPlayerEnterRaceCP(playerid)
 		{
 			if (!isValidPlayer(playerid, cid)) return
 
+			// TODO: airport tax: base price + amount per runways (if not heli job) + amount per large gate (if large) + amount per gate (if ..) + amount per heliport (if heli)
 			hideGameTextForPlayer(playerid)
 			TogglePlayerControllable playerid, 1
 		}
