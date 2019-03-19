@@ -42,7 +42,11 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 	case 46578: if (Command_Is(cmdtext, "/*m", idx)) {
 		new m
 		if (Command_GetIntParam(cmdtext, idx, m)) {
-			money_giveTo playerid, m
+			if (m < 0) {
+				money_takeFrom playerid, -m
+			} else {
+				money_giveTo playerid, m
+			}
 		}
 		#return 1
 	}
