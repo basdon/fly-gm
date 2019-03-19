@@ -39,6 +39,13 @@ hook OnPlayerCommandText(playerid, cmdtext[])
 
 hook OnPlayerCommandTextCase(playerid, cmdtext[])
 {
+	case 46578: if (Command_Is(cmdtext, "/*m", idx)) {
+		new m
+		if (Command_GetIntParam(cmdtext, idx, m)) {
+			money_giveTo playerid, m
+		}
+		#return 1
+	}
 	case -1399044829: if (Command_Is(cmdtext, "/jetpack", idx)) {
 		SetPlayerSpecialAction playerid, SPECIAL_ACTION_USEJETPACK
 		#return 1

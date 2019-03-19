@@ -58,6 +58,18 @@ hook OnGameModeExit()
 	Veh_Destroy
 }
 
+hook OnPlayerCommandTextCase(playerid, cmdtext[])
+{
+	case 1501574: if (Command_Is(cmdtext, "/fix", idx)) {
+		repairVehicleForPlayer playerid
+		#return 1
+	}
+	case 2123432060: if (Command_Is(cmdtext, "/repair", idx)) {
+		repairVehicleForPlayer playerid
+		#return 1
+	}
+}
+
 hook OnPlayerDisconnect(playerid, reason)
 {
 	Veh_OnPlayerDisconnect playerid
@@ -168,6 +180,45 @@ findPlayerInVehicleSeat(vehicleid, seatid)
 		}
 	}
 	return INVALID_PLAYER_ID
+}
+
+//@summary Repairs vehicle for player, taking money from the player to fix it
+//@param playerid player that needs their vehicle fixed
+//@remarks also notifies the mission script about the vehicle's new hp
+repairVehicleForPlayer(playerid)
+{
+	// TODO: make fix points and check radius
+	// passengers may also repair the vehicle, why not?
+	new vehicleid = GetPlayerVehicleID(playerid)
+	if (vehicleid == 0) {
+		WARNMSG("You must be in a vehicle to do this!")
+		return
+	}
+	new Float:hp
+	GetVehicleHealthSafe playerid, vehicleid, hp
+	if (hp < 0.0 || 999.9 < hp) {
+		WARNMSG("Your vehicle doesn't need to be repaired!")
+		return
+	}
+	// base price 150 + cost 2 * missing hp
+	new cost = 150 + floatround((1000.0 - hp) * 2.0), Float:newhp = 1000.0
+	if (cost > money[playerid]) {
+		new maxpossible = (money[playerid] - 150) / 2
+		if (maxpossible <= 0) {
+			WARNMSG("You can't pay the repair fee!")
+			return
+		}
+		cost = money[playerid]
+		newhp = hp + float(maxpossible)
+		strunpack buf32, !"partially"
+	} else {
+		strunpack buf32, !"fully"
+	}
+	money_takeFrom playerid, cost
+	format buf144, sizeof(buf144), INFO"Your vehicle has been %s repaired for $%d", buf32, cost
+	SendClientMessage playerid, COL_INFO, buf144
+	SetVehicleHealth vehicleid, newhp
+	RepairVehicle vehicleid
 }
 
 //@summary Spawns vehicles owned by a player

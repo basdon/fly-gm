@@ -271,6 +271,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 ###include "pm"
 ###include "timecyc"
 ###include "zones"
+###include "vehicles"
 ###include "dev" // keep this last (it has the default case)
 ##endsection
 	}

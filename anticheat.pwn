@@ -18,12 +18,17 @@ varinit
 	#define GetVehicleHealth GetVehicleHealth@@
 	#define PutPlayerInVehicle@@ use_PutPlayerInVehicleSafe
 	#define PutPlayerInVehicle PutPlayerInVehicle@@
+	#define GetPlayerMoney@@ please_use_money_var
+	#define GetPlayerMoney GetPlayerMoney@@
+	#define GivePlayerMoney@@ please_use_money_funcs
+	#define GivePlayerMoney GivePlayerMoney@@
 
 	new kickprogress[MAX_PLAYERS]
 	new floodcount[MAX_PLAYERS]
 	new disallowedvehicleinfractions[MAX_PLAYERS char]
 	new cc[MAX_PLAYERS]
 	new vehicle_health_check_player_idx
+	new money[MAX_PLAYERS]
 }
 
 hook OnPlayerConnect(playerid)
@@ -229,6 +234,32 @@ ac_log(playerid, const message[])
 {
 	Ac_FormatLog playerid, loggedstatus[playerid], message, buf4096
 	mysql_tquery 1, buf4096
+}
+
+//@summary Takes money from a player
+//@param playerid player to take money from
+//@returns actual amount of money that was taken from {@param playerid}
+//@remarks will not take any money when it would cause an underflow
+money_takeFrom(playerid, amount)
+{
+	if (money[playerid] - amount > money[playerid]) {
+		return 0
+	}
+	money[playerid] -= amount
+	return amount
+}
+
+//@summary Gives money to a player
+//@param playerid player to give money to
+//@returns actual amount of money that was given to {@param playerid}
+//@remarks will not give any money when it would cause an overflow
+money_giveTo(playerid, amount)
+{
+	if (money[playerid] + amount < money[playerid]) {
+		return 0
+	}
+	money[playerid] += amount
+	return amount
 }
 
 #printhookguards
