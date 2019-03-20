@@ -219,6 +219,7 @@ repairVehicleForPlayer(playerid)
 	SendClientMessage playerid, COL_INFO, buf144
 	SetVehicleHealth vehicleid, newhp
 	RepairVehicle vehicleid
+	Missions_OnVehicleRepaired playerid, vehicleid, hp, newhp
 }
 
 //@summary Spawns vehicles owned by a player
