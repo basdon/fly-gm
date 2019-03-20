@@ -214,9 +214,16 @@ repairVehicleForPlayer(playerid)
 	} else {
 		strunpack buf32, !"fully"
 	}
-	money_takeFrom playerid, cost
 	format buf144, sizeof(buf144), INFO"Your vehicle has been %s repaired for $%d", buf32, cost
 	SendClientMessage playerid, COL_INFO, buf144
+	if (GetPlayerVehicleSeat(playerid) != 0) {
+		new driverid = findPlayerInVehicleSeat(vehicleid, .seatid=0)
+		if (driverid != INVALID_PLAYER_ID) {
+			format buf144, sizeof(buf144), INFO"Player %s[%d] fixed your vehicle!", NAMEOF(playerid), playerid
+			SendClientMessage driverid, COL_INFO, buf144
+		}
+	}
+	money_takeFrom playerid, cost
 	SetVehicleHealth vehicleid, newhp
 	RepairVehicle vehicleid
 	Missions_OnVehicleRepaired playerid, vehicleid, hp, newhp
