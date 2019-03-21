@@ -23,6 +23,10 @@ varinit
 	#define GivePlayerMoney@@ please_use_money_funcs
 	#define GivePlayerMoney GivePlayerMoney@@
 
+	#define CRASH(%0) GameTextForPlayer(%0,crashstr,5,5)
+
+	stock const crashstr[] = "Wasted~~k~SWITCH_DEBUG_CAM_ON~~k~~TOGGLE_DPAD~~k~~NETWORK_TALK~~k~~SHOW_MOUSE_POINTER_TOGGLE~"
+
 	new kickprogress[MAX_PLAYERS]
 	new floodcount[MAX_PLAYERS]
 	new disallowedvehicleinfractions[MAX_PLAYERS char]
@@ -175,9 +179,12 @@ GetVehicleHealthSafe(playerid, vehicleid, &Float:hp)
 	} else {
 		return 0
 	}
-	format buf144, sizeof(buf144), "%s[%d] was kicked by system (invalid vehicle hp)", NAMEOF(playerid), playerid
-	SendClientMessageToAll COL_WARN, buf144
-	KickDelayed playerid
+	if (playerid != INVALID_PLAYER_ID) {
+		format buf144, sizeof(buf144), "%s[%d] was kicked by system (invalid vehicle hp)", NAMEOF(playerid), playerid
+		SendClientMessageToAll COL_WARN, buf144
+		CRASH(playerid)
+		KickDelayed playerid
+	}
 	SetVehicleHealth vehicleid, 1000.0
 	return 1
 }
