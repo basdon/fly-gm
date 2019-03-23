@@ -324,6 +324,7 @@ public OnPlayerDisconnect(playerid, reason)
 ###include "airport"
 ###include "anticheat"
 ###include "dialog"
+###include "missions"
 ###include "panel"
 ###include "playtime"
 ###include "spawn"

@@ -35,6 +35,16 @@ hook OnGameModeInit()
 hook OnPlayerCommandTextCase(playerid, cmdtext[])
 {
 	case 1572: if (Command_Is(cmdtext, "/s", idx)) {
+		if (Missions_GetState(playerid) == -1) {
+			WARNMSG("You're not on an active mission.")
+			#return 1
+		}
+		DisablePlayerRaceCheckpoint playerid
+		if (money_takeFrom(playerid, MISSION_CANCEL_FINE) != MISSION_CANCEL_FINE) {
+			WARNMSG("You can't afford this!")
+		} else if (Missions_EndUnfinished(playerid, MISSION_STATE_DECLINED, buf144)) {
+			mysql_tquery 1, buf144
+		}
 		#return 1
 	}
 	case 1576: if (Command_Is(cmdtext, "/w", idx)) {
@@ -44,6 +54,13 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 	case 47060928: if (Command_Is(cmdtext, "/work", idx)) {
 		startMission playerid
 		#return 1
+	}
+}
+
+hook OnPlayerDisconnect(playerid, reason)
+{
+	if (Missions_EndUnfinished(playerid, MISSION_STATE_ABANDONED, buf144)) {
+		mysql_tquery 1, buf144
 	}
 }
 
