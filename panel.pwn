@@ -149,7 +149,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 		for (new i = 0; i < sizeof(playerpnltxt[]); i++) PlayerTextDrawShow playerid, playerpnltxt[playerid][i]
 		iter_add(panelplayers, playerid)
 		panel_resetNav playerid
-		if (Nav_GetActiveNavType(GetPlayerVehicleID(playerid)) & NAV_VOR) {
+		if (Nav_GetActiveNavType(GetPlayerVehicleID(playerid)) & (NAV_VOR | NAV_ILS)) {
 			TextDrawShowForPlayer playerid, vorbar
 		}
 	} else if (isPanelActive(playerid)) {
