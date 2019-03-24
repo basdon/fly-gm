@@ -57,6 +57,23 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 	}
 }
 
+hook OnPlayerDeath(playerid, killerid, reason)
+{
+	if (Missions_GetState(playerid) != -1) {
+		DisablePlayerRaceCheckpoint playerid
+		new vid, Float:f, missionstopreason = MISSION_STATE_DIED
+		if ((vid = GetPlayerVehicleID(playerid))) {
+			GetVehicleHealthSafe(playerid, vid, f)
+			if (f <= 200.0) {
+				missionstopreason = MISSION_STATE_CRASHED
+			}
+		}
+		if (Missions_EndUnfinished(playerid, missionstopreason, buf144)) {
+			mysql_tquery 1, buf144
+		}
+	}
+}
+
 hook OnPlayerDisconnect(playerid, reason)
 {
 	if (Missions_EndUnfinished(playerid, MISSION_STATE_ABANDONED, buf144)) {

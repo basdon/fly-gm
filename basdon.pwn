@@ -310,6 +310,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 	}
 
 ##section OnPlayerDeath
+###include "missions"
 ###include "spawn"
 ###include "timecyc"
 ###include "zones"
