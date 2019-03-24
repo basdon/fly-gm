@@ -118,22 +118,30 @@ hook OnPlayerEnterRaceCP(playerid)
 
 		#return 1
 	} else if (res == MISSION_ENTERCHECKPOINTRES_UNLOAD) {
+		new Float:vehiclehp
+
 		DisablePlayerRaceCheckpoint(playerid)
 		GameTextForPlayer playerid, "Unloading...", 0x800000, 3
-		SetTimerEx #PUB_MISSION_UNLOADTIMER, MISSION_LOAD_UNLOAD_TIME, 0, "ii", playerid, cc[playerid]
+		GetVehicleHealthSafe playerid, vehicleid, vehiclehp
+		if (vehiclehp < 251.0) {
+			SetVehicleHealth vehicleid, 300.0
+		}
+		SetTimerEx #PUB_MISSION_UNLOADTIMER, MISSION_LOAD_UNLOAD_TIME, 0, "iif", playerid, cc[playerid], vehiclehp
 		TogglePlayerControllable playerid, 0
 
 		#outline
 		//@summary Callback after mission unload timer
 		//@param playerid player that is unloading cargo
 		//@param cid cc of playerid (see {@link isValidPlayer})
-		export __SHORTNAMED PUB_MISSION_UNLOADTIMER(playerid, cid)
+		//@param vehiclehp hp of the vehicle at unloading time
+		export __SHORTNAMED PUB_MISSION_UNLOADTIMER(playerid, cid, Float:vehiclehp)
 		{
 			if (!isValidPlayer(playerid, cid)) return
 
-			// TODO: airport tax: base price + amount per runways (if not heli job) + amount per large gate (if large) + amount per gate (if ..) + amount per heliport (if heli)
 			hideGameTextForPlayer(playerid)
 			TogglePlayerControllable playerid, 1
+			if (Missions_PostUnload(playerid, vehiclehp)) {
+			}
 		}
 
 		#return 1
