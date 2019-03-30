@@ -24,7 +24,7 @@ hook OnGameModeInit()
 	cache_delete msp
 	Missions_FinalizeAddPoints
 	// close unfinished dangling flights
-	mysql_query 1, !"UPDATE flg SET state=2 WHERE state=1", .use_cache=false
+	mysql_query 1, !"UPDATE flg SET state=64 WHERE state=1", .use_cache=false
 }
 
 //hook OnGameModeExit()
@@ -140,7 +140,9 @@ hook OnPlayerEnterRaceCP(playerid)
 
 			hideGameTextForPlayer(playerid)
 			TogglePlayerControllable playerid, 1
-			if (Missions_PostUnload(playerid, vehiclehp)) {
+			new pay
+			if (Missions_PostUnload(playerid, vehiclehp, pay, buf4096)) {
+				money_giveTo playerid, pay
 			}
 		}
 
