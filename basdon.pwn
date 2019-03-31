@@ -265,6 +265,10 @@ public OnPlayerCommandText(playerid, cmdtext[])
 
 	new idx
 	switch (Command_Hash(cmdtext)) {
+	case 159897060: if (Command_Is(cmdtext, "/helpkeys", idx)) {
+		GameTextForPlayer playerid, "~w~start/stop engine: ~b~~k~~CONVERSATION_NO~~n~~w~landing gear: ~b~~k~~TOGGLE_SUBMISSIONS~", 5000, 3
+		return 1
+	}
 ##section OnPlayerCommandTextCase
 ###include "airport"
 ###include "login"
