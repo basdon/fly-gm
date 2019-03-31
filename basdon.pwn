@@ -358,6 +358,13 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 ##endsection
 }
 
+public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+##section OnPlayerKeyStateChange
+###include "vehicles"
+##endsection
+}
+
 //@summary Function that gets called when a player logs in
 //@param playerid the player that just logged in
 OnPlayerLogin(playerid)

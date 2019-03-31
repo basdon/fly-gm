@@ -15,6 +15,9 @@ varinit
 	new Float:lastvehy[MAX_PLAYERS]
 	new Float:lastvehz[MAX_PLAYERS]
 	new Float:playerodo[MAX_PLAYERS]
+	new flighttimeold[MAX_PLAYERS]
+	new flighttimenew[MAX_PLAYERS]
+	new lastcontrolactivity[MAX_PLAYERS]
 }
 
 hook loop1splayers()
@@ -24,6 +27,11 @@ hook loop1splayers()
 		(vid = GetPlayerVehicleID(playerid)))
 	{
 		if (Game_IsAirVehicle(GetVehicleModel(vid)) && vid == lastvehicle[playerid]) {
+			if (lastcontrolactivity[playerid] > gettime() - 30) {
+				if (++flighttimenew[playerid] == 60) {
+					SetPlayerScore(playerid, GetPlayerScore(playerid) + 1)
+				}
+			}
 			new Float:_x, Float:_y, Float:_z
 			GetVehiclePos vid, _x, _y, _z
 			playerodo[playerid] = Veh_AddOdo(vid, playerid, lastvehx[playerid], lastvehy[playerid], lastvehz[playerid], _x, _y, _z, playerodo[playerid])
@@ -99,6 +107,7 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 hook OnPlayerConnect(playerid)
 {
 	playerodo[playerid] = 0.0
+	flighttimenew[playerid] = flighttimeold[playerid] = 0
 }
 
 hook OnPlayerDisconnect(playerid, reason)
@@ -121,6 +130,11 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 		ClearAnimations playerid, .forcesync=1
 		SendClientMessage playerid, COL_WARN, buf144
 	}
+}
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+	lastcontrolactivity[playerid] = gettime()
 }
 
 hook OnPlayerLogin(playerid)
