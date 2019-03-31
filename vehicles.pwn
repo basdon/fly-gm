@@ -6,6 +6,7 @@
 varinit
 {
 	#define RESPAWN_DELAY 300 // in seconds
+	#define FUEL_WARNING_SOUND 3200 // air horn
 
 	new lastvehicle[MAX_PLAYERS]
 	new vv[MAX_VEHICLES] // vehicle reincarnation value
@@ -27,9 +28,22 @@ hook loop1splayers()
 		(vid = GetPlayerVehicleID(playerid)))
 	{
 		if (Game_IsAirVehicle(GetVehicleModel(vid)) && vid == lastvehicle[playerid]) {
-			if (lastcontrolactivity[playerid] > gettime() - 30) {
-				if (++flighttimenew[playerid] == 60) {
-					SetPlayerScore(playerid, GetPlayerScore(playerid) + 1)
+			new engine
+			GetVehicleParamsEx vid, engine, tmp1, tmp1, tmp1, tmp1, tmp1, tmp1
+			if (engine) {
+				new _tmp
+				GetPlayerKeys playerid, _tmp, tmp1, tmp1
+				if (Veh_ConsumeFuel(vid, .throttle=_tmp & KEY_SPRINT, .isOutOfFuel=_tmp, .buf=buf144)) {
+					PlayerPlaySound playerid, FUEL_WARNING_SOUND, 0.0, 0.0, 0.0
+					SendClientMessage playerid, COL_WARN, buf144
+					if (_tmp) {
+						SetVehicleParamsEx vid, .engine=0, .lights=0, .alarm=0, .doors=0, .bonnet=0, .boot=0, .objective=0
+					}
+				}
+				if (lastcontrolactivity[playerid] > gettime() - 30) {
+					if (++flighttimenew[playerid] == 60) {
+						SetPlayerScore(playerid, GetPlayerScore(playerid) + 1)
+					}
 				}
 			}
 			new Float:_x, Float:_y, Float:_z
@@ -157,7 +171,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 	}
 
 	if (newstate == PLAYER_STATE_DRIVER && (vid = GetPlayerVehicleID(playerid))) {
-		GetVehiclePos vid, lastvehx[playerid], lastvehy[playerid], lastvehz[playerid]
+		onPlayerNowDriving playerid, vid
 		for (new p : players) {
 			destroyVehicleOwnerLabel vid, p
 		}
@@ -174,12 +188,13 @@ hook OnPlayerUpdate(playerid)
 
 hook onPutPlayerInVehicleDriver(playerid, vehicleid)
 {
-	GetVehiclePos vehicleid, lastvehx[playerid], lastvehy[playerid], lastvehz[playerid]
+	onPlayerNowDriving playerid, vehicleid
 }
 
 hook OnVehicleSpawn(vehicleid)
 {
 	vv[vehicleid]++
+	Veh_EnsureHasFuel vehicleid
 }
 
 hook OnVehicleStreamIn(vehicleid, forplayerid)
@@ -231,6 +246,18 @@ findPlayerInVehicleSeat(vehicleid, seatid)
 		}
 	}
 	return INVALID_PLAYER_ID
+}
+
+//@summary Function to call when a player is now driver of a vehicle
+//@param playerid playerid that is now driving in a new vehicle
+//@param vehicleid vehicle player is driving in
+onPlayerNowDriving(playerid, vehicleid)
+{
+	GetVehiclePos vehicleid, lastvehx[playerid], lastvehy[playerid], lastvehz[playerid]
+	if (Veh_IsFuelEmpty(vehicleid)) {
+		WARNMSGPB144("This vehicle has no fuel left!")
+		SetVehicleParamsEx vehicleid, .engine=0, .lights=0, .alarm=0, .doors=0, .bonnet=0, .boot=0, .objective=0
+	}
 }
 
 //@summary Repairs vehicle for player, taking money from the player to fix it

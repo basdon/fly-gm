@@ -35,6 +35,7 @@
 #define FLOAT_PINF (Float:0x7F800000)
 #define FLOAT_NINF (Float:0xFF800000)
 #define WARNMSG(%0) SendClientMessage(playerid, COL_WARN, WARN%0)
+#define WARNMSGPB144(%0) strunpack(buf144, !WARN%0);SendClientMessage(playerid, COL_WARN, buf144)
 
 // public symbols
 #define PUB_LOOP25 ba // basdon
