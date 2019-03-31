@@ -120,7 +120,7 @@ main()
 	SetTimer #PUB_LOOP25, 25, .repeating=1
 }
 
-//@summary Callback to provide random numbers into the plugin
+//@summary public function to provide random numbers into the plugin
 //@param max see {@link random}
 export getrandom(max)
 {
