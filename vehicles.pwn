@@ -314,7 +314,8 @@ refuelVehicleForPlayer(playerid)
 		return
 	}
 
-	new cost = Veh_Refuel(vehicleid, 3.8, playermoney[playerid], buf144)
+	new Float:refuelamount
+	new cost = Veh_Refuel(vehicleid, 3.8, playermoney[playerid], refuelamount, buf144)
 	if (!cost) {
 		SendClientMessage playerid, COL_WARN, buf144
 		return
@@ -331,6 +332,7 @@ refuelVehicleForPlayer(playerid)
 		SendClientMessage driverid, COL_INFO, buf144
 		playerid = driverid
 	}
+	Missions_OnVehicleRefueled playerid, vehicleid, refuelamount
 }
 
 //@summary Spawns vehicles owned by a player
