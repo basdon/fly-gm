@@ -277,37 +277,24 @@ repairVehicleForPlayer(playerid)
 		WARNMSGPB144("You must be in a vehicle to do this!")
 		return
 	}
-	new Float:hp
+	new Float:hp, Float:newhp
 	GetVehicleHealthSafe playerid, vehicleid, hp
-	if (hp < 0.0 || 999.9 < hp) {
-		WARNMSGPB144("Your vehicle doesn't need to be repaired!")
+	new cost = Veh_Repair(playermoney[playerid], hp, newhp, buf144)
+	if (!cost) {
+		SendClientMessage playerid, COL_WARN, buf144
 		return
 	}
-	// base price 150 + cost 2 * missing hp
-	new cost = 150 + floatround((1000.0 - hp) * 2.0), Float:newhp = 1000.0
-	if (cost > playermoney[playerid]) {
-		new maxpossible = (playermoney[playerid] - 150) / 2
-		if (maxpossible <= 0) {
-			WARNMSGPB144("You can't pay the repair fee!")
-			return
-		}
-		cost = playermoney[playerid]
-		newhp = hp + float(maxpossible)
-		strunpack buf32, !"partially"
-	} else {
-		strunpack buf32, !"fully"
-	}
-	format buf144, sizeof(buf144), INFO"Your vehicle has been %s repaired for $%d", buf32, cost
+
 	SendClientMessage playerid, COL_INFO, buf144
 	money_takeFrom playerid, cost
-	SetVehicleHealth vehicleid, newhp
 	RepairVehicle vehicleid
+	SetVehicleHealth vehicleid, newhp
 	if (GetPlayerVehicleSeat(playerid) != 0) {
 		new driverid = findPlayerInVehicleSeat(vehicleid, .seatid=0)
 		if (driverid == INVALID_PLAYER_ID) {
 			return
 		}
-		format buf144, sizeof(buf144), INFO"Player %s[%d] fixed your vehicle!", NAMEOF(playerid), playerid
+		format buf144, sizeof(buf144), INFO"Player %s[%d] repaired your vehicle!", NAMEOF(playerid), playerid
 		SendClientMessage driverid, COL_INFO, buf144
 		playerid = driverid
 	}
@@ -328,7 +315,7 @@ refuelVehicleForPlayer(playerid)
 	}
 
 	new cost = Veh_Refuel(vehicleid, 3.8, playermoney[playerid], buf144)
-	if (cost == 0) {
+	if (!cost) {
 		SendClientMessage playerid, COL_WARN, buf144
 		return
 	}
