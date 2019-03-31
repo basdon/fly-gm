@@ -204,6 +204,10 @@ PutPlayerInVehicleSafe(playerid, vehicleid, seatid)
 		if (isNaN(hp) || hp < 0.0 || 1000.0 < hp) {
 			SetVehicleHealth vehicleid, 1000.0
 		}
+##section onPutPlayerInVehicleDriver
+##include "vehicles"
+
+##endsection
 	}
 #undef PutPlayerInVehicle
 	PutPlayerInVehicle playerid, vehicleid, seatid

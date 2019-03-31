@@ -46,7 +46,7 @@ hook OnPlayerDisconnect(playerid, reason)
 {
 	if (userid[playerid] != -1) {
 		new score = GetPlayerScore(playerid)
-		PlayerData_FormatUpdateQuery userid[playerid], score, playermoney[playerid], buf4096
+		PlayerData_FormatUpdateQuery userid[playerid], score, playermoney[playerid], playerodo[playerid], buf4096
 		mysql_tquery 1, buf4096
 	}
 	if (isPlaying(playerid)) {
@@ -325,9 +325,11 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 				}
 
 				GameTextForPlayer playerid, "~b~Creating game session...", 0x800000, 3
-				new score, money
+				new score, money, iodo
 				cache_get_field_int(0, 0, score)
 				cache_get_field_int(0, 1, money)
+				cache_get_field_int(0, 2, iodo)
+				playerodo[playerid] = float(iodo)
 				SetPlayerScore playerid, score
 				money_setFor playerid, money
 

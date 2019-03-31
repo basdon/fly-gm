@@ -159,6 +159,7 @@ export __SHORTNAMED PUB_LOOP25()
 ###include "anticheat"
 ###include "dialog"
 ###include "objects"
+###include "vehicles"
 ##endsection
 		lastinvoctime = _tc
 	}
@@ -297,6 +298,7 @@ public OnPlayerConnect(playerid)
 ###include "pm"
 ###include "spawn"
 ###include "timecyc"
+###include "vehicles"
 ###include "zones"
 ##endsection
 

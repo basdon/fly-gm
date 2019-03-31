@@ -143,6 +143,7 @@ hook OnPlayerEnterRaceCP(playerid)
 			new pay
 			if (Missions_PostUnload(playerid, vehiclehp, pay, buf4096)) {
 				money_giveTo playerid, pay
+				mysql_tquery 1, buf4096
 			}
 		}
 

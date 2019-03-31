@@ -9,28 +9,50 @@ varinit
 
 	new lastvehicle[MAX_PLAYERS]
 	new vv[MAX_VEHICLES] // vehicle reincarnation value
+
+	// for odo and stuff
+	new Float:lastvehx[MAX_PLAYERS]
+	new Float:lastvehy[MAX_PLAYERS]
+	new Float:lastvehz[MAX_PLAYERS]
+	new Float:playerodo[MAX_PLAYERS]
 }
 
 hook loop1splayers()
 {
 	new vid
 	if (GetPlayerVehicleSeat(playerid) == 0 &&
-		(vid = GetPlayerVehicleID(playerid)) &&
-		!Veh_IsPlayerAllowedInVehicle(userid[playerid], vid, buf144))
+		(vid = GetPlayerVehicleID(playerid)))
 	{
-		ClearAnimations playerid, .forcesync=1 // should remove from vehicle
-		SendClientMessage playerid, COL_WARN, buf144
-		ac_disallowedVehicle1s playerid
+		if (Game_IsAirVehicle(GetVehicleModel(vid)) && vid == lastvehicle[playerid]) {
+			new Float:_x, Float:_y, Float:_z
+			GetVehiclePos vid, _x, _y, _z
+			playerodo[playerid] = Veh_AddOdo(vid, playerid, lastvehx[playerid], lastvehy[playerid], lastvehz[playerid], _x, _y, _z, playerodo[playerid])
+			lastvehx[playerid] = _x
+			lastvehy[playerid] = _y
+			lastvehz[playerid] = _z
+		}
+		if (!Veh_IsPlayerAllowedInVehicle(userid[playerid], vid, buf144)) {
+			ClearAnimations playerid, .forcesync=1 // should remove from vehicle
+			SendClientMessage playerid, COL_WARN, buf144
+			ac_disallowedVehicle1s playerid
+		}
+	}
+}
+
+hook loop5000()
+{
+	if (Veh_GetNextUpdateQuery(buf144)) {
+		mysql_tquery 1, buf144
 	}
 }
 
 hook OnGameModeInit()
 {
-	new Cache:veh = mysql_query(1, !"SELECT veh.i,veh.m,veh.o,veh.x,veh.y,veh.z,veh.r,veh.c,veh.d,usr.n FROM veh LEFT OUTER JOIN usr ON veh.o = usr.i WHERE veh.e=1")
+	new Cache:veh = mysql_query(1, !"SELECT veh.i,veh.m,veh.o,veh.x,veh.y,veh.z,veh.r,veh.c,veh.d,veh.odo,usr.n FROM veh LEFT OUTER JOIN usr ON veh.o = usr.i WHERE veh.e=1")
 	rowcount = cache_get_row_count()
 	Veh_Init rowcount
 	while (rowcount--) {
-		new dbid, model, owneruserid, Float:x, Float:y, Float:z, Float:r, col1, col2, ownername[MAX_PLAYER_NAME + 1]
+		new dbid, model, owneruserid, Float:x, Float:y, Float:z, Float:r, col1, col2, odo, ownername[MAX_PLAYER_NAME + 1]
 		cache_get_field_int(rowcount, 0, dbid)
 		cache_get_field_int(rowcount, 1, model)
 		cache_get_field_int(rowcount, 2, owneruserid)
@@ -40,8 +62,9 @@ hook OnGameModeInit()
 		cache_get_field_flt(rowcount, 6, r)
 		cache_get_field_int(rowcount, 7, col1)
 		cache_get_field_int(rowcount, 8, col2)
-		cache_get_field_str(rowcount, 9, ownername)
-		Veh_Add(dbid, model, owneruserid, x, y, z, r, col1, col2, ownername)
+		cache_get_field_int(rowcount, 9, odo)
+		cache_get_field_str(rowcount, 10, ownername)
+		Veh_Add(dbid, model, owneruserid, x, y, z, r, col1, col2, odo, ownername)
 		// only spawn public vehicles statically
 		if (owneruserid == 0) {
 			new vehicleid = AddStaticVehicleEx(model, x, y, z, r, col1, col2, RESPAWN_DELAY)
@@ -56,6 +79,9 @@ hook OnGameModeInit()
 hook OnGameModeExit()
 {
 	Veh_Destroy
+	while (Veh_GetNextUpdateQuery(buf144)) {
+		mysql_tquery 1, buf144
+	}
 }
 
 hook OnPlayerCommandTextCase(playerid, cmdtext[])
@@ -68,6 +94,11 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 		repairVehicleForPlayer playerid
 		#return 1
 	}
+}
+
+hook OnPlayerConnect(playerid)
+{
+	playerodo[playerid] = 0.0
 }
 
 hook OnPlayerDisconnect(playerid, reason)
@@ -112,6 +143,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 	}
 
 	if (newstate == PLAYER_STATE_DRIVER && (vid = GetPlayerVehicleID(playerid))) {
+		GetVehiclePos vid, lastvehx[playerid], lastvehy[playerid], lastvehz[playerid]
 		for (new p : players) {
 			destroyVehicleOwnerLabel vid, p
 		}
@@ -124,6 +156,11 @@ hook OnPlayerUpdate(playerid)
 	if (vid) {
 		lastvehicle[playerid] = vid
 	}
+}
+
+hook onPutPlayerInVehicleDriver(playerid, vehicleid)
+{
+	GetVehiclePos vehicleid, lastvehx[playerid], lastvehy[playerid], lastvehz[playerid]
 }
 
 hook OnVehicleSpawn(vehicleid)
