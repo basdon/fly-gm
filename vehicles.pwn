@@ -269,13 +269,13 @@ repairVehicleForPlayer(playerid)
 	// passengers may also repair the vehicle, why not?
 	new vehicleid = GetPlayerVehicleID(playerid)
 	if (vehicleid == 0) {
-		WARNMSG("You must be in a vehicle to do this!")
+		WARNMSGPB144("You must be in a vehicle to do this!")
 		return
 	}
 	new Float:hp
 	GetVehicleHealthSafe playerid, vehicleid, hp
 	if (hp < 0.0 || 999.9 < hp) {
-		WARNMSG("Your vehicle doesn't need to be repaired!")
+		WARNMSGPB144("Your vehicle doesn't need to be repaired!")
 		return
 	}
 	// base price 150 + cost 2 * missing hp
@@ -283,7 +283,7 @@ repairVehicleForPlayer(playerid)
 	if (cost > playermoney[playerid]) {
 		new maxpossible = (playermoney[playerid] - 150) / 2
 		if (maxpossible <= 0) {
-			WARNMSG("You can't pay the repair fee!")
+			WARNMSGPB144("You can't pay the repair fee!")
 			return
 		}
 		cost = playermoney[playerid]
