@@ -116,6 +116,10 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 		repairVehicleForPlayer playerid
 		#return 1
 	}
+	case 2123153240: if (Command_Is(cmdtext, "/refuel", idx)) {
+		refuelVehicleForPlayer playerid
+		#return 1
+	}
 }
 
 hook OnPlayerConnect(playerid)
@@ -263,6 +267,7 @@ onPlayerNowDriving(playerid, vehicleid)
 //@summary Repairs vehicle for player, taking money from the player to fix it
 //@param playerid player that needs their vehicle fixed
 //@remarks also notifies the mission script about the vehicle's new hp
+//@remarks passengers can also repair vehicles
 repairVehicleForPlayer(playerid)
 {
 	// TODO: make fix points and check radius
@@ -307,6 +312,38 @@ repairVehicleForPlayer(playerid)
 		playerid = driverid
 	}
 	Missions_OnVehicleRepaired playerid, vehicleid, hp, newhp
+}
+
+//@summary Refuels vehicle for player, taking money from the player to refuel it
+//@param playerid player that needs their vehicle refueled
+//@remarks also notifies the mission script about the vehicle's new hp
+//@remarks passengers can also refuel vehicles
+refuelVehicleForPlayer(playerid)
+{
+	// TODO: make fix points and check radius
+	new vehicleid = GetPlayerVehicleID(playerid)
+	if (vehicleid == 0) {
+		WARNMSGPB144("You must be in a vehicle to do this!")
+		return
+	}
+
+	new cost = Veh_Refuel(vehicleid, 3.8, playermoney[playerid], buf144)
+	if (cost == 0) {
+		SendClientMessage playerid, COL_WARN, buf144
+		return
+	}
+
+	money_takeFrom playerid, cost
+	SendClientMessage playerid, COL_INFO, buf144
+	if (GetPlayerVehicleSeat(playerid) != 0) {
+		new driverid = findPlayerInVehicleSeat(vehicleid, .seatid=0)
+		if (driverid == INVALID_PLAYER_ID) {
+			return
+		}
+		format buf144, sizeof(buf144), INFO"Player %s[%d] refueled your vehicle!", NAMEOF(playerid), playerid
+		SendClientMessage driverid, COL_INFO, buf144
+		playerid = driverid
+	}
 }
 
 //@summary Spawns vehicles owned by a player
