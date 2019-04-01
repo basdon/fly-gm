@@ -28,6 +28,9 @@ hook loop1splayers()
 		(vid = GetPlayerVehicleID(playerid)))
 	{
 		if (Game_IsAirVehicle(GetVehicleModel(vid)) && vid == lastvehicle[playerid]) {
+			new Float:qw, Float:qx, Float:qy, Float:qz
+			GetVehicleRotationQuat vid, qw, qx, qy, qz
+			Missions_UpdateSatisfaction playerid, vid, qw, qx, qy, qz
 			new engine
 			GetVehicleParamsEx vid, engine, tmp1, tmp1, tmp1, tmp1, tmp1, tmp1
 			if (engine) {
