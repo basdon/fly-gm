@@ -8,6 +8,7 @@
 #define COL_WARN 0xe84c3dff
 #define COL_SUCC 0x2cc36bff
 #define COL_INFO_GENERIC 0xffffffff
+#define COL_INFO_LIGHT 0x33ccffff
 #define COL_PRIVMSG 0xffff00ff
 #define COL_PRIVMSG_HINT 0xafafafff
 #define COL_MISSION 0xff9900ff
@@ -17,5 +18,5 @@
 
 // see also sharedsymbols.h
 
-#define COLOR_METAR 0x33ccffff
+#define COLOR_METAR COL_INFO_LIGHT
 
