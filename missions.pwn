@@ -143,7 +143,16 @@ hook OnPlayerEnterRaceCP(playerid)
 			new pay
 			if (Missions_PostUnload(playerid, vehiclehp, pay, buf4096)) {
 				money_giveTo playerid, pay
-				mysql_tquery 1, buf4096
+				SendClientMessageToAll COL_MISSION, buf4096
+				ShowPlayerDialog\
+					playerid,
+					DIALOG_DUMMY,
+					DIALOG_STYLE_MSGBOX,
+					"Flight Overview",
+					buf4096[1000],
+					"Close", "",
+					TRANSACTION_MISSION_OVERVIEW
+				mysql_tquery 1, buf4096[200]
 			}
 		}
 
