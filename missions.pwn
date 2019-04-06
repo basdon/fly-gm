@@ -200,6 +200,7 @@ startMission(playerid)
 		if (Missions_Start(playerid, cache_insert_id(), x, y, z, buf144)) {
 			SetPlayerRaceCheckpoint playerid, 2, x, y, z, 0.0, 0.0, 0.0, MISSION_CHECKPOINT_SIZE
 			SendClientMessage playerid, COL_MISSION, buf144
+			Missions_OnWeatherChanged lockedweather
 		}
 	}
 }
