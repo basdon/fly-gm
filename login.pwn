@@ -51,6 +51,7 @@ hook OnPlayerDisconnect(playerid, reason)
 			playermoney[playerid],
 			playerodo[playerid],
 			flighttimenew[playerid] + flighttimeold[playerid],
+			prefs[playerid],
 			buf4096
 		mysql_tquery 1, buf4096
 	}
@@ -335,6 +336,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 				cache_get_field_int(0, 1, money)
 				cache_get_field_int(0, 2, iodo)
 				cache_get_field_int(0, 3, flighttimeold[playerid])
+				cache_get_field_int(0, 4, prefs[playerid])
 				flighttimenew[playerid] = flighttimeold[playerid] % 60
 				flighttimeold[playerid] -= flighttimenew[playerid]
 				playerodo[playerid] = float(iodo)

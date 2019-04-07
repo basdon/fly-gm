@@ -101,6 +101,7 @@ new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
 ###include "playername"
 ###include "playtime"
 ###include "pm"
+###include "prefs"
 ###include "spawn"
 ###include "timecyc"
 ###include "tracker"
@@ -178,6 +179,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	case DIALOG_DUMMY: return 1
 ###include "airport"
 ###include "login"
+###include "prefs"
 	}
 ##endsection
 	return 0
@@ -275,6 +277,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 ###include "missions"
 ###include "nav"
 ###include "pm"
+###include "prefs"
 ###include "timecyc"
 ###include "zones"
 ###include "vehicles"
@@ -301,6 +304,7 @@ public OnPlayerConnect(playerid)
 ###include "panel"
 ###include "playtime"
 ###include "pm"
+###include "prefs"
 ###include "spawn"
 ###include "timecyc"
 ###include "vehicles"
@@ -527,6 +531,7 @@ SetPlayerPosHook(playerid, Float:x, Float:y, Float:z)
 #include "objects"
 #include "panel"
 #include "pm"
+#include "prefs"
 #include "spawn"
 #include "tracker"
 #include "vehicles"

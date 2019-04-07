@@ -70,6 +70,16 @@ msg_synerr:
 //@remarks The {@param to} player is assumed to be online.
 sendpm(from, to, msg[])
 {
+	if (!(prefs[from] & PREF_ENABLE_PM)) {
+		new playerid = to
+		WARNMSGPB144("Your PMs are disabled, use /p to enable it.")
+		return
+	}
+	if (!(prefs[to] & PREF_ENABLE_PM)) {
+		new playerid = to
+		WARNMSGPB144("That player has PMs disabled.")
+		return
+	}
 	format buf144, sizeof(buf144), ">> %s(%d): %s", NAMEOF(to), to, msg
 	SendClientMessage from, COL_PRIVMSG, buf144
 	format buf144, sizeof(buf144), "** %s(%d): %s", NAMEOF(from), from, msg

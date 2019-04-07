@@ -55,6 +55,15 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 		startMission playerid
 		#return 1
 	}
+	case 1438752217: if (Command_Is(cmdtext, "/autow", idx)) {
+		if (prefs[playerid] & PREF_CONSTANT_WORK) {
+			SendClientMessage playerid, COL_SAMP_GREY, "Constant work disabled"
+		} else {
+			SendClientMessage playerid, COL_SAMP_GREY, "Constant work enabled"
+		}
+		prefs[playerid] ^= PREF_CONSTANT_WORK
+		#return 1
+	}
 }
 
 hook OnPlayerDeath(playerid, killerid, reason)
@@ -143,7 +152,11 @@ hook OnPlayerEnterRaceCP(playerid)
 			new pay
 			if (Missions_PostUnload(playerid, vehiclehp, pay, buf4096)) {
 				money_giveTo playerid, pay
-				SendClientMessageToAll COL_MISSION, buf4096
+				for (new p : allplayers) {
+					if (prefs[p] & PREF_SHOW_MISSION_MSGS) {
+						SendClientMessage p, COL_MISSION, buf4096
+					}
+				}
 				ShowPlayerDialog\
 					playerid,
 					DIALOG_DUMMY,
@@ -153,6 +166,9 @@ hook OnPlayerEnterRaceCP(playerid)
 					"Close", "",
 					TRANSACTION_MISSION_OVERVIEW
 				mysql_tquery 1, buf4096[200]
+				if (prefs[playerid] & PREF_CONSTANT_WORK) {
+					startMission playerid
+				}
 			}
 		}
 
@@ -201,6 +217,9 @@ startMission(playerid)
 			SetPlayerRaceCheckpoint playerid, 2, x, y, z, 0.0, 0.0, 0.0, MISSION_CHECKPOINT_SIZE
 			SendClientMessage playerid, COL_MISSION, buf144
 			Missions_OnWeatherChanged lockedweather
+			if (prefs[playerid] & PREF_CONSTANT_WORK) {
+				SendClientMessage playerid, COL_SAMP_GREY, "Constant work is ON, a new mission will be started when you complete this one (/autow to disable)."
+			}
 		}
 	}
 }
