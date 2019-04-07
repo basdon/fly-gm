@@ -95,7 +95,7 @@ hook OnPlayerEnterRaceCP(playerid)
 
 	if (res == MISSION_ENTERCHECKPOINTRES_LOAD) {
 		DisablePlayerRaceCheckpoint playerid
-		GameTextForPlayer playerid, "Loading...", 0x800000, 3
+		GameTextForPlayer playerid, "~p~Loading...", 0x800000, 3
 		SetTimerEx #PUB_MISSION_LOADTIMER, MISSION_LOAD_UNLOAD_TIME, 0, "ii", playerid, cc[playerid]
 		TogglePlayerControllable playerid, 0
 
@@ -121,7 +121,7 @@ hook OnPlayerEnterRaceCP(playerid)
 		new Float:vehiclehp
 
 		DisablePlayerRaceCheckpoint(playerid)
-		GameTextForPlayer playerid, "Unloading...", 0x800000, 3
+		GameTextForPlayer playerid, "~p~Unloading...", 0x800000, 3
 		GetVehicleHealthSafe playerid, vehicleid, vehiclehp
 		if (vehiclehp < 251.0) {
 			SetVehicleHealth vehicleid, 300.0
