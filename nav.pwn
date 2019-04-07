@@ -70,8 +70,8 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 			#return 1
 		}
 		switch (Nav_ToggleILS(vid)) {
-		case RESULT_ILS_ON: PlayerPlaySound playerid, SOUND_NAV_DEL, 0.0, 0.0, 0.0
-		case RESULT_ILS_OFF: PlayerPlaySound playerid, SOUND_NAV_SET, 0.0, 0.0, 0.0
+		case RESULT_ILS_ON: PlayerPlaySound playerid, SOUND_NAV_SET, 0.0, 0.0, 0.0
+		case RESULT_ILS_OFF: PlayerPlaySound playerid, SOUND_NAV_DEL, 0.0, 0.0, 0.0
 		case RESULT_ILS_NOVOR: WARNMSG("ILS can only be activated when VOR is already active")
 		case RESULT_ILS_NOILS: WARNMSG("The selected runway does not have ILS capabilities")
 		}
