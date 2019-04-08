@@ -251,6 +251,7 @@ ac_log(playerid, const message[])
 
 //@summary Takes money from a player
 //@param playerid player to take money from
+//@param amount amount to take
 //@returns actual amount of money that was taken from {@param playerid}
 //@remarks will not take any money when it would cause an underflow
 money_takeFrom(playerid, amount)
@@ -267,6 +268,7 @@ money_takeFrom(playerid, amount)
 
 //@summary Gives money to a player
 //@param playerid player to give money to
+//@param amount amount to give
 //@returns actual amount of money that was given to {@param playerid}
 //@remarks will not give any money when it would cause an overflow
 money_giveTo(playerid, amount)
@@ -283,6 +285,7 @@ money_giveTo(playerid, amount)
 
 //@summary Sets the money of a player
 //@param playerid player to set the money for
+//@param amount amount of money the player should have
 money_setFor(playerid, amount)
 {
 #undef GivePlayerMoney

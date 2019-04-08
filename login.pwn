@@ -958,6 +958,7 @@ loginAndSpawnAsGuest(playerid)
 }
 
 //@summary Spawns a player without having a guest session and tells them
+//@param playerid the player to spawn without guest session
 //@remarks also hides game text
 spawnWithoutGuestSession(playerid)
 {
