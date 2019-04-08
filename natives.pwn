@@ -420,6 +420,11 @@ native Missions_PostLoad(playerid, &Float:x, &Float:y, &Float:z, buf[])
 	<li>{@code buf+1000}: result dialog text</li></ul>
 native Missions_PostUnload(playerid, Float:vehiclehp, &pay, buf[])
 
+//@summary Check if the satisfaction textdraw should be shown for a player
+//@param playerid player to check
+//@returns {@code 1} if the satisfaction textdraw should be shown
+native Missions_ShouldShowSatisfaction(playerid)
+
 //@summary Starts a mission for a player after the mission id has been retrieved
 //@param playerid the player to start the mission for
 //@param missionid the mission id
@@ -438,7 +443,9 @@ native Missions_Start(playerid, missionid, &Float:x, &Float:y, &Float:z, msg[])
 //@param qx vehicle x rotation
 //@param qy vehicle y rotation
 //@param qz vehicle z rotation
-native Missions_UpdateSatisfaction(playerid, vehicleid, Float:qw, Float:qx, Float:qy, Float:qz)
+//@param buf buffer to store satisfaction string in
+//@returns {@code 1} if the satisfaction textdraw should be updated
+native Missions_UpdateSatisfaction(playerid, vehicleid, Float:qw, Float:qx, Float:qy, Float:qz, buf[])
 
 #namespace "nav.c"
 

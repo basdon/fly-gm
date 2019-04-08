@@ -6,6 +6,11 @@
 #define MISSION_LOAD_UNLOAD_TIME 2200
 #define MISSION_CHECKPOINT_SIZE 11.0
 
+varinit
+{
+	new PlayerText:passenger_satisfaction[MAX_PLAYERS]
+}
+
 hook OnGameModeInit()
 {
 	// msp id (i) should be selected DESC (since added first in linked list in plugin), but since rows are handled reversed here, sort ASC
@@ -39,6 +44,7 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 			WARNMSG("You're not on an active mission.")
 			#return 1
 		}
+		PlayerTextDrawHide playerid, passenger_satisfaction[playerid]
 		DisablePlayerRaceCheckpoint playerid
 		if (money_takeFrom(playerid, MISSION_CANCEL_FINE) != MISSION_CANCEL_FINE) {
 			WARNMSG("You can't afford this!")
@@ -66,6 +72,18 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 	}
 }
 
+hook OnPlayerConnect(playerid)
+{
+	new PlayerText:msptmp = passenger_satisfaction[playerid] = CreatePlayerTextDraw(playerid, 88.0, 425.0, TXT_EMPTY);
+	PlayerTextDrawAlignment(playerid, msptmp, 2);
+	PlayerTextDrawBackgroundColor(playerid, msptmp, 255);
+	PlayerTextDrawFont(playerid, msptmp, 1);
+	PlayerTextDrawLetterSize(playerid, msptmp, 0.3, 1.0);
+	PlayerTextDrawColor(playerid, msptmp, -1);
+	PlayerTextDrawSetOutline(playerid, msptmp, 1);
+	PlayerTextDrawSetProportional(playerid, msptmp, 1);
+}
+
 hook OnPlayerDeath(playerid, killerid, reason)
 {
 	if (Missions_GetState(playerid) != -1) {
@@ -78,6 +96,7 @@ hook OnPlayerDeath(playerid, killerid, reason)
 			}
 		}
 		if (Missions_EndUnfinished(playerid, missionstopreason, buf144)) {
+			PlayerTextDrawHide playerid, passenger_satisfaction[playerid]
 			mysql_tquery 1, buf144
 		}
 	}
@@ -124,6 +143,10 @@ hook OnPlayerEnterRaceCP(playerid)
 				SetPlayerRaceCheckpoint playerid, 2, x, y, z, 0.0, 0.0, 0.0, MISSION_CHECKPOINT_SIZE
 				mysql_tquery 1, buf144
 				updateMissionNav playerid
+				if (Missions_ShouldShowSatisfaction(playerid)) {
+					PlayerTextDrawSetString playerid, passenger_satisfaction[playerid], "Passenger~n~Satisfaction: 100%"
+					PlayerTextDrawShow playerid, passenger_satisfaction[playerid]
+				}
 			}
 		}
 
@@ -140,6 +163,7 @@ hook OnPlayerEnterRaceCP(playerid)
 		SetTimerEx #PUB_MISSION_UNLOADTIMER, MISSION_LOAD_UNLOAD_TIME, 0, "iif", playerid, cc[playerid], vehiclehp
 		TogglePlayerControllable playerid, 0
 		resetMissionNav playerid, vehicleid
+		PlayerTextDrawHide playerid, passenger_satisfaction[playerid]
 
 		#outline
 		//@summary Callback after mission unload timer

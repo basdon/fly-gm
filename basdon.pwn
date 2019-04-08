@@ -96,6 +96,7 @@ new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
 ###include "dialog"
 ###include "game_sa"
 ###include "login"
+###include "missions"
 ###include "objects"
 ###include "panel"
 ###include "playername"
@@ -300,6 +301,7 @@ public OnPlayerConnect(playerid)
 ###include "playername" // keep this second (sets data: name, ip, ..)
 ###include "anticheat"
 ###include "login"
+###include "missions"
 ###include "objects"
 ###include "panel"
 ###include "playtime"
