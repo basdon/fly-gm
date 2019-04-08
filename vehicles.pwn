@@ -214,8 +214,9 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 hook OnPlayerUpdate(playerid)
 {
 	new vid = GetPlayerVehicleID(playerid)
-	if (vid) {
+	if (vid && lastvehicle[playerid] != vid) {
 		lastvehicle[playerid] = vid
+		Veh_ResetPanelTextCache playerid
 	}
 }
 
