@@ -107,6 +107,7 @@ hook OnPlayerEnterRaceCP(playerid)
 		GameTextForPlayer playerid, "~p~Loading...", 0x800000, 3
 		SetTimerEx #PUB_MISSION_LOADTIMER, MISSION_LOAD_UNLOAD_TIME, 0, "ii", playerid, cc[playerid]
 		TogglePlayerControllable playerid, 0
+		resetMissionNav playerid, vehicleid
 
 		#outline
 		//@summary Callback after mission load timer
@@ -122,6 +123,7 @@ hook OnPlayerEnterRaceCP(playerid)
 			if (Missions_PostLoad(playerid, x, y, z, buf144)) {
 				SetPlayerRaceCheckpoint playerid, 2, x, y, z, 0.0, 0.0, 0.0, MISSION_CHECKPOINT_SIZE
 				mysql_tquery 1, buf144
+				updateMissionNav playerid
 			}
 		}
 
@@ -137,6 +139,7 @@ hook OnPlayerEnterRaceCP(playerid)
 		}
 		SetTimerEx #PUB_MISSION_UNLOADTIMER, MISSION_LOAD_UNLOAD_TIME, 0, "iif", playerid, cc[playerid], vehiclehp
 		TogglePlayerControllable playerid, 0
+		resetMissionNav playerid, vehicleid
 
 		#outline
 		//@summary Callback after mission unload timer
@@ -219,6 +222,35 @@ startMission(playerid)
 			Missions_OnWeatherChanged lockedweather
 			if (prefs[playerid] & PREF_CONSTANT_WORK) {
 				SendClientMessage playerid, COL_SAMP_GREY, "Constant work is ON, a new mission will be started when you complete this one (/autow to disable)."
+			}
+			updateMissionNav playerid
+		}
+	}
+}
+
+//@summary Resets nav for vehicle when player's preferences allow it
+//@param playerid playerid that is in a mission
+//@param vehicleid vehicle to reset nav for, when needed
+resetMissionNav(playerid, vehicleid)
+{
+	if (prefs[playerid] & PREF_WORK_AUTONAV) {
+		Nav_Reset vehicleid
+		panel_resetNavForPassengers vehicleid
+	}
+}
+
+//@summary Sets mission-based navigation if player's preferences allow it
+//@param playerid player of which to update navigation for
+updateMissionNav(playerid)
+{
+	if (prefs[playerid] & PREF_WORK_AUTONAV) {
+		new vid, vehmodel, apidx
+		if (Missions_GetMissionNavData(playerid, vid, vehmodel, apidx)) {
+			new Float:x, Float:y, Float:z
+			GetPlayerPos playerid, x, y, z
+			switch (Nav_NavigateToMission(vid, vehmodel, apidx, x, y, z)) {
+			case NAV_ADF: panel_hideVorBarForPassengers vid
+			case NAV_VOR: panel_showVorBarForPassengers vid
 			}
 		}
 	}
