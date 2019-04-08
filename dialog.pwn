@@ -58,8 +58,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	dialogtransaction[playerid] = TRANSACTION_NONE
 	if (dialogid != showndialog[playerid]) {
-		printf "unexpected dialog response from player %d: %d (expected %d)", playerid, dialogid, showndialog[playerid]
-		// TODO log
+		format buf144, sizeof(buf144), "unexpected dialog response %d expected %d", dialogid, showndialog[playerid]
+		ac_log playerid, buf144
 		showndialog[playerid] = -1
 		#allowreturn
 		return 1
