@@ -112,11 +112,7 @@ new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
 
 main()
 {
-	if (!Validate(MAX_PLAYERS)) {
-		SendRconCommand "exit"
-		return
-	}
-
+	// beware: sometimes main() gets called after OnGameModeInit
 	print "  Loaded gamemode basdon-fly "#VERSION"\n"
 ##section init
 ##endsection
@@ -188,6 +184,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 public OnGameModeInit()
 {
+	if (!Validate(MAX_PLAYERS)) {
+		SendRconCommand "exit"
+		return 1
+	}
+
 	new File:mysqlfile = fopen("mysql.dat", io_read)
 	if (!mysqlfile) {
 		printf "file mysql.dat not found"
