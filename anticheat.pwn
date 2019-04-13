@@ -256,6 +256,9 @@ ac_log(playerid, const message[])
 //@remarks will not take any money when it would cause an underflow
 money_takeFrom(playerid, amount)
 {
+	if (amount < 0) {
+		money_giveTo playerid, -amount
+	}
 	if (playermoney[playerid] - amount > playermoney[playerid]) {
 		return 0
 	}
@@ -273,6 +276,9 @@ money_takeFrom(playerid, amount)
 //@remarks will not give any money when it would cause an overflow
 money_giveTo(playerid, amount)
 {
+	if (amount < 0) {
+		money_takeFrom playerid, -amount
+	}
 	if (playermoney[playerid] + amount < playermoney[playerid]) {
 		return 0
 	}

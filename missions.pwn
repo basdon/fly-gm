@@ -200,6 +200,10 @@ hook OnPlayerEnterRaceCP(playerid)
 					Ac_FormatLog playerid, loggedstatus[playerid], buf4096[2000], buf4096
 					mysql_tquery 1, buf4096
 				}
+				if (buf4096[2100]) {
+					Ac_FormatLog playerid, loggedstatus[playerid], buf4096[2100], buf4096
+					mysql_tquery 1, buf4096
+				}
 			}
 		}
 
