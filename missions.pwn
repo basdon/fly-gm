@@ -196,6 +196,10 @@ hook OnPlayerEnterRaceCP(playerid)
 				if (prefs[playerid] & PREF_CONSTANT_WORK) {
 					startMission playerid
 				}
+				if (buf4096[2000]) {
+					Ac_FormatLog playerid, loggedstatus[playerid], buf4096[2000], buf4096
+					mysql_tquery 1, buf4096
+				}
 			}
 		}
 
