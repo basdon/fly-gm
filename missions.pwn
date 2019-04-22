@@ -48,8 +48,9 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 		DisablePlayerRaceCheckpoint playerid
 		if (money_takeFrom(playerid, MISSION_CANCEL_FINE) != MISSION_CANCEL_FINE) {
 			WARNMSG("You can't afford this!")
-		} else if (Missions_EndUnfinished(playerid, MISSION_STATE_DECLINED, buf144)) {
-			mysql_tquery 1, buf144
+		} else if (Missions_EndUnfinished(playerid, MISSION_STATE_DECLINED, buf4096)) {
+			mysql_tquery 1, buf4096
+			socket_send trackerSocket, buf4096[500], 200
 		}
 		#return 1
 	}
@@ -95,17 +96,19 @@ hook OnPlayerDeath(playerid, killerid, reason)
 				missionstopreason = MISSION_STATE_CRASHED
 			}
 		}
-		if (Missions_EndUnfinished(playerid, missionstopreason, buf144)) {
+		if (Missions_EndUnfinished(playerid, missionstopreason, buf4096)) {
 			PlayerTextDrawHide playerid, passenger_satisfaction[playerid]
-			mysql_tquery 1, buf144
+			mysql_tquery 1, buf4096
+			socket_send trackerSocket, buf4096[500], 200
 		}
 	}
 }
 
 hook OnPlayerDisconnect(playerid, reason)
 {
-	if (Missions_EndUnfinished(playerid, MISSION_STATE_ABANDONED, buf144)) {
-		mysql_tquery 1, buf144
+	if (Missions_EndUnfinished(playerid, MISSION_STATE_ABANDONED, buf4096)) {
+		mysql_tquery 1, buf4096
+		socket_send trackerSocket, buf4096[500], 200
 	}
 }
 
@@ -178,6 +181,7 @@ hook OnPlayerEnterRaceCP(playerid)
 			TogglePlayerControllable playerid, 1
 			new pay
 			if (Missions_PostUnload(playerid, vehiclehp, pay, buf4096)) {
+				socket_send trackerSocket, buf4096[2200], 200
 				money_giveTo playerid, pay
 				for (new p : allplayers) {
 					if (prefs[p] & PREF_SHOW_MISSION_MSGS) {
@@ -248,9 +252,10 @@ startMission(playerid)
 		if (!isValidPlayer(playerid, cid)) return
 		hideGameTextForPlayer(playerid)
 		new Float:x, Float:y, Float:z;
-		if (Missions_Start(playerid, cache_insert_id(), x, y, z, buf144)) {
+		if (Missions_Start(playerid, cache_insert_id(), x, y, z, buf4096)) {
+			socket_send trackerSocket, buf4096[200], 200
 			SetPlayerRaceCheckpoint playerid, 2, x, y, z, 0.0, 0.0, 0.0, MISSION_CHECKPOINT_SIZE
-			SendClientMessage playerid, COL_MISSION, buf144
+			SendClientMessage playerid, COL_MISSION, buf4096
 			Missions_OnWeatherChanged lockedweather
 			if (prefs[playerid] & PREF_CONSTANT_WORK) {
 				SendClientMessage playerid, COL_SAMP_GREY, "Constant work is ON, a new mission will be started when you complete this one (/autow to disable)."

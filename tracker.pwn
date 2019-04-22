@@ -6,6 +6,7 @@
 varinit
 {
 	new Socket:trackerSocket;
+	#define TRACKER_PORT 7766
 }
 
 hook OnGameModeInit()
@@ -14,8 +15,7 @@ hook OnGameModeInit()
 	if (_:trackerSocket == INVALID_SOCKET) {
 		print "E-T01"
 	} else {
-		socket_connect trackerSocket, "127.0.0.1", 4455
-		// TODO tracker port stuff
+		socket_connect trackerSocket, "127.0.0.1", TRACKER_PORT
 	}
 }
 

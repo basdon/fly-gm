@@ -41,7 +41,7 @@ s/^\s*\(memcpy[ \|(]\?[^,]\+\[\)/#error possible memcpy bug (#allowmemcpywitharr
 }
 
 # custom doc comment formats
-/^\s*\/\/@/ {
+/^\s*\/\/[@\/]/ {
 :concatnext
         /\\$/ {
                 N

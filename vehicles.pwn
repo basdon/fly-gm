@@ -57,6 +57,13 @@ hook loop1splayers()
 			lastvehx[playerid] = _x
 			lastvehy[playerid] = _y
 			lastvehz[playerid] = _z
+			if (Missions_GetState(playerid) == MISSION_STAGE_FLIGHT) {
+				GetVehicleHealthSafe playerid, vid, qw
+				GetVehicleVelocity vid, qx, qy, qz
+				if (Missions_CreateTrackerMessage(playerid, vid, qw, qx, qy, qz, _z, buf144)) {
+					socket_send trackerSocket, buf144, 200
+				}
+			}
 		}
 		if (!Veh_IsPlayerAllowedInVehicle(userid[playerid], vid, buf144)) {
 			ClearAnimations playerid, .forcesync=1 // should remove from vehicle

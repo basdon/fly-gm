@@ -118,6 +118,7 @@ hook loop100()
 		// SPD
 		GetVehicleVelocity vid, vx, vy, vz
 		vx = VEL_TO_KTS(VectorSize(vx, vy, vz))
+		// TODO move those ops to plugin? ^
 		if (Panel_FormatSpeed(playerid, floatround(vx, floatround_tozero), buf4, buf13, buf44)) {
 			PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_SPD], buf4
 			if (buf13[0]) {
