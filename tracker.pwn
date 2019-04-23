@@ -16,6 +16,7 @@ hook OnGameModeInit()
 		print "E-T01"
 	} else {
 		socket_connect trackerSocket, "127.0.0.1", TRACKER_PORT
+		socket_send trackerSocket, "FLY\4", 4
 	}
 }
 
@@ -23,6 +24,7 @@ hook OnGameModeExit()
 {
 	if (_:trackerSocket != INVALID_SOCKET) {
 		socket_destroy trackerSocket
+		socket_send trackerSocket, "FLY\5", 4
 	}
 }
 
