@@ -60,7 +60,7 @@ hook loop1splayers()
 			if (Missions_GetState(playerid) == MISSION_STAGE_FLIGHT) {
 				GetVehicleHealthSafe playerid, vid, qw
 				GetVehicleVelocity vid, qx, qy, qz
-				if (Missions_CreateTrackerMessage(playerid, vid, _x, _y, qw, qx, qy, qz, _z, buf144)) {
+				if (Missions_CreateTrackerMessage(playerid, vid, qw, _x, _y, qx, qy, qz, _z, buf144)) {
 					socket_send trackerSocket, buf144[1], buf144[0]
 				}
 			}
