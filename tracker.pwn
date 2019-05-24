@@ -23,8 +23,8 @@ hook OnGameModeInit()
 hook OnGameModeExit()
 {
 	if (_:trackerSocket != INVALID_SOCKET) {
-		socket_destroy trackerSocket
 		socket_send trackerSocket, "FLY\5", 4
+		socket_destroy trackerSocket
 	}
 }
 
