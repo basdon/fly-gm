@@ -2,20 +2,19 @@
 
 SET "_PAWNCC=..\..\..\pawno\pawncc-original.exe"
 
-IF EXIST out RD out /S /Q
+DEL /Q out\*
+BREAK>out\.gitkeep
 
 IF [%~1] EQU [clean] (
 	::make clean
-	IF EXIST p RD p /S /Q
-	EXIT
+	DEL /Q p\*.p
+	BREAK>p\.gitkeep
+	EXIT /B
 )
-
-MKDIR out
-IF NOT EXIST p MKDIR p
 
 IF [%~1] EQU [make] (
 	"%_MAKE%" %~2
-	EXIT
+	EXIT /B
 )
 
 SET "_EXTRAFLAGS=%~1"
@@ -27,10 +26,10 @@ IF [%~1] EQU [prod] (
 )
 
 make build
-IF %ERRORLEVEL% NEQ 0 EXIT
+IF %ERRORLEVEL% NEQ 0 EXIT /B
 ECHO.
 "%_PAWNCC%" -(- -;- -i"%CD%/vendor/" -Dp/ %_EXTRAFLAGS% basdon.p -r../out/basdon.xml -o../out/basdon.amx %_FLAGS%
-IF %ERRORLEVEL% NEQ 0 EXIT
+IF %ERRORLEVEL% NEQ 0 EXIT /B
 ECHO.
 IF EXIST "out\basdon.xml" (
 	MOVE /Y "out\basdon.xml" "doc.xml"
