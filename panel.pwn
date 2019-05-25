@@ -27,7 +27,7 @@
 #define PNLTXT_ADF_DIS 8
 #define PNLTXT_ADF_ALT 9
 #define PNLTXT_ADF_CRS 10
-#define PNLTXT_HPFL 11
+#define PNLTXT_HPFLODO 11
 #define PNLTXT_P_TOTAL 12
 
 varinit
@@ -108,11 +108,11 @@ hook loop100()
 #undef TDVAR
 		}
 
-		// HP/FL
+		// HP/FL/ODO
 		new Float:hp
 		GetVehicleHealthSafe playerid, vid, hp
 		if (Veh_FormatPanelText(playerid, vid, hp, buf144)) {
-			PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_HPFL], buf144
+			PlayerTextDrawSetString playerid, playerpnltxt[playerid][PNLTXT_HPFLODO], buf144
 		}
 
 		// SPD
@@ -299,7 +299,7 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawSetOutline(playerid, tmp, 0);
 	PlayerTextDrawSetShadow(playerid, tmp, 0);
 
-	tmp = playerpnltxt[playerid][PNLTXT_HPFL] = CreatePlayerTextDraw(playerid, 227.0, 381.0, "HP ~g~1000/1000  ~w~FL ~g~10000/10000");
+	tmp = playerpnltxt[playerid][PNLTXT_HPFLODO] = CreatePlayerTextDraw(playerid, 227.0, 381.0, "-");
 	PlayerTextDrawFont(playerid, tmp, 2);
 	PlayerTextDrawLetterSize(playerid, tmp, 0.25, 1.0);
 	PlayerTextDrawColor(playerid, tmp, 0xffffffff);
