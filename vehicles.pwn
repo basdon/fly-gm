@@ -132,6 +132,27 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 		refuelVehicleForPlayer playerid
 		#return 1
 	}
+	case 1438658898: if (Command_Is(cmdtext, "/at400", idx)) {
+		new Float:vx, Float:vy, Float:vz, found_vehicle_id = 0, Float:shortest_distance = FLOAT_PINF, Float:tmpdistance;
+		for (new i = 1, m = GetVehiclePoolSize(); i <= m; i++) {
+			buf4096[0] = 0;
+			if (GetVehicleModel(i) == MODEL_AT400 &&
+				GetVehiclePos(i, vx, vy, vz) &&
+				Veh_IsPlayerAllowedInVehicle(userid[playerid], i, buf4096) &&
+				(tmpdistance = GetPlayerDistanceFromPoint(playerid, vx, vy, vz)) < shortest_distance)
+			{
+				shortest_distance = tmpdistance;
+				found_vehicle_id = i;
+			}
+			if (buf4096[0]) {
+				SendClientMessageToAll(-1, buf4096)
+			}
+		}
+		if (found_vehicle_id && shortest_distance < 25.0) {
+			PutPlayerInVehicleSafe playerid, found_vehicle_id, 0
+		}
+		#return 1
+	}
 }
 
 hook OnPlayerConnect(playerid)

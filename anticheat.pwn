@@ -193,7 +193,7 @@ GetVehicleHealthSafe(playerid, vehicleid, &Float:hp)
 //@param playerid The ID of the player to put in a vehicle
 //@param vehicleid The ID of the vehicle to put the player in
 //@param seatid The ID of the seat to put the player in
-//@returns {@code 1 on success}
+//@returns {@code 1} on success
 PutPlayerInVehicleSafe(playerid, vehicleid, seatid)
 {
 	if (seatid == 0) {
