@@ -9,7 +9,7 @@ varinit
 
 	new lastupdate[MAX_PLAYERS]
 	new Iter:afkplayers[MAX_PLAYERS]
-	new uncommittedplaytime[MAX_PLAYERS]
+	new uncommittedplaytime[MAX_PLAYERS] // if isAfk, then seconds of play time, otherwise timestamp of last update
 }
 
 hook OnPlayerUpdate(playerid)
@@ -76,6 +76,11 @@ updatePlayerLastseen(playerid, isdisconnect)
 		new now = gettime()
 		playtimetoadd = now - uncommittedplaytime[playerid]
 		uncommittedplaytime[playerid] = now
+	}
+
+	if (playtimetoadd > 60) {
+		printf "it happened %d isafk %d", playtimetoadd, isAfk(playerid)
+		playtimetoadd = 5
 	}
 
 	if (Playtime_FormatUpdateTimes(userid[playerid], sessionid[playerid], playtimetoadd, isdisconnect, buf4096)) {
