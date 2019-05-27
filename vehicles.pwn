@@ -89,7 +89,7 @@ hook OnGameModeInit()
 		new dbid, model, owneruserid, Float:x, Float:y, Float:z, Float:r, col1, col2, odo, ownername[MAX_PLAYER_NAME + 1]
 		cache_get_field_int(rowcount, 0, dbid)
 		cache_get_field_int(rowcount, 1, model)
-		cache_get_field_int(rowcount, 2, owneruserid)
+		cache_get_field_int_nullable_default0_usebuf32(rowcount, 2, owneruserid)
 		cache_get_field_flt(rowcount, 3, x)
 		cache_get_field_flt(rowcount, 4, y)
 		cache_get_field_flt(rowcount, 5, z)

@@ -30,6 +30,7 @@
 #define cache_get_field_str(%0,%1,%2) cache_get_row(%0,%1,%2)
 #define cache_get_field_int(%0,%1,%2) %2=cache_get_row_int(%0,%1)
 #define cache_get_field_flt(%0,%1,%2) %2=cache_get_row_float(%0,%1)
+#define cache_get_field_int_nullable_default0_usebuf32(%0,%1,%2) cache_get_row(%0,%1,buf32);if(strcmp("NULL",buf32,false)==0){%2=0;}else{cache_get_field_int(%0,%1,%2);}
 
 enum E_LOGLEVEL
 {
