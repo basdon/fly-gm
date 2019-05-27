@@ -139,7 +139,8 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 			if (GetVehicleModel(i) == MODEL_AT400 &&
 				GetVehiclePos(i, vx, vy, vz) &&
 				Veh_IsPlayerAllowedInVehicle(userid[playerid], i, buf4096) &&
-				(tmpdistance = GetPlayerDistanceFromPoint(playerid, vx, vy, vz)) < shortest_distance)
+				(tmpdistance = GetPlayerDistanceFromPoint(playerid, vx, vy, vz)) < shortest_distance &&
+				findPlayerInVehicleSeat(i, .seatid=0) == INVALID_PLAYER_ID)
 			{
 				shortest_distance = tmpdistance;
 				found_vehicle_id = i;
