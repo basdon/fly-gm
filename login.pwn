@@ -18,7 +18,7 @@ varinit
 	#define isRegistered(%0) (loggedstatus[%0] == LOGGED_IN)
 	#define isGuest(%0) (loggedstatus[%0] == LOGGED_GUEST)
 
-	new loggedstatus[MAX_PLAYERS]
+	new loggedstatus[MAX_PLAYERS] // one of LOGGED_NO, LOGGED_IN, LOGGED_GUEST
 	new failedlogins[MAX_PLAYERS char]
 	new userid[MAX_PLAYERS]
 	new sessionid[MAX_PLAYERS]

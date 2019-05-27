@@ -267,6 +267,14 @@ public OnPlayerCommandText(playerid, cmdtext[])
 ###include "dev"
 ##endsection
 
+	new uid = userid[playerid]
+	if (uid == -1) {
+		mysql_format 1, buf4096, sizeof(buf4096), "INSERT INTO cmdlog(loggedstatus,cmd) VALUES(%d,'%e')", loggedstatus[playerid], cmdtext
+	} else {
+		mysql_format 1, buf4096, sizeof(buf4096), "INSERT INTO cmdlog(player,loggedstatus,cmd) VALUES(%d,%d,'%e')", uid, loggedstatus[playerid], cmdtext
+	}
+	mysql_tquery 1, buf4096
+
 	new idx
 	switch (Command_Hash(cmdtext)) {
 	case 159897060: if (Command_Is(cmdtext, "/helpkeys", idx)) {
