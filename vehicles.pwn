@@ -38,7 +38,7 @@ hook loop1splayers(playerid)
 			}
 			new engine
 			GetVehicleParamsEx vid, engine, tmp1, tmp1, tmp1, tmp1, tmp1, tmp1
-			if (engine) {
+			if (engine && !isAfk(playerid)) {
 				new _tmp
 				GetPlayerKeys playerid, _tmp, tmp1, tmp1
 				if (Veh_ConsumeFuel(vid, .throttle=_tmp & KEY_SPRINT, .isOutOfFuel=_tmp, .buf=buf144)) {
