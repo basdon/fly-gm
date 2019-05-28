@@ -16,12 +16,15 @@ varinit
 	new Float:lastvehy[MAX_PLAYERS]
 	new Float:lastvehz[MAX_PLAYERS]
 	new Float:playerodo[MAX_PLAYERS]
+	// total flight time of user, multiple of 60s
 	new flighttimeold[MAX_PLAYERS]
+	// amount of seconds flight time of user that is not yet added to flighttimeold,
+	//   to increase player's score when this reaches 60
 	new flighttimenew[MAX_PLAYERS]
 	new lastcontrolactivity[MAX_PLAYERS]
 }
 
-hook loop1splayers()
+hook loop1splayers(playerid)
 {
 	new vid
 	if (GetPlayerVehicleSeat(playerid) == 0 &&
@@ -46,8 +49,10 @@ hook loop1splayers()
 					}
 				}
 				if (lastcontrolactivity[playerid] > gettime() - 30) {
-					if (++flighttimenew[playerid] == 60) {
+					if (++flighttimenew[playerid] >= 60) {
 						SetPlayerScore(playerid, GetPlayerScore(playerid) + 1)
+						flighttimeold[playerid] += 60
+						flighttimenew[playerid] -= 60
 					}
 				}
 			}
