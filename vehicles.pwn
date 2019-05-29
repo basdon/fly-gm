@@ -138,6 +138,9 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 		#return 1
 	}
 	case 1438658898: if (Command_Is(cmdtext, "/at400", idx)) {
+		if (GetPlayerVehicleID(playerid)) {
+			#return 1
+		}
 		new Float:vx, Float:vy, Float:vz, found_vehicle_id = 0, Float:shortest_distance = FLOAT_PINF, Float:tmpdistance
 		for (new i = 1, m = GetVehiclePoolSize(); i <= m; i++) {
 			buf4096[0] = 0
