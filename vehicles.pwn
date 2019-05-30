@@ -553,8 +553,8 @@ updateServicePointsForPlayer(playerid, Float:x, Float:y)
 			x = Float:buf4096[idx + 2]
 			y = Float:buf4096[idx + 3]
 			new Float:z = Float:buf4096[idx + 4]
-			SetPlayerMapIcon playerid, tmp1, x, y, z, 36, 0, MAPICON_GLOBAL
-			new PlayerText3D:id = CreatePlayer3DTextLabel(playerid, "Service Point\n/repair - /refuel", 0xFFFF00FF, x, y, z, 50.0)
+			SetPlayerMapIcon playerid, tmp1, x, y, z, 38, 0, MAPICON_GLOBAL
+			new PlayerText3D:id = CreatePlayer3DTextLabel(playerid, "Service Point\n/repair - /refuel", -1, x, y, z, 50.0)
 			Veh_UpdateServicePointTextId playerid, tmp1, id
 		}
 		default: {
