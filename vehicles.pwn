@@ -173,7 +173,7 @@ hook OnPlayerConnect(playerid)
 hook OnPlayerDisconnect(playerid, reason)
 {
 	Veh_OnPlayerDisconnect playerid
-	lastvehicle[playerid] = 0
+
 	new vehamount = Veh_CollectSpawnedVehicles(userid[playerid], buf144)
 	new idx = 0
 	while (vehamount--) {
@@ -182,6 +182,15 @@ hook OnPlayerDisconnect(playerid, reason)
 		Veh_UpdateSlot buf144[idx], -1
 		idx++
 	}
+
+	tmp1 = lastvehicle[playerid]
+	if (tmp1 && IsValidVehicle(tmp1)) {
+		new p = findPlayerInVehicleSeat(tmp1, .seatid=0)
+		if (!p || p == playerid) {
+			SetVehicleToRespawn tmp1
+		}
+	}
+	lastvehicle[playerid] = 0
 }
 
 hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
@@ -393,7 +402,7 @@ refuelVehicleForPlayer(playerid)
 	}
 
 	new Float:refuelamount
-	new cost = Veh_Refuel(vehicleid, 3.8, playermoney[playerid], refuelamount, buf144)
+	new cost = Veh_Refuel(vehicleid, 1.2, playermoney[playerid], refuelamount, buf144)
 	if (!cost) {
 		SendClientMessage playerid, COL_WARN, buf144
 		return
