@@ -521,6 +521,7 @@ public OnQueryError(errorid, error[], callback[], query[], connectionHandle)
 SetPlayerPosHook(playerid, Float:x, Float:y, Float:z)
 {
 ##section onSetPlayerPos
+###include "vehicles"
 ###include "zones"
 ##endsection
 #undef SetPlayerPos

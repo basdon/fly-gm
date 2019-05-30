@@ -194,6 +194,7 @@ GetVehicleHealthSafe(playerid, vehicleid, &Float:hp)
 //@param vehicleid The ID of the vehicle to put the player in
 //@param seatid The ID of the seat to put the player in
 //@returns {@code 1} on success
+//@remarks has {@code onPutPlayerInVehicle} and {@code onPutPlayerInVehicleDriver} sections
 PutPlayerInVehicleSafe(playerid, vehicleid, seatid)
 {
 	if (seatid == 0) {
@@ -212,6 +213,10 @@ PutPlayerInVehicleSafe(playerid, vehicleid, seatid)
 #undef PutPlayerInVehicle
 	PutPlayerInVehicle playerid, vehicleid, seatid
 #define PutPlayerInVehicle PutPlayerInVehicle@@
+##section onPutPlayerInVehicle
+##include "vehicles"
+
+##endsection
 }
 
 //@summary When passing playerid to callbacks (for example for a database query), when the callback is \

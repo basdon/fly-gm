@@ -76,6 +76,9 @@ hook loop1splayers(playerid)
 			ac_disallowedVehicle1s playerid
 		}
 	}
+	new Float:x, Float:y, Float:z
+	GetPlayerPos playerid, x, y, z
+	updateServicePointsForPlayer playerid, x, y
 }
 
 hook loop5000()
@@ -280,9 +283,21 @@ hook OnPlayerUpdate(playerid)
 	}
 }
 
+hook onPutPlayerInVehicle(playerid, vehicleid)
+{
+	new Float:x, Float:y, Float:z
+	GetVehiclePos vehicleid, x, y, z
+	updateServicePointsForPlayer playerid, x, y
+}
+
 hook onPutPlayerInVehicleDriver(playerid, vehicleid)
 {
 	onPlayerNowDriving playerid, vehicleid
+}
+
+hook onSetPlayerPos(playerid, Float:x, Float:y, Float:z)
+{
+	updateServicePointsForPlayer playerid, x, y
 }
 
 hook OnVehicleSpawn(vehicleid)
@@ -520,6 +535,38 @@ spawnPlayerVehicles(usrid)
 		idx += 8
 	}
 	*/
+}
+
+//@summary Updates service point map icons and 3D text labels for a player.
+//@param playerid player to update for
+//@param x x-position of the player
+//@param y y-position of the player
+updateServicePointsForPlayer(playerid, Float:x, Float:y)
+{
+	new amount = Veh_UpdateServicePtsVisibility(playerid, x, y, buf4096)
+	new idx = 0;
+	while (amount--) {
+		switch (buf4096[idx]) {
+		case -2: break
+		case -1: {
+			tmp1 = buf4096[idx + 1]
+			x = Float:buf4096[idx + 2]
+			y = Float:buf4096[idx + 3]
+			new Float:z = Float:buf4096[idx + 4]
+			SetPlayerMapIcon playerid, tmp1, x, y, z, 36, 0, MAPICON_GLOBAL
+			new PlayerText3D:id = CreatePlayer3DTextLabel(playerid, "Service Point\n/repair - /refuel", 0xFFFF00FF, x, y, z, 50.0)
+			Veh_UpdateServicePointTextId playerid, tmp1, id
+		}
+		default: {
+			RemovePlayerMapIcon playerid, buf4096[idx + 1]
+			tmp1 = buf4096[idx]
+			if (tmp1 != INVALID_3DTEXT_ID) {
+				DeletePlayer3DTextLabel playerid, PlayerText3D:tmp1
+			}
+		}
+		}
+		idx += 5
+	}
 }
 
 #printhookguards
