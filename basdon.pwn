@@ -550,6 +550,7 @@ SetPlayerPosHook(playerid, Float:x, Float:y, Float:z)
 #include "login"
 #include "missions"
 #include "playtime"
+#include "protips"
 #include "nav"
 #include "objects"
 #include "panel"
