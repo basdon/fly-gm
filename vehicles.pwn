@@ -113,6 +113,18 @@ hook OnGameModeInit()
 		}
 	}
 	cache_delete veh
+	veh = mysql_query(1, !"SELECT s.id,s.x,s.y,s.z FROM svp s JOIN apt a ON s.apt=a.i WHERE a.e=1")
+	rowcount = cache_get_row_count()
+	Veh_InitServicePoints rowcount
+	while (rowcount--) {
+		new id, Float:x, Float:y, Float:z
+		cache_get_field_int(rowcount, 0, id)
+		cache_get_field_flt(rowcount, 1, x)
+		cache_get_field_flt(rowcount, 2, y)
+		cache_get_field_flt(rowcount, 3, z)
+		Veh_AddServicePoint rowcount, id, x, y, z
+	}
+	cache_delete veh
 }
 
 hook OnGameModeExit()
@@ -350,23 +362,26 @@ onPlayerNowDriving(playerid, vehicleid)
 //@remarks passengers can also repair vehicles
 repairVehicleForPlayer(playerid)
 {
-	// TODO: make fix points and check radius
 	// passengers may also repair the vehicle, why not?
 	new vehicleid = GetPlayerVehicleID(playerid)
 	if (vehicleid == 0) {
 		WARNMSGPB144("You must be in a vehicle to do this!")
 		return
 	}
-	new Float:hp, Float:newhp
+	new Float:hp, Float:newhp, Float:x, Float:y, Float:z
+	GetVehiclePos vehicleid, x, y, z
 	GetVehicleHealthSafe playerid, vehicleid, hp
-	new cost = Veh_Repair(playermoney[playerid], hp, newhp, buf144)
+	new cost = Veh_Repair(x, y, z, vehicleid, playerid, playermoney[playerid], hp, newhp, buf144, buf4096)
 	if (!cost) {
 		SendClientMessage playerid, COL_WARN, buf144
 		return
 	}
 
-	SendClientMessage playerid, COL_INFO, buf144
+	if (buf4096[0]) {
+		mysql_tquery 1, buf4096
+	}
 	money_takeFrom playerid, cost
+	SendClientMessage playerid, COL_INFO, buf144
 	RepairVehicle vehicleid
 	SetVehicleHealth vehicleid, newhp
 	if (GetPlayerVehicleSeat(playerid) != 0) {
@@ -387,7 +402,7 @@ repairVehicleForPlayer(playerid)
 //@remarks passengers can also refuel vehicles
 refuelVehicleForPlayer(playerid)
 {
-	// TODO: make fix points and check radius
+	// passengers may also refuel the vehicle, why not?
 	new vehicleid = GetPlayerVehicleID(playerid)
 	if (vehicleid == 0) {
 		WARNMSGPB144("You must be in a vehicle to do this!")
@@ -401,13 +416,17 @@ refuelVehicleForPlayer(playerid)
 		return
 	}
 
-	new Float:refuelamount
-	new cost = Veh_Refuel(vehicleid, 1.2, playermoney[playerid], refuelamount, buf144)
+	new Float:refuelamount, Float:x, Float:y, Float:z
+	GetVehiclePos vehicleid, x, y, z
+	new cost = Veh_Refuel(x, y, z, vehicleid, playerid, 1.2, playermoney[playerid], refuelamount, buf144, buf4096)
 	if (!cost) {
 		SendClientMessage playerid, COL_WARN, buf144
 		return
 	}
 
+	if (buf4096[0]) {
+		mysql_tquery 1, buf4096
+	}
 	money_takeFrom playerid, cost
 	SendClientMessage playerid, COL_INFO, buf144
 	if (GetPlayerVehicleSeat(playerid) != 0) {
