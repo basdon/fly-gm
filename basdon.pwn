@@ -103,6 +103,7 @@ new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
 ###include "playtime"
 ###include "pm"
 ###include "prefs"
+###include "protips"
 ###include "spawn"
 ###include "timecyc"
 ###include "tracker"
@@ -293,6 +294,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 ###include "nav"
 ###include "pm"
 ###include "prefs"
+###include "protips"
 ###include "timecyc"
 ###include "zones"
 ###include "vehicles"
@@ -536,7 +538,7 @@ SetPlayerPosHook(playerid, Float:x, Float:y, Float:z)
 
 #include "anticheat"
 #include "playername" // try to keep this top-ish (for onPlayerNameChange section)
-#include "timecyc" // also try to keep this top-ish (because 1s 30s loop hooks)
+#include "timecyc" // also try to keep this top-ish (because 1s 30s 1m loop hooks)
 #include "airport"
 #include "dev"
 #include "dialog"
