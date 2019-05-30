@@ -95,6 +95,7 @@ new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
 ###include "dev"
 ###include "dialog"
 ###include "game_sa"
+###include "heartbeat"
 ###include "login"
 ###include "missions"
 ###include "objects"
@@ -217,6 +218,7 @@ public OnGameModeInit()
 
 ##section OnGameModeInit
 ###include "airport"
+###include "heartbeat"
 ###include "missions" // 'airport' must be run somewhere before this
 ###include "objects"
 ###include "panel"
@@ -233,6 +235,7 @@ public OnGameModeExit()
 {
 ##section OnGameModeExit
 ###include "airport"
+###include "heartbeat"
 ###include "tracker"
 ###include "vehicles"
 ##endsection
@@ -543,6 +546,7 @@ SetPlayerPosHook(playerid, Float:x, Float:y, Float:z)
 #include "dev"
 #include "dialog"
 #include "game_sa"
+#include "heartbeat"
 #include "login"
 #include "missions"
 #include "playtime"
