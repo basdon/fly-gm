@@ -50,7 +50,7 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 			WARNMSG("You can't afford this!")
 		} else if (Missions_EndUnfinished(playerid, MISSION_STATE_DECLINED, buf4096)) {
 			mysql_tquery 1, buf4096
-			socket_send trackerSocket, buf4096[501], buf4096[500]
+			socket_send_array trackerSocket, buf4096[500], 8
 		}
 		#return 1
 	}
@@ -99,7 +99,7 @@ hook OnPlayerDeath(playerid, killerid, reason)
 		if (Missions_EndUnfinished(playerid, missionstopreason, buf4096)) {
 			PlayerTextDrawHide playerid, passenger_satisfaction[playerid]
 			mysql_tquery 1, buf4096
-			socket_send trackerSocket, buf4096[501], buf4096[500]
+			socket_send_array trackerSocket, buf4096[500], 8
 		}
 	}
 }
@@ -108,7 +108,7 @@ hook OnPlayerDisconnect(playerid, reason)
 {
 	if (Missions_EndUnfinished(playerid, MISSION_STATE_ABANDONED, buf4096)) {
 		mysql_tquery 1, buf4096
-		socket_send trackerSocket, buf4096[501], buf4096[500]
+		socket_send_array trackerSocket, buf4096[500], 8
 	}
 }
 
@@ -251,9 +251,9 @@ startMission(playerid)
 	{
 		if (!isValidPlayer(playerid, cid)) return
 		hideGameTextForPlayer(playerid)
-		new Float:x, Float:y, Float:z;
+		new Float:x, Float:y, Float:z
 		if (Missions_Start(playerid, cache_insert_id(), x, y, z, buf4096)) {
-			socket_send trackerSocket, buf4096[201], buf4096[200]
+			socket_send_array trackerSocket, buf4096[200], 36
 			SetPlayerRaceCheckpoint playerid, 2, x, y, z, 0.0, 0.0, 0.0, MISSION_CHECKPOINT_SIZE
 			SendClientMessage playerid, COL_MISSION, buf4096
 			Missions_OnWeatherChanged lockedweather

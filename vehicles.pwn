@@ -66,7 +66,7 @@ hook loop1splayers(playerid)
 				GetVehicleHealthSafe playerid, vid, qw
 				GetVehicleVelocity vid, qx, qy, qz
 				if (Missions_CreateTrackerMessage(playerid, vid, qw, _x, _y, qx, qy, qz, _z, buf144)) {
-					socket_send trackerSocket, buf144[1], buf144[0]
+					socket_send_array trackerSocket, buf144, 24
 				}
 			}
 		}
