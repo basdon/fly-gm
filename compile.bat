@@ -25,9 +25,14 @@ IF [%~1] EQU [prod] (
         set "_FLAGS=-d0 -O0"
 )
 
+IF [%~1] EQU [nomake] (
+	SET "_EXTRAFLAGS="
+	GOTO SKIPMAKE
+)
 make build
 IF %ERRORLEVEL% NEQ 0 EXIT /B
 ECHO.
+:SKIPMAKE
 "%_PAWNCC%" -(- -;- -i"%CD%/vendor/" -Dp/ %_EXTRAFLAGS% basdon.p -r../out/basdon.xml -o../out/basdon.amx %_FLAGS%
 IF %ERRORLEVEL% NEQ 0 EXIT /B
 ECHO.
