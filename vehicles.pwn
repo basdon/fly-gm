@@ -158,7 +158,6 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 		}
 		new Float:vx, Float:vy, Float:vz, found_vehicle_id = 0, Float:shortest_distance = FLOAT_PINF, Float:tmpdistance
 		for (new i = 1, m = GetVehiclePoolSize(); i <= m; i++) {
-			buf4096[0] = 0
 			if (GetVehicleModel(i) == MODEL_AT400 &&
 				GetVehiclePos(i, vx, vy, vz) &&
 				Veh_IsPlayerAllowedInVehicle(userid[playerid], i, buf4096) &&
@@ -167,9 +166,6 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 			{
 				shortest_distance = tmpdistance
 				found_vehicle_id = i
-			}
-			if (buf4096[0]) {
-				SendClientMessageToAll -1, buf4096
 			}
 		}
 		if (found_vehicle_id && shortest_distance < 25.0) {
