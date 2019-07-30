@@ -8,7 +8,7 @@ varinit
 	new protipdelay
 	new protips[][] = {
 		//------------------------------------------------------------------------------------------------------------------------------------------------
-		!"Pro Tip: Use /w(ork) to start a random mission. /s(top) to cancel your mission ($5000 fine).",
+		!"Pro Tip: Use /w(ork) to start a random mission. /s(top) to cancel your mission ($"#MISSION_CANCEL_FINE_" fine).",
 		!"Pro Tip: Use /nearest to get a list of all airports, sorted by proximity!",
 		!"Pro Tip: Enable navigation with /adf [beacon] or /vor [beacon][runway]",
 		!"Pro Tip: ILS can be toggled using /ils when VOR is already active.",
@@ -17,7 +17,7 @@ varinit
 		!"Pro Tip: Check /p(references) to tweak your personal preferences while playing on this server.",
 		!"Pro Tip: Use /autow to toggle automatically getting a new mission after finishing one (see also /p).",
 		!"Pro Tip: Send private messages to other players using /pm [id/name/part of name] [message]",
-		!"Pro Tip: Can't get into an AT-400? We got you covered, just type /at400",
+		!"Pro Tip: Can't get into an AT-400? We got you covered, just type /at400 when near one",
 		!"Pro Tip: Always try to land on the back wheels."
 	}
 }
