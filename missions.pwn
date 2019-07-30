@@ -253,7 +253,7 @@ startMission(playerid)
 		hideGameTextForPlayer(playerid)
 		new Float:x, Float:y, Float:z
 		if (Missions_Start(playerid, cache_insert_id(), x, y, z, buf4096, buf32)) {
-			socket_send_array trackerSocket, buf32, 36
+			socket_send_array trackerSocket, buf32, 40
 			SetPlayerRaceCheckpoint playerid, 2, x, y, z, 0.0, 0.0, 0.0, MISSION_CHECKPOINT_SIZE
 			SendClientMessage playerid, COL_MISSION, buf4096
 			Missions_OnWeatherChanged lockedweather
