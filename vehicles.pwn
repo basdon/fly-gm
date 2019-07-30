@@ -31,28 +31,29 @@ hook loop1splayers(playerid)
 		(vid = GetPlayerVehicleID(playerid)))
 	{
 		if (Game_IsAirVehicle(GetVehicleModel(vid)) && vid == lastvehicle[playerid]) {
-			new Float:qw, Float:qx, Float:qy, Float:qz
+			new Float:qw, Float:qx, Float:qy, Float:qz, engine, afk = isAfk(playerid)
 			GetVehicleRotationQuat vid, qw, qx, qy, qz
-			if (Missions_UpdateSatisfaction(playerid, vid, qw, qx, qy, qz, buf144)) {
-				PlayerTextDrawSetString playerid, passenger_satisfaction[playerid], buf144
-			}
-			new engine
 			GetVehicleParamsEx vid, engine, tmp1, tmp1, tmp1, tmp1, tmp1, tmp1
-			if (engine && !isAfk(playerid)) {
-				new _tmp
-				GetPlayerKeys playerid, _tmp, tmp1, tmp1
-				if (Veh_ConsumeFuel(vid, .throttle=_tmp & KEY_SPRINT, .isOutOfFuel=_tmp, .buf=buf144)) {
-					PlayerPlaySound playerid, FUEL_WARNING_SOUND, 0.0, 0.0, 0.0
-					SendClientMessage playerid, COL_WARN, buf144
-					if (_tmp) {
-						SetVehicleParamsEx vid, engine = 0, .lights=0, .alarm=0, .doors=0, .bonnet=0, .boot=0, .objective=0
-					}
+			if (!afk) {
+				if (Missions_UpdateSatisfaction(playerid, vid, qw, qx, qy, qz, buf144)) {
+					PlayerTextDrawSetString playerid, passenger_satisfaction[playerid], buf144
 				}
-				if (lastcontrolactivity[playerid] > gettime() - 30) {
-					if (++flighttimenew[playerid] >= 60) {
-						SetPlayerScore(playerid, GetPlayerScore(playerid) + 1)
-						flighttimeold[playerid] += 60
-						flighttimenew[playerid] -= 60
+				if (engine) {
+					new _tmp
+					GetPlayerKeys playerid, _tmp, tmp1, tmp1
+					if (Veh_ConsumeFuel(vid, .throttle=_tmp & KEY_SPRINT, .isOutOfFuel=_tmp, .buf=buf144)) {
+						PlayerPlaySound playerid, FUEL_WARNING_SOUND, 0.0, 0.0, 0.0
+						SendClientMessage playerid, COL_WARN, buf144
+						if (_tmp) {
+							SetVehicleParamsEx vid, engine = 0, .lights=0, .alarm=0, .doors=0, .bonnet=0, .boot=0, .objective=0
+						}
+					}
+					if (lastcontrolactivity[playerid] > gettime() - 30) {
+						if (++flighttimenew[playerid] >= 60) {
+							SetPlayerScore(playerid, GetPlayerScore(playerid) + 1)
+							flighttimeold[playerid] += 60
+							flighttimenew[playerid] -= 60
+						}
 					}
 				}
 			}
@@ -65,7 +66,7 @@ hook loop1splayers(playerid)
 			if (Missions_GetState(playerid) == MISSION_STAGE_FLIGHT) {
 				GetVehicleHealthSafe playerid, vid, qw
 				GetVehicleVelocity vid, qx, qy, qz
-				if (Missions_CreateTrackerMessage(playerid, vid, qw, _x, _y, qx, qy, qz, _z, isAfk(playerid), engine, buf144)) {
+				if (Missions_CreateTrackerMessage(playerid, vid, qw, _x, _y, qx, qy, qz, _z, afk, engine, buf144)) {
 					socket_send_array trackerSocket, buf144, 24
 				}
 			}
