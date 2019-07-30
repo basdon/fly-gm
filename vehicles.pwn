@@ -45,7 +45,7 @@ hook loop1splayers(playerid)
 					PlayerPlaySound playerid, FUEL_WARNING_SOUND, 0.0, 0.0, 0.0
 					SendClientMessage playerid, COL_WARN, buf144
 					if (_tmp) {
-						SetVehicleParamsEx vid, .engine=0, .lights=0, .alarm=0, .doors=0, .bonnet=0, .boot=0, .objective=0
+						SetVehicleParamsEx vid, engine = 0, .lights=0, .alarm=0, .doors=0, .bonnet=0, .boot=0, .objective=0
 					}
 				}
 				if (lastcontrolactivity[playerid] > gettime() - 30) {
@@ -65,7 +65,7 @@ hook loop1splayers(playerid)
 			if (Missions_GetState(playerid) == MISSION_STAGE_FLIGHT) {
 				GetVehicleHealthSafe playerid, vid, qw
 				GetVehicleVelocity vid, qx, qy, qz
-				if (Missions_CreateTrackerMessage(playerid, vid, qw, _x, _y, qx, qy, qz, _z, isAfk(playerid), buf144)) {
+				if (Missions_CreateTrackerMessage(playerid, vid, qw, _x, _y, qx, qy, qz, _z, isAfk(playerid), engine, buf144)) {
 					socket_send_array trackerSocket, buf144, 24
 				}
 			}
