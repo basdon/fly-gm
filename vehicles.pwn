@@ -91,7 +91,7 @@ hook loop5000()
 
 hook OnGameModeInit()
 {
-	new Cache:veh = mysql_query(1, !"SELECT veh.i,veh.m,veh.o,veh.x,veh.y,veh.z,veh.r,veh.c,veh.d,veh.odo,usr.n FROM veh LEFT OUTER JOIN usr ON veh.o = usr.i WHERE veh.e=1")
+	new Cache:veh = mysql_query(1, !"SELECT v.i,m,ownerplayer,v.x,v.y,v.z,v.r,v.col1,v.col2,v.odo,u.name FROM veh v LEFT OUTER JOIN usr u ON v.ownerplayer = u.i WHERE v.e=1")
 	rowcount = cache_get_row_count()
 	Veh_Init rowcount
 	while (rowcount--) {
