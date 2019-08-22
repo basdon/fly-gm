@@ -289,8 +289,9 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 			PlayerData_SetUserId playerid, userid[playerid] // needed for failed login too
 
 			if (!bcrypt_is_equal()) {
-				if (Login_FormatAddFailedLogin(playerid, buf4096)) {
-					mysql_tquery 1, buf4096
+				if (Login_FormatAddFailedLogin(playerid, buf144, buf64)) {
+					mysql_tquery 1, buf144
+					mysql_tquery 1, buf64
 				}
 				// failed login
 				if (++failedlogins{playerid} > MAX_LOGIN_ATTEMPTS_IN_ONE_SESSION) {
