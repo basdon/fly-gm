@@ -332,17 +332,33 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 				}
 
 				GameTextForPlayer playerid, "~b~Creating game session...", 0x800000, 3
-				new score, money, iodo
+				new score, money, iodo, falng, lastfal
 				cache_get_field_int(0, 0, score)
 				cache_get_field_int(0, 1, money)
 				cache_get_field_int(0, 2, iodo)
 				cache_get_field_int(0, 3, flighttimeold[playerid])
 				cache_get_field_int(0, 4, prefs[playerid])
+				cache_get_field_int(0, 5, falng)
+				cache_get_field_int(0, 6, lastfal)
 				flighttimenew[playerid] = flighttimeold[playerid] % 60
 				flighttimeold[playerid] -= flighttimenew[playerid]
 				playerodo[playerid] = float(iodo)
 				SetPlayerScore playerid, score
 				money_setFor playerid, money
+
+				if (lastfal > falng) {
+					if (Login_FormatUpdateFalng(playerid, lastfal, buf144)) {
+						mysql_tquery 1, buf144
+					}
+					ShowPlayerDialog\
+						playerid,
+						DIALOG_FAILEDLOGINNOTICE,
+						DIALOG_STYLE_MSGBOX,
+						"Failed logins",
+						""#ECOL_WARN"There were one or more failed logins since your last visit.\n"\
+						"Check the website for more details.",
+						"Ok", ""
+				}
 
 				mysql_tquery 1, buf4096[1]
 				mysql_tquery 1, buf4096[buf4096[0]], #PUB_LOGIN_CREATEGAMESESSION_CB, "ii", playerid, cc[playerid]
