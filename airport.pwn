@@ -20,7 +20,7 @@ hook OnGameModeInit()
 		APT_Add rowcount, code, enabled, name, beacon, x, y, z
 	}
 	cache_delete apc
-	apc = mysql_query(1, !"SELECT a,s,h,x,y,z,n FROM rnw")
+	apc = mysql_query(1, !"SELECT a,s,h,x,y,z,n FROM rnw WHERE type=1")
 	rowcount = cache_get_row_count()
 	while (rowcount--) {
 		new aptindex, specifier[2], Float:heading, Float:x, Float:y, Float:z, nav
