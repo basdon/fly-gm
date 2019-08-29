@@ -18,7 +18,6 @@
 
 #undef MAX_PLAYERS
 #include "sharedsymbols"
-#include "colors"
 #ifndef MAX_PLAYERS
 #error "no MAX_PLAYERS"
 #endif
