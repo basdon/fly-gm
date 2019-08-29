@@ -73,6 +73,12 @@
 #define GROUP_ADMIN (268435456)
 #define GROUP_OWNER (1073741824)
 
+#ifdef _samp_included
+#define GROUPS_ISADMIN(%1) (%1 >= GROUP_ADMIN)
+#else
+#define GROUPS_ISADMIN(X) (X >= GROUP_ADMIN)
+#endif /*_samp_included*/
+
 /* game_sa.c / game_sa.pwn, global */
 #define MODEL_LANDSTAL (400)
 #define MODEL_BRAVURA (401)
