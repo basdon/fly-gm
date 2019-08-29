@@ -210,7 +210,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 
 			bcrypt_get_hash buf144
 			Login_UsePassword playerid, buf144
-			Login_FormatCreateUser playerid, buf4096, .password=buf144, .group=4
+			Login_FormatCreateUser playerid, buf4096, .password=buf144, .group=GROUP_MEMBER
 			mysql_tquery 1, buf4096, #PUB_LOGIN_REGISTER_CB, "ii", playerid, cc[playerid]
 
 			#outline
@@ -223,6 +223,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 
 				userid[playerid] = cache_insert_id()
 				PlayerData_SetUserId playerid, userid[playerid]
+				PlayerData_UpdateGroup playerid, GROUP_MEMBER
 				if (userid[playerid] == -1 || !Login_FormatCreateSession(playerid, buf4096)) {
 					hideGameTextForPlayer(playerid)
 					WARNMSG("An error occured while registering.")
@@ -332,7 +333,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 				}
 
 				GameTextForPlayer playerid, "~b~Creating game session...", 0x800000, 3
-				new score, money, iodo, falng, lastfal
+				new score, money, iodo, falng, lastfal, groups
 				cache_get_field_int(0, 0, score)
 				cache_get_field_int(0, 1, money)
 				cache_get_field_int(0, 2, iodo)
@@ -340,11 +341,13 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 				cache_get_field_int(0, 4, prefs[playerid])
 				cache_get_field_int(0, 5, falng)
 				cache_get_field_int(0, 6, lastfal)
+				cache_get_field_int(0, 7, groups)
 				flighttimenew[playerid] = flighttimeold[playerid] % 60
 				flighttimeold[playerid] -= flighttimenew[playerid]
 				playerodo[playerid] = float(iodo)
 				SetPlayerScore playerid, score
 				money_setFor playerid, money
+				PlayerData_UpdateGroup playerid, groups
 
 				if (lastfal > falng) {
 					if (Login_FormatUpdateFalng(playerid, lastfal, buf144)) {
@@ -576,6 +579,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 				hideGameTextForPlayer(playerid)
 
 				if (cache_affected_rows(1)) {
+					PlayerData_UpdateGroup playerid, GROUP_MEMBER
 					loggedstatus[playerid] = LOGGED_IN
 					ShowPlayerDialog\
 						playerid,
