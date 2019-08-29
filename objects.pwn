@@ -37,6 +37,12 @@ hook OnPlayerConnect(playerid)
 	//RemoveBuildingForPlayer playerid, 1378, 2232.4, -2458.6, 36.2, 1.2 // LA annoying dock crane
 	//RemoveBuildingForPlayer playerid, 1396, 2232.4, -2458.6, 36.2, 1.2 // LA annoying dock crane LOD
 	// (need the cable & blue control thing ^)
+
+	//RemoveBuildingForPlayer playerid, 3663, 1580.09, -2433.83, 14.5703, 1.2 // LA stairs (lasstepsa_LAS)
+	//RemoveBuildingForPlayer playerid, 3663, 1664.45, -2439.8, 14.4688, 1.2 // LA stairs (lasstepsa_LAS)
+	//RemoveBuildingForPlayer playerid, 3663, 1832.45, -2388.44, 14.4688, 1.2 // LA stairs (lasstepsa_LAS)
+	//RemoveBuildingForPlayer playerid, 3663, 1882.27, -2395.78, 14.4688, 1.2 // LA stairs (lasstepsa_LAS)
+	RemoveBuildingForPlayer playerid, 3663, 1731.18, -2417.79, 14.4688, 175.0
 }
 
 hook loop5000()
