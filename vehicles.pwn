@@ -311,6 +311,13 @@ hook onSetPlayerPos(playerid, Float:x, Float:y, Float:z)
 hook OnVehicleSpawn(vehicleid)
 {
 	vv[vehicleid]++
+	new dbid, model, Float:x, Float:y, Float:z, Float:r, col1, col2;
+	if (Veh_ShouldRecreate(vehicleid, dbid, model, x, y, z, r, col1, col2)) {
+		DestroyVehicle vehicleid
+		Veh_UpdateSlot vehicleid, -1
+		vehicleid = CreateVehicle(model, x, y, z, r, col1, col2, RESPAWN_DELAY) // TODO: this seems dangerous...
+		Veh_UpdateSlot(vehicleid, dbid)
+	}
 	Veh_EnsureHasFuel vehicleid
 }
 
@@ -536,7 +543,7 @@ spawnPlayerVehicles(usrid)
 			Float:buf4096[idx+2],
 			buf4096[idx+1],
 			buf4096[idx],
-			300)
+			RESPAWN_DELAY)
 		if (vid != INVALID_VEHICLE_ID) {
 			Veh_UpdateSlot vid, buf4096[idx+7]
 		}
