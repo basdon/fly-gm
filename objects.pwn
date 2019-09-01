@@ -34,9 +34,10 @@ hook OnPlayerConnect(playerid)
 	//RemoveBuildingForPlayer playerid, 3664, 1388.0, -2593.0, 19.3, 1.2 // LA ramp runwayS
 	RemoveBuildingForPlayer playerid, 3664, 1715.4, -2517.6, 19.3, 387.5
 
-	//RemoveBuildingForPlayer playerid, 1378, 2232.4, -2458.6, 36.2, 1.2 // LA annoying dock crane
-	//RemoveBuildingForPlayer playerid, 1396, 2232.4, -2458.6, 36.2, 1.2 // LA annoying dock crane LOD
-	// (need the cable & blue control thing ^)
+	RemoveBuildingForPlayer playerid, 1378, 2232.4375, -2458.5781, 36.1953, 0.25 // LA annoying dock crane
+	RemoveBuildingForPlayer playerid, 1396, 2232.4375, -2458.5781, 36.1953, 0.25 // LA annoying dock crane LOD
+	RemoveBuildingForPlayer playerid, 1377, 2201.6250, -2458.5781, 38.9844, 0.25 // cable or blue control
+	RemoveBuildingForPlayer playerid, 1376, 2227.1016, -2458.5938, 31.6797, 0.25 // cable or blue control
 
 	//RemoveBuildingForPlayer playerid, 3663, 1580.09, -2433.83, 14.5703, 1.2 // LA stairs (lasstepsa_LAS)
 	//RemoveBuildingForPlayer playerid, 3663, 1664.45, -2439.8, 14.4688, 1.2 // LA stairs (lasstepsa_LAS)
