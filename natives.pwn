@@ -761,6 +761,11 @@ native Float:Veh_AddOdo(vehicleid, playerid, Float:x1, Float:y1, Float:z1, Float
 //@seealso Veh_InitServicePoints
 native Veh_AddServicePoint(index, id, Float:x, Float:y, Float:z)
 
+//@summary Clears the recreate flag for vehicle
+//@param vehicleid vehicle to clear the flag for
+//@returns {@code 1} if the flag was cleared, {@code 0} if the vehicle was not flagged
+native Veh_ClearRecreateFlag(vehicleid)
+
 //@summary Collects all vehicles from the table that are owned by a player
 //@param userid user id of the player of whom to collect all vehicles
 //@param buf buffer to put in the vehicle data
@@ -913,6 +918,7 @@ native Veh_ShouldCreateLabel(vehicleid, playerid, buf[])
 //@param col2 var to store vehicle col2 in
 //@returns {@code 1} when the vehicle should be recreated
 //@remarks don't forget to free current {@param vehicleid} and register new vehicleid with {@link Veh_UpdateSlot}
+//@remarks this clears the recreate flag for that vehicle
 native Veh_ShouldRecreate(vehicleid, &dbid, &model, &Float:x, &Float:y, &Float:z, &Float:r, &col1, &col2)
 
 //@summary Store the id of the 3D text created for a service point in the plugin's data.

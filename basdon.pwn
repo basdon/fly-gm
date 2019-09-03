@@ -494,8 +494,8 @@ onPlayerWasAfk(playerid)
 public OnVehicleSpawn(vehicleid)
 {
 ##section OnVehicleSpawn
+###include "vehicles" // keep vehicles first, because it may need to recreate the vehicle
 ###include "nav"
-###include "vehicles"
 ##endsection
 }
 

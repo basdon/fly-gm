@@ -26,6 +26,10 @@ hook OnPlayerCommandText(playerid, cmdtext[])
 		SetVehicleHealth(GetPlayerVehicleID(playerid), FLOAT_NINF);
 		#return 1
 	}
+	if (strcmp(cmdtext, "/vehrespawn") == 0) {
+		SetVehicleToRespawn(GetPlayerVehicleID(playerid))
+		#return 1
+	}
 	if (strcmp(cmdtext, "/vhp") == 0) {
 		new Float:res
 #undef GetVehicleHealth
@@ -113,7 +117,7 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 			#return 1
 		}
 		if (dev_vehicle != 0) {
-			DestroyVehicle dev_vehicle
+			DestroyVehicleSafe dev_vehicle
 		}
 		new Float:x, Float:y, Float:z, Float:r
 		GetPlayerPos playerid, x, y, z

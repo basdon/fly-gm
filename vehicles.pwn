@@ -8,6 +8,9 @@ varinit
 	#define RESPAWN_DELAY 300 // in seconds
 	#define FUEL_WARNING_SOUND 3200 // air horn
 
+	#define __DestroyVehicle USE_DestroyVehicleSafe_INSTEAD
+	#define DestroyVehicle __DestroyVehicle
+
 	new lastvehicle[MAX_PLAYERS]
 	new vv[MAX_VEHICLES] // vehicle reincarnation value
 
@@ -200,9 +203,7 @@ hook OnPlayerDisconnect(playerid, reason)
 	new vehamount = Veh_CollectSpawnedVehicles(userid[playerid], buf144)
 	new idx = 0
 	while (vehamount--) {
-		DestroyVehicle buf144[idx]
-		// destroyvehicle will stream out vehicle for players, so no need to destroy label here
-		Veh_UpdateSlot buf144[idx], -1
+		DestroyVehicleSafe buf144[idx]
 		idx++
 	}
 
@@ -313,9 +314,8 @@ hook OnVehicleSpawn(vehicleid)
 	vv[vehicleid]++
 	new dbid, model, Float:x, Float:y, Float:z, Float:r, col1, col2;
 	if (Veh_ShouldRecreate(vehicleid, dbid, model, x, y, z, r, col1, col2)) {
-		DestroyVehicle vehicleid
-		Veh_UpdateSlot vehicleid, -1
-		vehicleid = CreateVehicle(model, x, y, z, r, col1, col2, RESPAWN_DELAY) // TODO: this seems dangerous...
+		DestroyVehicleSafe vehicleid
+		vehicleid = CreateVehicle(model, x, y, z, r, col1, col2, RESPAWN_DELAY) // TODO: reassigning vehicleid seems dangerous...
 		Veh_UpdateSlot(vehicleid, dbid)
 	}
 	Veh_EnsureHasFuel vehicleid
@@ -331,6 +331,16 @@ hook OnVehicleStreamIn(vehicleid, forplayerid)
 hook OnVehicleStreamOut(vehicleid, forplayerid)
 {
 	destroyVehicleOwnerLabel vehicleid, forplayerid
+}
+
+DestroyVehicleSafe(vehicleid)
+{
+	#undef DestroyVehicle
+	DestroyVehicle vehicleid
+	Veh_ClearRecreateFlag vehicleid
+	Veh_UpdateSlot vehicleid, -1
+	#define DestroyVehicle __DestroyVehicle
+	// DestroyVehicle will also trigger OnVehicleStreamOut, so no need to destroy owner labels here
 }
 
 //@summary Created an owner label on a vehicle for a player if needed
