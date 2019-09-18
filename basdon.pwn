@@ -120,18 +120,12 @@ main()
 	SetTimer #PUB_LOOP25, 25, .repeating=1
 }
 
-//@summary public function to provide random numbers into the plugin
-//@param max see {@link random}
-export getrandom(max)
-{
-	return random(max)
-}
-
 //@summary Function that should never be called, does dummy calls to natives to make {@code SYSREQ.C} happy
 export dummies()
 {
 	CreateVehicle 0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0
 	Veh_UpdateSlot 0, 0
+	random(0)
 }
 
 //@summary Basic loop that handles (almost) all timed stuff.
