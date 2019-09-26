@@ -86,6 +86,7 @@ stock const TXT_EMPTY_CONST[] = "_"
 
 new tmp1
 new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
+new emptystring[] = ""
 
 #define SetPlayerPos SetPlayerPosHook
 
@@ -125,6 +126,13 @@ export dummies()
 {
 	CreateVehicle 0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0
 	Veh_UpdateSlot 0, 0
+	cache_delete Cache:0
+	cache_get_row 0, 0, buf4096
+	cache_get_row_count 0
+	cache_get_row_int 0, 0
+	cache_get_row_float 0, 0
+	mysql_query 0, buf4096, bool:1
+	//mysql_tquery 0, buf4096
 	random(0)
 }
 
@@ -133,6 +141,7 @@ export __SHORTNAMED PUB_LOOP25()
 {
 	static lastinvoctime = 0
 	static invoc = 0
+	B_Loop25
 ##section loop25
 ##endsection
 	invoc = (++invoc & 0x3)
@@ -179,7 +188,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 public OnGameModeInit()
 {
-	if (!Validate(MAX_PLAYERS)) {
+	if (!B_Validate(MAX_PLAYERS, buf4096, buf144, buf64, buf32, buf32_1, emptystring)) {
 		SendRconCommand "exit"
 		return 1
 	}
@@ -208,6 +217,8 @@ public OnGameModeInit()
 	EnableStuntBonusForAll 0
 
 	new rowcount // used in airprot, vehicles
+
+	B_OnGameModeInit
 
 ##section OnGameModeInit
 ###include "airport"
@@ -308,6 +319,8 @@ public OnPlayerConnect(playerid)
 
 	iter_add(allplayers, playerid)
 
+	B_OnPlayerConnect playerid
+
 ##section OnPlayerConnect
 ###include "dialog" // keep this first
 ###include "playername" // keep this second (sets data: name, ip, ..)
@@ -346,6 +359,8 @@ public OnPlayerDeath(playerid, killerid, reason)
 
 public OnPlayerDisconnect(playerid, reason)
 {
+	B_OnPlayerDisconnect playerid, reason
+
 ##section OnPlayerDisconnect
 ###include "airport"
 ###include "anticheat"
