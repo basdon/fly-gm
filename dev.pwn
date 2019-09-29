@@ -41,7 +41,7 @@ hook OnPlayerCommandText(playerid, cmdtext[])
 	}
 }
 
-hook OnPlayerCommandTextCase(playerid, cmdtext[])
+hook OnPlayerCommandTextCase(playerid, hash, cmdtext[])
 {
 	case 46578: if (Command_Is(cmdtext, "/*m", idx)) {
 		new m
@@ -148,7 +148,7 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 		}
 		#return 1
 	}
-	default: printf "command '%s' hash: %d", cmdtext, Command_Hash(cmdtext)
+	default: printf "command '%s' hash: %d", cmdtext, hash
 }
 
 #printhookguards

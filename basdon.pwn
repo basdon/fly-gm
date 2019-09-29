@@ -287,8 +287,15 @@ public OnPlayerCommandText(playerid, cmdtext[])
 	}
 	mysql_tquery 1, buf4096
 
+	return B_OnPlayerCommandText(playerid, cmdtext)
+}
+
+//@summary Called from plugin after {@link OnPlayerCommandText} and processing plugin commands
+//@param hash hash of the command
+export OnPlayerCommandTextHash(playerid, hash, cmdtext[])
+{
 	new idx
-	switch (Command_Hash(cmdtext)) {
+	switch (hash) {
 	case 159897060: if (Command_Is(cmdtext, "/helpkeys", idx)) {
 		GameTextForPlayer playerid, "~w~start/stop engine: ~b~~k~~CONVERSATION_NO~~n~~w~landing gear: ~b~~k~~TOGGLE_SUBMISSIONS~", 5000, 3
 		return 1
