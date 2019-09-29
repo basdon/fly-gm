@@ -124,7 +124,11 @@ main()
 //@summary Function that should never be called, does dummy calls to natives to make {@code SYSREQ.C} happy
 export dummies()
 {
+	new Float:f
 	CreateVehicle 0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0
+	CreatePlayerObject 0, 0, f, f, f, f, f, f, f
+	DestroyPlayerObject 0, 0
+	GetPlayerPos 0, f, f, f
 	Veh_UpdateSlot 0, 0
 	cache_delete Cache:0
 	cache_get_row 0, 0, buf4096
