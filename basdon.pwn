@@ -330,6 +330,10 @@ public OnPlayerConnect(playerid)
 
 	iter_add(allplayers, playerid)
 
+#ifndef PROD
+	SendClientMessage playerid, COL_WARN, "GM: DEVELOPMENT BUILD"
+#endif
+
 	B_OnPlayerConnect playerid
 
 ##section OnPlayerConnect
