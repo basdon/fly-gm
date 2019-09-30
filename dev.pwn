@@ -39,6 +39,29 @@ hook OnPlayerCommandText(playerid, cmdtext[])
 		SendClientMessage playerid, -1, buf144
 		#return 1
 	}
+	if (strcmp(cmdtext, "/testpargm", bool:1, 10) == 0) {
+		new i, idx
+		if (!Command_Is(cmdtext, "/testpargm", idx)) {
+			WARNMSG("wtf not /testpargm")
+		}
+		if (Command_GetIntParam(cmdtext, idx, i)) {
+			format buf32, sizeof(buf32), "int %d", i
+			SendClientMessage playerid, -1, buf32
+		}
+		if (Command_GetPlayerParam(cmdtext, idx, i)) {
+			format buf32, sizeof(buf32), "player %d", i
+			SendClientMessage playerid, -1, buf32
+		}
+		if (Command_GetStringParam(cmdtext, idx, buf144)) {
+			format buf32, sizeof(buf32), "string -%s-", buf144
+			SendClientMessage playerid, -1, buf32
+		}
+		if (Command_GetIntParam(cmdtext, idx, i)) {
+			format buf32, sizeof(buf32), "int %d", i
+			SendClientMessage playerid, -1, buf32
+		}
+		#return 1;
+	}
 }
 
 hook OnPlayerCommandTextCase(playerid, hash, cmdtext[])
