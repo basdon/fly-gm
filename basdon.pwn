@@ -128,7 +128,9 @@ export dummies()
 	CreateVehicle 0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0
 	CreatePlayerObject 0, 0, f, f, f, f, f, f, f
 	DestroyPlayerObject 0, 0
+	DisablePlayerRaceCheckpoint 0
 	GetPlayerPos 0, f, f, f
+	SetPlayerRaceCheckpoint 0, 0, f, f, f, f, f, f, f
 	Veh_UpdateSlot 0, 0
 	cache_delete Cache:0
 	cache_get_row 0, 0, buf4096
