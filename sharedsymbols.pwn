@@ -18,6 +18,11 @@
 #else
 #define MAX_VEHICLES (2000)
 #endif
+#ifdef INVALID_VEHICLE_ID
+#assert INVALID_VEHICLE_ID == 0xFFFF
+#else
+#define INVALID_VEHICLE_ID (0xFFFF)
+#endif
 #ifdef MAX_OBJECTS
 #assert MAX_OBJECTS == 1000
 #else
@@ -85,6 +90,10 @@
 #define GROUP_MEMBER (4)
 #define GROUP_ADMIN (268435456)
 #define GROUP_OWNER (1073741824)
+
+#define GROUPS_ALL (GROUP_MEMBER|GROUP_ADMIN|GROUP_OWNER)
+#define GROUPS_ADMIN (GROUP_ADMIN|GROUP_OWNER)
+#define GROUPS_NOTBANNED (GROUPS_ALL&~GROUPS_BANNED)
 
 #ifdef _samp_included
 #define GROUPS_ISADMIN(%1) ((%1) >= GROUP_ADMIN)
@@ -403,4 +412,5 @@
 #define WEATHER_INVALID 255
 
 /* vehicles.c / vehicles.pwn */
+#define VEHICLE_RESPAWN_DELAY 300
 #define MAX_SERVICE_MAP_ICONS 4

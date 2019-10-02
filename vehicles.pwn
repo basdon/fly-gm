@@ -5,7 +5,6 @@
 
 varinit
 {
-	#define RESPAWN_DELAY 300 // in seconds
 	#define FUEL_WARNING_SOUND 3200 // air horn
 
 	#define __DestroyVehicle USE_DestroyVehicleSafe_INSTEAD
@@ -113,7 +112,7 @@ hook OnGameModeInit()
 		Veh_Add(dbid, model, owneruserid, x, y, z, r, col1, col2, odo, ownername)
 		// only spawn public vehicles statically
 		if (owneruserid == 0) {
-			new vehicleid = AddStaticVehicleEx(model, x, y, z, r, col1, col2, RESPAWN_DELAY)
+			new vehicleid = AddStaticVehicleEx(model, x, y, z, r, col1, col2, VEHICLE_RESPAWN_DELAY)
 			if (vehicleid != INVALID_VEHICLE_ID) {
 				Veh_UpdateSlot vehicleid, dbid
 			}
@@ -312,13 +311,6 @@ hook onSetPlayerPos(playerid, Float:x, Float:y, Float:z)
 hook OnVehicleSpawn(vehicleid)
 {
 	vv[vehicleid]++
-	new dbid, model, Float:x, Float:y, Float:z, Float:r, col1, col2;
-	if (Veh_ShouldRecreate(vehicleid, dbid, model, x, y, z, r, col1, col2)) {
-		DestroyVehicleSafe vehicleid
-		vehicleid = CreateVehicle(model, x, y, z, r, col1, col2, RESPAWN_DELAY) // TODO: reassigning vehicleid seems dangerous...
-		Veh_UpdateSlot(vehicleid, dbid)
-	}
-	Veh_EnsureHasFuel vehicleid
 }
 
 hook OnVehicleStreamIn(vehicleid, forplayerid)
@@ -491,7 +483,7 @@ spawnPlayerVehicles(usrid)
 	#emit STOR.pri tmp1
 	while (vehamount--) {
 		#emit PUSH.C 0 // addsiren
-		#assert RESPAWN_DELAY == 300
+		#assert VEHICLE_RESPAWN_DELAY == 300
 		#emit PUSH.C 300 // respawn delay
 		#emit LOAD.pri tmp1
 		#emit LREF.alt tmp1
@@ -553,7 +545,7 @@ spawnPlayerVehicles(usrid)
 			Float:buf4096[idx+2],
 			buf4096[idx+1],
 			buf4096[idx],
-			RESPAWN_DELAY)
+			VEHICLE_RESPAWN_DELAY)
 		if (vid != INVALID_VEHICLE_ID) {
 			Veh_UpdateSlot vid, buf4096[idx+7]
 		}

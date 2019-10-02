@@ -141,7 +141,7 @@ export dummies()
 	cache_get_row_int 0, 0
 	cache_get_row_float 0, 0
 	mysql_query 0, buf4096, bool:1
-	mysql_tquery
+	mysql_tquery 0, buf4096, buf4096, buf4096
 	//mysql_tquery 0, buf4096
 	random(0)
 }
@@ -523,8 +523,9 @@ onPlayerWasAfk(playerid)
 
 public OnVehicleSpawn(vehicleid)
 {
+	B_OnVehicleSpawn vehicleid
 ##section OnVehicleSpawn
-###include "vehicles" // keep vehicles first, because it may need to recreate the vehicle
+###include "vehicles"
 ###include "nav"
 ##endsection
 }
