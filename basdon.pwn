@@ -125,12 +125,15 @@ main()
 export dummies()
 {
 	new Float:f
+	ChangeVehicleColor 0, 0, 0
 	CreateVehicle 0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0
 	CreatePlayerObject 0, 0, f, f, f, f, f, f, f
 	DestroyPlayerObject 0, 0
 	DisablePlayerRaceCheckpoint 0
 	GetPlayerPos 0, f, f, f
+	GetPlayerVehicleID 0
 	SetPlayerRaceCheckpoint 0, 0, f, f, f, f, f, f, f
+	SetVehicleToRespawn 0
 	Veh_UpdateSlot 0, 0
 	cache_delete Cache:0
 	cache_get_row 0, 0, buf4096
@@ -138,6 +141,7 @@ export dummies()
 	cache_get_row_int 0, 0
 	cache_get_row_float 0, 0
 	mysql_query 0, buf4096, bool:1
+	mysql_tquery
 	//mysql_tquery 0, buf4096
 	random(0)
 }
