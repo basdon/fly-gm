@@ -176,17 +176,6 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 		}
 		#return 1
 	}
-	case 46838937: if (Command_Is(cmdtext, "/park", idx)) {
-		new vehicleid, Float:x, Float:y, Float:z, Float:r, msgcol
-		vehicleid = GetPlayerVehicleID(playerid)
-		GetVehiclePos(vehicleid, x, y, z)
-		GetVehicleZAngle(vehicleid, r)
-		if (Veh_Park(playerid, vehicleid, x, y, z, r, buf4096, msgcol, buf144)) {
-			mysql_tquery 1, buf4096
-		}
-		SendClientMessage playerid, msgcol, buf144
-		#return 1
-	}
 }
 
 hook OnPlayerConnect(playerid)
@@ -329,7 +318,6 @@ DestroyVehicleSafe(vehicleid)
 {
 	#undef DestroyVehicle
 	DestroyVehicle vehicleid
-	Veh_ClearRecreateFlag vehicleid
 	Veh_UpdateSlot vehicleid, -1
 	#define DestroyVehicle __DestroyVehicle
 	// DestroyVehicle will also trigger OnVehicleStreamOut, so no need to destroy owner labels here

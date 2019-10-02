@@ -132,6 +132,8 @@ export dummies()
 	DisablePlayerRaceCheckpoint 0
 	GetPlayerPos 0, f, f, f
 	GetPlayerVehicleID 0
+	GetVehiclePos 0, f, f, f
+	GetVehicleZAngle 0, f
 	SetPlayerRaceCheckpoint 0, 0, f, f, f, f, f, f, f
 	SetVehicleToRespawn 0
 	Veh_UpdateSlot 0, 0
