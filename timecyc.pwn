@@ -69,7 +69,7 @@ hook loop100()
 
 	new time = gettime() // TODO this can be used as time cache?
 	if (time > lasttime) {
-		B_Loop1000
+		B_Timer1000
 ##section loop1s
 ##endsection
 ##section loop1splayers

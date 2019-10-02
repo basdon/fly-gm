@@ -147,7 +147,7 @@ export __SHORTNAMED PUB_LOOP25()
 {
 	static lastinvoctime = 0
 	static invoc = 0
-	B_Loop25
+	B_Timer25
 ##section loop25
 ##endsection
 	invoc = (++invoc & 0x3)
