@@ -134,6 +134,9 @@ export dummies()
 	GetPlayerVehicleID 0
 	GetVehiclePos 0, f, f, f
 	GetVehicleZAngle 0, f
+	RemoveBuildingForPlayer 0, 0, f, f, f, f
+	SendClientMessage 0, 0, buf144
+	SendClientMessageToAll 0, buf144
 	SetPlayerRaceCheckpoint 0, 0, f, f, f, f, f, f, f
 	SetVehicleToRespawn 0
 	Veh_UpdateSlot 0, 0
