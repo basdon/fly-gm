@@ -130,6 +130,8 @@ export dummies()
 	CreatePlayerObject 0, 0, f, f, f, f, f, f, f
 	DestroyPlayerObject 0, 0
 	DisablePlayerRaceCheckpoint 0
+	GetPlayerIp 0, buf144, 0
+	GetPlayerName 0, buf144, 0
 	GetPlayerPos 0, f, f, f
 	GetPlayerVehicleID 0
 	GetVehiclePos 0, f, f, f

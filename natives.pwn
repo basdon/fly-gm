@@ -211,10 +211,10 @@ native Dialog_HasInQueue(playerid)
 //@seealso HasDialogsInQueue
 native Dialog_PopQueue(playerid, &dialogid, &style, caption[], info[], button1[], button2[], &transactionid)
 
+#namespace "echo.c"
+
 //@summary Initialized echo sockets
 native Echo_Init()
-
-#namespace "echo.c"
 
 #namespace "game_sa.c"
 
@@ -654,18 +654,7 @@ native Panel_ResetCaches(playerid)
 
 //@summary Clears login data for a player
 //@param playerid player to clear login data for
-//@seealso PlayerData_Init
 native PlayerData_Clear(playerid)
-
-//@summary Stores a player's data
-//@param playerid the playerid
-//@param ip player's ip
-//@param name player's name
-//@param namelen length of {@param name}, excluding zero term
-//@seealso PlayerData_UpdateName
-//@seealso PlayerData_SetUserId
-//@seealso PlayerData_Clear
-native PlayerData_Init(playerid, ip[], name[], namelen)
 
 //@summary Formats query to update player's basic data
 //@param userid user id of the player to update stuff for
@@ -680,7 +669,6 @@ native PlayerData_FormatUpdateQuery(userid, score, money, Float:dis, flighttime,
 //@summary Updates the player's user ID
 //@param playerid player
 //@param id userid of the player
-//@seealso PlayerData_Init
 //@seealso PlayerData_Clear
 //@returns {@code 0} if there was no player data saved for {@param playerid}
 native PlayerData_SetUserId(playerid, id)
@@ -695,7 +683,6 @@ native PlayerData_UpdateGroup(playerid, group)
 //@param playerid the playerid
 //@param name new name
 //@param namelen length of {@param name}, excluding zero term
-//@seealso PlayerData_Init
 //@seealso PlayerData_SetUserId
 //@seealso PlayerData_Clear
 //@returns {@code 0} if there was no player data saved for {@param playerid}

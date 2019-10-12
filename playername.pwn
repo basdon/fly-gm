@@ -15,8 +15,6 @@ varinit
 hook OnPlayerConnect(playerid)
 {
 	playernames[playerid][0] = GetPlayerName(playerid, playernames[playerid][1], 20)
-	GetPlayerIp playerid, buf32, 16
-	PlayerData_Init playerid, buf32, NAMEOF(playerid), NAMELEN(playerid)
 }
 
 hook OnPlayerDisconnect(playerid)
