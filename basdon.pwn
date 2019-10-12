@@ -149,6 +149,12 @@ export dummies()
 	mysql_tquery 0, buf4096, buf4096, buf4096
 	//mysql_tquery 0, buf4096
 	random(0)
+	socket_connect Socket:0, buf144, 0
+	socket_create UDP
+	socket_destroy Socket:0
+	socket_listen Socket:0, 0
+	socket_send Socket:0, buf144, 0
+	socket_stop_listen Socket:0
 }
 
 //@summary Basic loop that handles (almost) all timed stuff.
@@ -247,6 +253,8 @@ public OnGameModeInit()
 ###include "vehicles"
 ##endsection
 
+	Echo_Init
+
 	return 1;
 }
 
@@ -258,6 +266,8 @@ public OnGameModeExit()
 ###include "tracker"
 ###include "vehicles"
 ##endsection
+
+	B_OnGameModeExit
 
 	if (mysql_unprocessed_queries() > 0) {
 		new starttime = gettime()
@@ -547,6 +557,11 @@ public OnVehicleStreamOut(vehicleid, forplayerid)
 ##section OnVehicleStreamOut
 ###include "vehicles"
 ##endsection
+}
+
+public onUDPReceiveData(Socket:id, data[], data_len, remote_client_ip[], remote_client_port)
+{
+	B_onUDPReceiveData id, data, data_len, remote_client_ip, remote_client_port
 }
 
 public OnQueryError(errorid, error[], callback[], query[], connectionHandle)
