@@ -6,7 +6,7 @@
 #include <a_http>
 #include <a_mysql_min>
 #include <bcrypt>
-#include <socket>
+#include <simplesocket>
 #include "simpleiter"
 #include "util"
 #include "settings"
@@ -152,12 +152,11 @@ export dummies()
 	mysql_tquery 0, buf4096, buf4096, buf4096
 	//mysql_tquery 0, buf4096
 	random(0)
-	socket_connect Socket:0, buf144, 0
-	socket_create UDP
-	socket_destroy Socket:0
-	socket_listen Socket:0, 0
-	socket_send Socket:0, buf144, 0
-	socket_stop_listen Socket:0
+	ssocket_connect ssocket:0, buf144, 0
+	ssocket_create
+	ssocket_destroy ssocket:0
+	ssocket_listen ssocket:0, 0
+	ssocket_send ssocket:0, buf144, 0
 }
 
 //@summary Basic loop that handles (almost) all timed stuff.
@@ -564,9 +563,9 @@ public OnVehicleStreamOut(vehicleid, forplayerid)
 ##endsection
 }
 
-public onUDPReceiveData(Socket:id, data[], data_len, remote_client_ip[], remote_client_port)
+public SSocket_OnRecv(ssocket:handle, data[], len)
 {
-	B_onUDPReceiveData id, data, data_len, remote_client_ip, remote_client_port
+	B_OnRecv handle, data, len
 }
 
 public OnQueryError(errorid, error[], callback[], query[], connectionHandle)

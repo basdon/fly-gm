@@ -5,26 +5,28 @@
 
 varinit
 {
-	new Socket:trackerSocket;
+	new ssocket:trackerSocket;
 	#define TRACKER_PORT 7766
 }
 
 hook OnGameModeInit()
 {
-	trackerSocket = socket_create(UDP)
-	if (_:trackerSocket == INVALID_SOCKET) {
+	trackerSocket = ssocket_create()
+	if (_:trackerSocket == -1) {
 		print "E-T01"
 	} else {
-		socket_connect trackerSocket, "127.0.0.1", TRACKER_PORT
-		socket_send trackerSocket, "FLY\4", 4
+		ssocket_connect trackerSocket, "127.0.0.1", TRACKER_PORT
+		buf32[0] = 0x04594C46;
+		ssocket_send trackerSocket, buf32, 4
 	}
 }
 
 hook OnGameModeExit()
 {
 	if (_:trackerSocket != INVALID_SOCKET) {
-		socket_send trackerSocket, "FLY\5", 4
-		socket_destroy trackerSocket
+		buf32[0] = 0x05594C46;
+		ssocket_send trackerSocket, buf32, 4
+		ssocket_destroy trackerSocket
 	}
 }
 

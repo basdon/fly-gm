@@ -50,7 +50,8 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 			WARNMSG("You can't afford this!")
 		} else if (Missions_EndUnfinished(playerid, MISSION_STATE_DECLINED, buf4096, buf32)) {
 			mysql_tquery 1, buf4096
-			socket_send_array trackerSocket, buf32, 8
+			// TODO: fix ssocket
+			ssocket_send trackerSocket, buf32, 8
 		}
 		#return 1
 	}
@@ -99,7 +100,8 @@ hook OnPlayerDeath(playerid, killerid, reason)
 		if (Missions_EndUnfinished(playerid, missionstopreason, buf4096, buf32)) {
 			PlayerTextDrawHide playerid, passenger_satisfaction[playerid]
 			mysql_tquery 1, buf4096
-			socket_send_array trackerSocket, buf32, 8
+			// TODO: fix ssocket
+			ssocket_send trackerSocket, buf32, 8
 		}
 	}
 }
@@ -108,7 +110,8 @@ hook OnPlayerDisconnect(playerid, reason)
 {
 	if (Missions_EndUnfinished(playerid, MISSION_STATE_ABANDONED, buf4096, buf32)) {
 		mysql_tquery 1, buf4096
-		socket_send_array trackerSocket, buf32, 8
+		// TODO: fix ssocket
+		ssocket_send trackerSocket, buf32, 8
 	}
 }
 
@@ -181,7 +184,8 @@ hook OnPlayerEnterRaceCP(playerid)
 			TogglePlayerControllable playerid, 1
 			new pay
 			if (Missions_PostUnload(playerid, vehiclehp, pay, buf4096)) {
-				socket_send trackerSocket, buf4096[2201], buf4096[2200]
+				// TODO: fix ssocket
+				ssocket_send trackerSocket, buf4096[2201], buf4096[2200]
 				money_giveTo playerid, pay
 				for (new p : allplayers) {
 					if (prefs[p] & PREF_SHOW_MISSION_MSGS) {
@@ -253,7 +257,8 @@ startMission(playerid)
 		hideGameTextForPlayer(playerid)
 		new Float:x, Float:y, Float:z
 		if (Missions_Start(playerid, cache_insert_id(), x, y, z, buf4096, buf32)) {
-			socket_send_array trackerSocket, buf32, 40
+			// TODO: fix ssocket
+			ssocket_send trackerSocket, buf32, 40
 			SetPlayerRaceCheckpoint playerid, 2, x, y, z, 0.0, 0.0, 0.0, MISSION_CHECKPOINT_SIZE
 			SendClientMessage playerid, COL_MISSION, buf4096
 			Missions_OnWeatherChanged lockedweather
