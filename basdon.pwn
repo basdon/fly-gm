@@ -136,6 +136,7 @@ export dummies()
 	GetPlayerVehicleID 0
 	GetVehiclePos 0, f, f, f
 	GetVehicleZAngle 0, f
+	GivePlayerWeapon 0, 0, 0
 	RemoveBuildingForPlayer 0, 0, f, f, f, f
 	SendClientMessage 0, 0, buf144
 	SendClientMessageToAll 0, buf144
@@ -510,6 +511,8 @@ public OnPlayerText(playerid, text[])
 ###include "login" // login needs to be first! (to block if not logged)
 ###include "anticheat"
 ##endsection
+
+	B_OnPlayerText playerid, text
 	return 1
 }
 
