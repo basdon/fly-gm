@@ -130,6 +130,7 @@ export dummies()
 	CreatePlayerObject 0, 0, f, f, f, f, f, f, f
 	DestroyPlayerObject 0, 0
 	DisablePlayerRaceCheckpoint 0
+	GetConsoleVarAsInt buf144
 	GetPlayerIp 0, buf144, 0
 	GetPlayerName 0, buf144, 0
 	GetPlayerPos 0, f, f, f
@@ -148,6 +149,7 @@ export dummies()
 	cache_get_row_count 0
 	cache_get_row_int 0, 0
 	cache_get_row_float 0, 0
+	gettime
 	mysql_query 0, buf4096, bool:1
 	mysql_tquery 0, buf4096, buf4096, buf4096
 	//mysql_tquery 0, buf4096
@@ -157,6 +159,7 @@ export dummies()
 	ssocket_destroy ssocket:0
 	ssocket_listen ssocket:0, 0
 	ssocket_send ssocket:0, buf144, 0
+	tickcount
 }
 
 //@summary Basic loop that handles (almost) all timed stuff.
@@ -164,7 +167,7 @@ export __SHORTNAMED PUB_LOOP25()
 {
 	static lastinvoctime = 0
 	static invoc = 0
-	B_Timer25
+
 ##section loop25
 ##endsection
 	invoc = (++invoc & 0x3)
@@ -254,8 +257,6 @@ public OnGameModeInit()
 ###include "tracker"
 ###include "vehicles"
 ##endsection
-
-	Echo_Init
 
 	return 1;
 }

@@ -81,13 +81,6 @@ native Ac_FormatLog(playerid, loggedstatus, const message[], buf[])
 
 #namespace "basdon.c"
 
-//@summary Loop callback that should be called each 25ms
-native B_Timer25()
-
-//@summary Loop callback that should be called each 1000ms
-//@remarks This should be reliable for counting seconds, as deviations do not worsen.
-native B_Timer1000()
-
 //@summary Plugin callback for {@link OnGameModeExit}
 //@remarks call before closing db
 native B_OnGameModeExit()
@@ -213,11 +206,6 @@ native Dialog_HasInQueue(playerid)
 //@seealso QueueDialog
 //@seealso HasDialogsInQueue
 native Dialog_PopQueue(playerid, &dialogid, &style, caption[], info[], button1[], button2[], &transactionid)
-
-#namespace "echo.c"
-
-//@summary Initialized echo sockets
-native Echo_Init()
 
 #namespace "game_sa.c"
 
