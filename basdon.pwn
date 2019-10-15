@@ -247,7 +247,6 @@ public OnGameModeInit()
 	B_OnGameModeInit
 
 ##section OnGameModeInit
-###include "airport"
 ###include "heartbeat"
 ###include "missions" // 'airport' must be run somewhere before this
 ###include "objects"
@@ -264,7 +263,6 @@ public OnGameModeInit()
 public OnGameModeExit()
 {
 ##section OnGameModeExit
-###include "airport"
 ###include "heartbeat"
 ###include "tracker"
 ###include "vehicles"
