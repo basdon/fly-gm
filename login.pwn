@@ -922,7 +922,7 @@ giveGuestName(playerid)
 loginAndSpawnAsGuest(playerid)
 {
 	GameTextForPlayer playerid, "~b~Creating guest account...", 0x800000, 3
-	if (!Login_FormatCreateUser(playerid, buf4096, .password="", .group=0)) {
+	if (!Login_FormatCreateUser(playerid, buf4096, .password="", .group=GROUP_GUEST)) {
 		spawnWithoutGuestSession playerid
 		return
 	}
