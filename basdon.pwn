@@ -88,39 +88,6 @@ new tmp1
 new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
 new emptystring[] = ""
 
-#define SetPlayerPos SetPlayerPosHook
-
-##section varinit
-###include "anticheat"
-###include "dev"
-###include "dialog"
-###include "game_sa"
-###include "heartbeat"
-###include "login"
-###include "missions"
-###include "objects"
-###include "panel"
-###include "playername"
-###include "playtime"
-###include "pm"
-###include "prefs"
-###include "protips"
-###include "spawn"
-###include "timecyc"
-###include "tracker"
-###include "vehicles"
-###include "zones"
-##endsection
-
-main()
-{
-	// beware: sometimes main() gets called after OnGameModeInit
-	print "  Loaded gamemode basdon-fly "#VERSION"\n"
-##section init
-##endsection
-	SetTimer #PUB_LOOP25, 25, .repeating=1
-}
-
 //@summary Function that should never be called, does dummy calls to natives to make {@code SYSREQ.C} happy
 export dummies()
 {
@@ -161,6 +128,39 @@ export dummies()
 	ssocket_listen ssocket:0, 0
 	ssocket_send ssocket:0, buf144, 0
 	tickcount
+}
+
+#define SetPlayerPos SetPlayerPosHook
+
+##section varinit
+###include "anticheat"
+###include "dev"
+###include "dialog"
+###include "game_sa"
+###include "heartbeat"
+###include "login"
+###include "missions"
+###include "objects"
+###include "panel"
+###include "playername"
+###include "playtime"
+###include "pm"
+###include "prefs"
+###include "protips"
+###include "spawn"
+###include "timecyc"
+###include "tracker"
+###include "vehicles"
+###include "zones"
+##endsection
+
+main()
+{
+	// beware: sometimes main() gets called after OnGameModeInit
+	print "  Loaded gamemode basdon-fly "#VERSION"\n"
+##section init
+##endsection
+	SetTimer #PUB_LOOP25, 25, .repeating=1
 }
 
 //@summary Basic loop that handles (almost) all timed stuff.
