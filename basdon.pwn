@@ -143,6 +143,7 @@ export dummies()
 	SendClientMessageToAll 0, buf144
 	SetPlayerRaceCheckpoint 0, 0, f, f, f, f, f, f, f
 	SetVehicleToRespawn 0
+	ShowPlayerDialog 0, 0, 0, buf144, buf144, buf144, buf144
 	Veh_UpdateSlot 0, 0
 	cache_delete Cache:0
 	cache_get_row 0, 0, buf4096
@@ -186,7 +187,6 @@ export __SHORTNAMED PUB_LOOP25()
 		// 1s,30s,1m loop is inside timecyc
 ##section loop5000
 ###include "anticheat"
-###include "dialog"
 ###include "objects"
 ###include "vehicles"
 ##endsection
@@ -198,8 +198,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 ##section OnDialogResponse
 ###include "anticheat"
-###include "dialog"
 ##endsection
+
+	if (!B_OnDialogResponse(playerid, dialogid, response, listitem, inputtext)) {
+		return 0
+	}
 
 ##section OnDialogResponseCase
 	switch (dialogid) {
@@ -359,7 +362,6 @@ public OnPlayerConnect(playerid)
 	B_OnPlayerConnect playerid
 
 ##section OnPlayerConnect
-###include "dialog" // keep this first
 ###include "playername" // keep this second (sets data: name, ip, ..)
 ###include "anticheat"
 ###include "login"
@@ -401,7 +403,6 @@ public OnPlayerDisconnect(playerid, reason)
 ##section OnPlayerDisconnect
 ###include "airport"
 ###include "anticheat"
-###include "dialog"
 ###include "missions"
 ###include "panel"
 ###include "playtime"
