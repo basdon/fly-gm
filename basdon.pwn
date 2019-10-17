@@ -108,6 +108,9 @@ export dummies()
 	RemoveBuildingForPlayer 0, 0, f, f, f, f
 	SendClientMessage 0, 0, buf144
 	SendClientMessageToAll 0, buf144
+	SetCameraBehindPlayer 0
+	SetPlayerFacingAngle 0, f
+	SetPlayerPos 0, f, f, f
 	SetPlayerRaceCheckpoint 0, 0, f, f, f, f, f, f, f
 	SetVehicleToRespawn 0
 	ShowPlayerDialog 0, 0, 0, buf144, buf144, buf144, buf144
@@ -491,6 +494,8 @@ public OnPlayerSpawn(playerid)
 ###include "spawn"
 ###include "zones"
 ##endsection
+
+	B_OnPlayerSpawn playerid
 
 	return 1
 }
