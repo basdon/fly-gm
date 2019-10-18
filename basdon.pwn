@@ -92,6 +92,7 @@ new emptystring[] = ""
 export dummies()
 {
 	new Float:f
+	AddPlayerClass 0, f, f, f, f, 0, 0, 0, 0, 0, 0
 	ChangeVehicleColor 0, 0, 0
 	CreateVehicle 0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0
 	CreatePlayerObject 0, 0, f, f, f, f, f, f, f
@@ -114,6 +115,7 @@ export dummies()
 	SetPlayerRaceCheckpoint 0, 0, f, f, f, f, f, f, f
 	SetVehicleToRespawn 0
 	ShowPlayerDialog 0, 0, 0, buf144, buf144, buf144, buf144
+	SpawnPlayer 0
 	Veh_UpdateSlot 0, 0
 	cache_delete Cache:0
 	cache_get_row 0, 0, buf4096

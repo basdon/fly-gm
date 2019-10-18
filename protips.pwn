@@ -17,7 +17,8 @@ varinit
 		!"Pro Tip: Check /p(references) to tweak your personal preferences while playing on this server.",
 		!"Pro Tip: Use /autow to toggle automatically getting a new mission after finishing one (see also /p).",
 		!"Pro Tip: Send private messages to other players using /pm [id/name/part of name] [message]",
-		!"Pro Tip: Can't get into an AT-400? We got you covered, just type /at400 when near one",
+		!"Pro Tip: Can't get into an AT-400? We got you covered, just type /at400 when near one.",
+		!"Pro Tip: Lost? Use /respawn to respawn.",
 		!"Pro Tip: Always try to land on the back wheels."
 	}
 }
