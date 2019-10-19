@@ -88,6 +88,13 @@ new tmp1
 new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
 new emptystring[] = ""
 
+native REMOVEME_isspawned(playerid)
+native REMOVEME_onplayerreqclassimpl(playerid,classid)
+isSpawned(playerid)
+{
+	return REMOVEME_isspawned(playerid)
+}
+
 //@summary Function that should never be called, does dummy calls to natives to make {@code SYSREQ.C} happy
 export dummies()
 {
@@ -100,6 +107,7 @@ export dummies()
 	CreateVehicle 0, f, f, f, f, 0, 0, 0, 0
 	DestroyPlayerObject 0, 0
 	DisablePlayerRaceCheckpoint 0
+	GameTextForPlayer 0, buf144, 0, 0
 	GetConsoleVarAsInt buf144
 	GetPlayerIp 0, buf144, 0
 	GetPlayerName 0, buf144, 0
@@ -121,9 +129,13 @@ export dummies()
 	SendClientMessage 0, 0, buf144
 	SendClientMessageToAll 0, buf144
 	SetCameraBehindPlayer 0
+	SetPlayerCameraPos 0, f, f, f
+	SetPlayerCameraLookAt 0, f, f, f
+	SetPlayerColor 0, 0
 	SetPlayerFacingAngle 0, f
 	SetPlayerPos 0, f, f, f
 	SetPlayerRaceCheckpoint 0, 0, f, f, f, f, f, f, f
+	SetPlayerSpecialAction 0, 0
 	SetVehicleToRespawn 0
 	ShowPlayerDialog 0, 0, 0, buf144, buf144, buf144, buf144
 	SpawnPlayer 0
@@ -162,7 +174,6 @@ export dummies()
 ###include "playtime"
 ###include "pm"
 ###include "prefs"
-###include "spawn"
 ###include "timecyc"
 ###include "tracker"
 ###include "vehicles"
@@ -268,7 +279,6 @@ public OnGameModeInit()
 ###include "missions" // 'airport' must be run somewhere before this
 ###include "objects"
 ###include "panel"
-###include "spawn"
 ###include "timecyc"
 ###include "tracker"
 ###include "vehicles"
@@ -314,7 +324,6 @@ public OnPlayerCommandText(playerid, cmdtext[])
 {
 ##section OnPlayerCommandText
 ###include "login" // login needs to be first! (to block if not logged)
-###include "spawn" // block if not spawned
 ###include "dev"
 ##endsection
 
@@ -383,7 +392,6 @@ public OnPlayerConnect(playerid)
 ###include "playtime"
 ###include "pm"
 ###include "prefs"
-###include "spawn"
 ###include "timecyc"
 ###include "vehicles"
 ##endsection
@@ -401,7 +409,6 @@ public OnPlayerDeath(playerid, killerid, reason)
 
 ##section OnPlayerDeath
 ###include "missions"
-###include "spawn"
 ###include "timecyc"
 ##endsection
 
@@ -418,7 +425,6 @@ public OnPlayerDisconnect(playerid, reason)
 ###include "missions"
 ###include "panel"
 ###include "playtime"
-###include "spawn"
 ###include "vehicles"
 ###include "login" // keep this last-ish (clears logged in status)
 ###include "playername" // keep this last-ish (clears data)
@@ -477,8 +483,9 @@ onPlayerNowAfk(playerid)
 
 public OnPlayerRequestClass(playerid, classid)
 {
+	B_OnPlayerRequestClass playerid, classid
+
 ##section OnPlayerRequestClass
-###include "spawn"
 ###include "timecyc"
 ##endsection
 	return 1
@@ -489,8 +496,8 @@ public OnPlayerRequestSpawn(playerid)
 ##section OnPlayerRequestSpawn
 ###include "login" // login needs to be first! (to block if not logged)
 ###include "timecyc"
-###include "spawn" // spawn needs to be last! (to set things when actually spawning)
 ##endsection
+	return B_OnPlayerRequestSpawn(playerid)
 }
 
 public OnPlayerSpawn(playerid)
@@ -498,10 +505,6 @@ public OnPlayerSpawn(playerid)
 	if (!isPlaying(playerid)) {
 		return 0
 	}
-
-##section OnPlayerSpawn
-###include "spawn"
-##endsection
 
 	B_OnPlayerSpawn playerid
 
@@ -621,7 +624,6 @@ SetPlayerPosHook(playerid, Float:x, Float:y, Float:z)
 #include "panel"
 #include "pm"
 #include "prefs"
-#include "spawn"
 #include "tracker"
 #include "vehicles"
 

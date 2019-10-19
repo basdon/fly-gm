@@ -118,22 +118,3 @@ stock NAMELEN(playerid) {
 	this_function _ should_not _ be_called
 }
 
-/* spawn.pwn */
-
-//@summary Check if a player is spawned.
-//@param playerid the playerid to check
-//@remarks Is implemented as a preprocessor replacement.
-//@returns {@code 0} if the player is not spawned
-//@seealso isPlaying
-stock isSpawned(playerid) {
-	this_function _ should_not _ be_called
-}
-
-//@summary Gets a player's class
-//@param playerid the player to check
-//@remarks Is implemented as a preprocessor replacement.
-//@returns The player's class, should be one of the {@code CLASS_*} constants.
-stock getPlayerClass(playerid) {
-	this_function _ should_not _ be_called
-}
-

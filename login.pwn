@@ -1005,8 +1005,13 @@ loginPlayer(playerid, status)
 	}
 	loggedstatus[playerid] = status
 	iter_add(players, playerid)
-	OnPlayerRequestClassImpl playerid
+	REMOVEME_onplayerreqclassimpl playerid, -1
 	OnPlayerLogin playerid
+}
+
+export REMOVEME_isplaying(playerid)
+{
+	return isPlaying(playerid)
 }
 
 #printhookguards
