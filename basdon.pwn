@@ -107,6 +107,7 @@ export dummies()
 	CreateVehicle 0, f, f, f, f, 0, 0, 0, 0
 	DestroyPlayerObject 0, 0
 	DisablePlayerRaceCheckpoint 0
+	ForceClassSelection 0
 	GameTextForPlayer 0, buf144, 0, 0
 	GetConsoleVarAsInt buf144
 	GetPlayerIp 0, buf144, 0
@@ -128,6 +129,7 @@ export dummies()
 	RemoveBuildingForPlayer 0, 0, f, f, f, f
 	SendClientMessage 0, 0, buf144
 	SendClientMessageToAll 0, buf144
+	SendRconCommand buf144
 	SetCameraBehindPlayer 0
 	SetPlayerCameraPos 0, f, f, f
 	SetPlayerCameraLookAt 0, f, f, f
@@ -139,6 +141,7 @@ export dummies()
 	SetVehicleToRespawn 0
 	ShowPlayerDialog 0, 0, 0, buf144, buf144, buf144, buf144
 	SpawnPlayer 0
+	TogglePlayerSpectating 0, 0
 	Veh_UpdateSlot 0, 0
 	cache_delete Cache:0
 	cache_get_row 0, 0, buf4096
