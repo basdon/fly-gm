@@ -75,8 +75,6 @@ hook loop100()
 	foreach (new playerid : players) {
 ##include "vehicles"
 
-##include "zones"
-
 	}
 ##endsection
 		if (++time_s >= 60) {

@@ -96,5 +96,10 @@ updatePlayerLastseen(playerid, isdisconnect)
 	}
 }
 
+export REMOVEME_isafk(playerid)
+{
+	return isAfk(playerid);
+}
+
 #printhookguards
 

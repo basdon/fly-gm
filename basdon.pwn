@@ -96,6 +96,8 @@ export dummies()
 	ChangeVehicleColor 0, 0, 0
 	CreateVehicle 0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0
 	CreatePlayerObject 0, 0, f, f, f, f, f, f, f
+	CreatePlayerTextDraw 0, f, f, buf144
+	CreateVehicle 0, f, f, f, f, 0, 0, 0, 0
 	DestroyPlayerObject 0, 0
 	DisablePlayerRaceCheckpoint 0
 	GetConsoleVarAsInt buf144
@@ -103,9 +105,18 @@ export dummies()
 	GetPlayerName 0, buf144, 0
 	GetPlayerPos 0, f, f, f
 	GetPlayerVehicleID 0
+	GetVehicleModel 0
 	GetVehiclePos 0, f, f, f
+	GetVehicleVelocity 0, f, f, f
 	GetVehicleZAngle 0, f
 	GivePlayerWeapon 0, 0, 0
+	PlayerTextDrawAlignment 0, PlayerText:0, 0
+	PlayerTextDrawColor 0, PlayerText:0, 0
+	PlayerTextDrawFont 0, PlayerText:0, 0
+	PlayerTextDrawLetterSize 0, PlayerText:0, f, f
+	PlayerTextDrawSetOutline 0, PlayerText:0, 1
+	PlayerTextDrawSetProportional 0, PlayerText:0, 1
+	PlayerTextDrawSetShadow 0, PlayerText:0, 0
 	RemoveBuildingForPlayer 0, 0, f, f, f, f
 	SendClientMessage 0, 0, buf144
 	SendClientMessageToAll 0, buf144
@@ -156,7 +167,6 @@ export dummies()
 ###include "timecyc"
 ###include "tracker"
 ###include "vehicles"
-###include "zones"
 ##endsection
 
 main()
@@ -344,7 +354,6 @@ export OnPlayerCommandTextHash(playerid, hash, cmdtext[])
 ###include "prefs"
 ###include "protips"
 ###include "timecyc"
-###include "zones"
 ###include "vehicles"
 ###include "dev" // keep this last (it has the default case)
 ##endsection
@@ -379,7 +388,6 @@ public OnPlayerConnect(playerid)
 ###include "spawn"
 ###include "timecyc"
 ###include "vehicles"
-###include "zones"
 ##endsection
 
 	return 1
@@ -391,11 +399,12 @@ public OnPlayerDeath(playerid, killerid, reason)
 		return 0
 	}
 
+	B_OnPlayerDeath playerid, killerid, reason
+
 ##section OnPlayerDeath
 ###include "missions"
 ###include "spawn"
 ###include "timecyc"
-###include "zones"
 ##endsection
 
 	return 1
@@ -494,7 +503,6 @@ public OnPlayerSpawn(playerid)
 
 ##section OnPlayerSpawn
 ###include "spawn"
-###include "zones"
 ##endsection
 
 	B_OnPlayerSpawn playerid
@@ -593,7 +601,6 @@ SetPlayerPosHook(playerid, Float:x, Float:y, Float:z)
 {
 ##section onSetPlayerPos
 ###include "vehicles"
-###include "zones"
 ##endsection
 #undef SetPlayerPos
 	SetPlayerPos playerid, x, y, z
@@ -620,5 +627,4 @@ SetPlayerPosHook(playerid, Float:x, Float:y, Float:z)
 #include "spawn"
 #include "tracker"
 #include "vehicles"
-#include "zones"
 
