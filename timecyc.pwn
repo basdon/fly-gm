@@ -78,10 +78,6 @@ hook loop100()
 	}
 ##endsection
 		if (++time_s >= 60) {
-##section loop1m
-##include "protips"
-
-##endsection
 			time_s = 0
 			currentweather = upcomingweather
 			upcomingweather = lockedweather

@@ -162,7 +162,6 @@ export dummies()
 ###include "playtime"
 ###include "pm"
 ###include "prefs"
-###include "protips"
 ###include "spawn"
 ###include "timecyc"
 ###include "tracker"
@@ -352,7 +351,6 @@ export OnPlayerCommandTextHash(playerid, hash, cmdtext[])
 ###include "nav"
 ###include "pm"
 ###include "prefs"
-###include "protips"
 ###include "timecyc"
 ###include "vehicles"
 ###include "dev" // keep this last (it has the default case)
@@ -618,7 +616,6 @@ SetPlayerPosHook(playerid, Float:x, Float:y, Float:z)
 #include "login"
 #include "missions"
 #include "playtime"
-#include "protips"
 #include "nav"
 #include "objects"
 #include "panel"
