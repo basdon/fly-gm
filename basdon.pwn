@@ -360,7 +360,6 @@ export OnPlayerCommandTextHash(playerid, hash, cmdtext[])
 ###include "airport"
 ###include "login"
 ###include "missions"
-###include "nav"
 ###include "pm"
 ###include "prefs"
 ###include "timecyc"
@@ -564,7 +563,6 @@ public OnVehicleSpawn(vehicleid)
 	B_OnVehicleSpawn vehicleid
 ##section OnVehicleSpawn
 ###include "vehicles"
-###include "nav"
 ##endsection
 }
 
@@ -622,7 +620,6 @@ SetPlayerPosHook(playerid, Float:x, Float:y, Float:z)
 #include "login"
 #include "missions"
 #include "playtime"
-#include "nav"
 #include "objects"
 #include "panel"
 #include "pm"
