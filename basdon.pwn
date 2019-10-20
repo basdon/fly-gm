@@ -178,7 +178,6 @@ export dummies()
 ###include "panel"
 ###include "playername"
 ###include "playtime"
-###include "pm"
 ###include "timecyc"
 ###include "tracker"
 ###include "vehicles"
@@ -361,7 +360,6 @@ export OnPlayerCommandTextHash(playerid, hash, cmdtext[])
 ###include "airport"
 ###include "login"
 ###include "missions"
-###include "pm"
 ###include "timecyc"
 ###include "vehicles"
 ###include "dev" // keep this last (it has the default case)
@@ -392,7 +390,6 @@ public OnPlayerConnect(playerid)
 ###include "objects"
 ###include "panel"
 ###include "playtime"
-###include "pm"
 ###include "timecyc"
 ###include "vehicles"
 ##endsection
@@ -429,7 +426,6 @@ public OnPlayerDisconnect(playerid, reason)
 ###include "vehicles"
 ###include "login" // keep this last-ish (clears logged in status)
 ###include "playername" // keep this last-ish (clears data)
-###include "pm"
 ##endsection
 	iter_remove(players, playerid)
 	iter_remove(allplayers, playerid)
@@ -621,7 +617,6 @@ SetPlayerPosHook(playerid, Float:x, Float:y, Float:z)
 #include "playtime"
 #include "objects"
 #include "panel"
-#include "pm"
 #include "tracker"
 #include "vehicles"
 
