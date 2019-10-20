@@ -70,12 +70,12 @@ msg_synerr:
 //@remarks The {@param to} player is assumed to be online.
 sendpm(from, to, msg[])
 {
-	if (!(prefs[from] & PREF_ENABLE_PM)) {
+	if (!(REMOVEME_getprefs(from) & PREF_ENABLE_PM)) {
 		new playerid = to
 		WARNMSGPB144("Your PMs are disabled, use /p to enable it.")
 		return
 	}
-	if (!(prefs[to] & PREF_ENABLE_PM)) {
+	if (!(REMOVEME_getprefs(to) & PREF_ENABLE_PM)) {
 		new playerid = to
 		WARNMSGPB144("That player has PMs disabled.")
 		return

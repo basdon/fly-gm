@@ -51,7 +51,7 @@ hook OnPlayerDisconnect(playerid, reason)
 			playermoney[playerid],
 			playerodo[playerid],
 			flighttimenew[playerid] + flighttimeold[playerid],
-			prefs[playerid],
+			REMOVEME_getprefs(playerid),
 			buf4096
 		mysql_tquery 1, buf4096
 	}
@@ -334,14 +334,16 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 
 				GameTextForPlayer playerid, "~b~Creating game session...", 0x800000, 3
 				new score, money, iodo, falng, lastfal, groups
+				new prefs
 				cache_get_field_int(0, 0, score)
 				cache_get_field_int(0, 1, money)
 				cache_get_field_int(0, 2, iodo)
 				cache_get_field_int(0, 3, flighttimeold[playerid])
-				cache_get_field_int(0, 4, prefs[playerid])
+				cache_get_field_int(0, 4, prefs)
 				cache_get_field_int(0, 5, falng)
 				cache_get_field_int(0, 6, lastfal)
 				cache_get_field_int(0, 7, groups)
+				REMOVEME_setprefs playerid, prefs
 				flighttimenew[playerid] = flighttimeold[playerid] % 60
 				flighttimeold[playerid] -= flighttimenew[playerid]
 				playerodo[playerid] = float(iodo)

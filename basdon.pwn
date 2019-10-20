@@ -90,6 +90,8 @@ new emptystring[] = ""
 
 native REMOVEME_isspawned(playerid)
 native REMOVEME_onplayerreqclassimpl(playerid,classid)
+native REMOVEME_setprefs(playerid, prefs)
+native REMOVEME_getprefs(playerid)
 isSpawned(playerid)
 {
 	return REMOVEME_isspawned(playerid)
@@ -177,7 +179,6 @@ export dummies()
 ###include "playername"
 ###include "playtime"
 ###include "pm"
-###include "prefs"
 ###include "timecyc"
 ###include "tracker"
 ###include "vehicles"
@@ -238,7 +239,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	case DIALOG_DUMMY: return 1
 ###include "airport"
 ###include "login"
-###include "prefs"
 	}
 ##endsection
 	return 0
@@ -362,7 +362,6 @@ export OnPlayerCommandTextHash(playerid, hash, cmdtext[])
 ###include "login"
 ###include "missions"
 ###include "pm"
-###include "prefs"
 ###include "timecyc"
 ###include "vehicles"
 ###include "dev" // keep this last (it has the default case)
@@ -394,7 +393,6 @@ public OnPlayerConnect(playerid)
 ###include "panel"
 ###include "playtime"
 ###include "pm"
-###include "prefs"
 ###include "timecyc"
 ###include "vehicles"
 ##endsection
@@ -624,7 +622,6 @@ SetPlayerPosHook(playerid, Float:x, Float:y, Float:z)
 #include "objects"
 #include "panel"
 #include "pm"
-#include "prefs"
 #include "tracker"
 #include "vehicles"
 
