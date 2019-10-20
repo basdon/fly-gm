@@ -141,6 +141,7 @@ export dummies()
 	SetVehicleToRespawn 0
 	ShowPlayerDialog 0, 0, 0, buf144, buf144, buf144, buf144
 	SpawnPlayer 0
+	TogglePlayerClock 0, 0
 	TogglePlayerSpectating 0, 0
 	Veh_UpdateSlot 0, 0
 	cache_delete Cache:0

@@ -349,6 +349,9 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 				money_setFor playerid, money
 				PlayerData_UpdateGroup playerid, groups
 
+				mysql_tquery 1, buf4096[1]
+				mysql_tquery 1, buf4096[buf4096[0]], #PUB_LOGIN_CREATEGAMESESSION_CB, "ii", playerid, cc[playerid]
+
 				if (lastfal > falng) {
 					if (Login_FormatUpdateFalng(playerid, lastfal, buf144)) {
 						mysql_tquery 1, buf144
@@ -362,9 +365,6 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 						"Check the website for more details.",
 						"Ok", ""
 				}
-
-				mysql_tquery 1, buf4096[1]
-				mysql_tquery 1, buf4096[buf4096[0]], #PUB_LOGIN_CREATEGAMESESSION_CB, "ii", playerid, cc[playerid]
 
 				#outline
 				//@summary Callback when creating game session
