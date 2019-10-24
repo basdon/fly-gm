@@ -115,19 +115,25 @@ export dummies()
 	GetPlayerIp 0, buf144, 0
 	GetPlayerName 0, buf144, 0
 	GetPlayerPos 0, f, f, f
+	GetPlayerState 0
 	GetPlayerVehicleID 0
+	GetVehicleHealth 0, f
 	GetVehicleModel 0
 	GetVehiclePos 0, f, f, f
 	GetVehicleVelocity 0, f, f, f
 	GetVehicleZAngle 0, f
 	GivePlayerWeapon 0, 0, 0
+	Kick 0
 	PlayerTextDrawAlignment 0, PlayerText:0, 0
 	PlayerTextDrawColor 0, PlayerText:0, 0
+	PlayerTextDrawDestroy 0, PlayerText:0
 	PlayerTextDrawFont 0, PlayerText:0, 0
+	PlayerTextDrawHide 0, PlayerText:0
 	PlayerTextDrawLetterSize 0, PlayerText:0, f, f
 	PlayerTextDrawSetOutline 0, PlayerText:0, 1
 	PlayerTextDrawSetProportional 0, PlayerText:0, 1
 	PlayerTextDrawSetShadow 0, PlayerText:0, 0
+	PlayerTextDrawSetString 0, PlayerText:0, buf144
 	RemoveBuildingForPlayer 0, 0, f, f, f, f
 	SendClientMessage 0, 0, buf144
 	SendClientMessageToAll 0, buf144
@@ -140,9 +146,23 @@ export dummies()
 	SetPlayerPos 0, f, f, f
 	SetPlayerRaceCheckpoint 0, 0, f, f, f, f, f, f, f
 	SetPlayerSpecialAction 0, 0
+	SetVehicleHealth 0, f
 	SetVehicleToRespawn 0
 	ShowPlayerDialog 0, 0, 0, buf144, buf144, buf144, buf144
 	SpawnPlayer 0
+	TextDrawAlignment Text:0, 0
+	TextDrawBoxColor Text:0, 0
+	TextDrawColor Text:0, 0
+	TextDrawCreate f, f, buf144
+	TextDrawFont Text:0, 0
+	TextDrawHideForPlayer 0, Text:0
+	TextDrawLetterSize Text:0, f, f
+	TextDrawSetOutline Text:0, 0
+	TextDrawSetProportional Text:0, 1
+	TextDrawSetShadow Text:0, 0
+	TextDrawShowForPlayer 0, Text:0
+	TextDrawTextSize Text:0, f, f
+	TextDrawUseBox Text:0, 1
 	TogglePlayerClock 0, 0
 	TogglePlayerSpectating 0, 0
 	Veh_UpdateSlot 0, 0
@@ -175,7 +195,6 @@ export dummies()
 ###include "login"
 ###include "missions"
 ###include "objects"
-###include "panel"
 ###include "playername"
 ###include "playtime"
 ###include "timecyc"
@@ -204,7 +223,6 @@ export __SHORTNAMED PUB_LOOP25()
 	if (!invoc) {
 ##section loop100
 ###include "anticheat"
-###include "panel"
 ###include "playtime"
 ###include "timecyc"
 ##endsection
@@ -281,7 +299,6 @@ public OnGameModeInit()
 ###include "heartbeat"
 ###include "missions" // 'airport' must be run somewhere before this
 ###include "objects"
-###include "panel"
 ###include "timecyc"
 ###include "tracker"
 ###include "vehicles"
@@ -388,7 +405,6 @@ public OnPlayerConnect(playerid)
 ###include "login"
 ###include "missions"
 ###include "objects"
-###include "panel"
 ###include "playtime"
 ###include "timecyc"
 ###include "vehicles"
@@ -421,7 +437,6 @@ public OnPlayerDisconnect(playerid, reason)
 ###include "airport"
 ###include "anticheat"
 ###include "missions"
-###include "panel"
 ###include "playtime"
 ###include "vehicles"
 ###include "login" // keep this last-ish (clears logged in status)
@@ -465,6 +480,8 @@ OnPlayerLogin(playerid)
 ##endsection
 }
 
+native REMOVEME_onplayernowafk(playerid)
+
 //@summary Called when a player goes afk
 //@param playerid the playerid that went afk
 //@remarks {@b A player is also marked afk when they are not spawned (dead or in class select)!}
@@ -472,8 +489,8 @@ OnPlayerLogin(playerid)
 //@seealso isAfk
 onPlayerNowAfk(playerid)
 {
+	REMOVEME_onplayernowafk playerid
 ##section onPlayerNowAfk
-###include "panel"
 ###include "playtime"
 ##endsection
 }
@@ -510,8 +527,9 @@ public OnPlayerSpawn(playerid)
 
 public OnPlayerStateChange(playerid, newstate, oldstate)
 {
+	B_OnPlayerStateChange playerid, newstate, oldstate
+
 ##section OnPlayerStateChange
-###include "panel"
 ###include "vehicles"
 ##endsection
     return 1
@@ -539,6 +557,7 @@ public OnPlayerUpdate(playerid)
 	return 1
 }
 
+native REMOVEME_onplayerwasafk(playerid)
 //@summary Gets called when a player comes back from being afk
 //@param playerid the playerid that is now back
 //@remarks {@b A player is also marked afk when they are not spawned (dead or in class select)!}
@@ -546,8 +565,8 @@ public OnPlayerUpdate(playerid)
 //@seealso isAfk
 onPlayerWasAfk(playerid)
 {
+	REMOVEME_onplayerwasafk playerid
 ##section onPlayerWasAfk
-###include "panel"
 ###include "playtime"
 ###include "timecyc"
 ##endsection
@@ -616,7 +635,6 @@ SetPlayerPosHook(playerid, Float:x, Float:y, Float:z)
 #include "missions"
 #include "playtime"
 #include "objects"
-#include "panel"
 #include "tracker"
 #include "vehicles"
 

@@ -3,10 +3,6 @@
 
 #namespace "login"
 
-#define LOGGED_NO 0
-#define LOGGED_IN 1
-#define LOGGED_GUEST 2
-
 #define MAX_ALLOWED_FAILEDLOGINS_IN_30_MINS 10
 #define MAX_LOGIN_ATTEMPTS_IN_ONE_SESSION 4
 
@@ -14,6 +10,8 @@
 
 varinit
 {
+	native REMOVEME_setloggedstatus(playerid, status)
+
 	#define isPlaying(%0) (loggedstatus[%0])
 	#define isRegistered(%0) (loggedstatus[%0] == LOGGED_IN)
 	#define isGuest(%0) (loggedstatus[%0] == LOGGED_GUEST)
@@ -583,6 +581,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 				if (cache_affected_rows(1)) {
 					PlayerData_UpdateGroup playerid, GROUP_MEMBER
 					loggedstatus[playerid] = LOGGED_IN
+					REMOVEME_setloggedstatus playerid, LOGGED_IN
 					ShowPlayerDialog\
 						playerid,
 						DIALOG_DUMMY,
@@ -1006,6 +1005,7 @@ loginPlayer(playerid, status)
 		money_setFor playerid, MONEY_DEFAULTAMOUNT
 	}
 	loggedstatus[playerid] = status
+	REMOVEME_setloggedstatus playerid, status
 	iter_add(players, playerid)
 	REMOVEME_onplayerreqclassimpl playerid, -1
 	OnPlayerLogin playerid

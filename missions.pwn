@@ -277,7 +277,6 @@ resetMissionNav(playerid, vehicleid)
 {
 	if (REMOVEME_getprefs(playerid) & PREF_WORK_AUTONAV) {
 		Nav_Reset vehicleid
-		panel_resetNavForPassengers vehicleid
 	}
 }
 
@@ -290,10 +289,7 @@ updateMissionNav(playerid)
 		if (Missions_GetMissionNavData(playerid, vid, vehmodel, apidx)) {
 			new Float:x, Float:y, Float:z
 			GetPlayerPos playerid, x, y, z
-			switch (Nav_NavigateToMission(vid, vehmodel, apidx, x, y, z)) {
-			case NAV_ADF: panel_hideVorBarForPassengers vid
-			case NAV_VOR: panel_showVorBarForPassengers vid
-			}
+			Nav_NavigateToMission vid, vehmodel, apidx, x, y, z
 		}
 	}
 }
