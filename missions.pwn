@@ -148,7 +148,6 @@ hook OnPlayerEnterRaceCP(playerid)
 			if (Missions_PostLoad(playerid, x, y, z, buf144)) {
 				SetPlayerRaceCheckpoint playerid, 2, x, y, z, 0.0, 0.0, 0.0, MISSION_CHECKPOINT_SIZE
 				mysql_tquery 1, buf144
-				updateMissionNav playerid
 				if (Missions_ShouldShowSatisfaction(playerid)) {
 					PlayerTextDrawSetString playerid, passenger_satisfaction[playerid], "Passenger~n~Satisfaction: 100%"
 					PlayerTextDrawShow playerid, passenger_satisfaction[playerid]
@@ -265,7 +264,6 @@ startMission(playerid)
 			if (REMOVEME_getprefs(playerid) & PREF_CONSTANT_WORK) {
 				SendClientMessage playerid, COL_SAMP_GREY, "Constant work is ON, a new mission will be started when you complete this one (/autow to disable)."
 			}
-			updateMissionNav playerid
 		}
 	}
 }
@@ -277,20 +275,6 @@ resetMissionNav(playerid, vehicleid)
 {
 	if (REMOVEME_getprefs(playerid) & PREF_WORK_AUTONAV) {
 		Nav_Reset vehicleid
-	}
-}
-
-//@summary Sets mission-based navigation if player's preferences allow it
-//@param playerid player of which to update navigation for
-updateMissionNav(playerid)
-{
-	if (REMOVEME_getprefs(playerid) & PREF_WORK_AUTONAV) {
-		new vid, vehmodel, apidx
-		if (Missions_GetMissionNavData(playerid, vid, vehmodel, apidx)) {
-			new Float:x, Float:y, Float:z
-			GetPlayerPos playerid, x, y, z
-			Nav_NavigateToMission vid, vehmodel, apidx, x, y, z
-		}
 	}
 }
 
