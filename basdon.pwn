@@ -254,7 +254,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 ##section OnDialogResponseCase
 	switch (dialogid) {
 	case DIALOG_DUMMY: return 1
-###include "airport"
 ###include "login"
 	}
 ##endsection
@@ -374,7 +373,6 @@ export OnPlayerCommandTextHash(playerid, hash, cmdtext[])
 		return 1
 	}
 ##section OnPlayerCommandTextCase
-###include "airport"
 ###include "login"
 ###include "missions"
 ###include "timecyc"
@@ -434,7 +432,6 @@ public OnPlayerDisconnect(playerid, reason)
 	B_OnPlayerDisconnect playerid, reason
 
 ##section OnPlayerDisconnect
-###include "airport"
 ###include "anticheat"
 ###include "missions"
 ###include "playtime"
@@ -626,7 +623,6 @@ SetPlayerPosHook(playerid, Float:x, Float:y, Float:z)
 #include "anticheat"
 #include "playername" // try to keep this top-ish (for onPlayerNameChange section)
 #include "timecyc" // also try to keep this top-ish (because 1s 30s 1m loop hooks)
-#include "airport"
 #include "dev"
 #include "dialog"
 #include "game_sa"
