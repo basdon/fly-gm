@@ -125,6 +125,7 @@ export dummies()
 	GivePlayerWeapon 0, 0, 0
 	Kick 0
 	PlayerTextDrawAlignment 0, PlayerText:0, 0
+	PlayerTextDrawBackgroundColor 0, PlayerText:0, 0
 	PlayerTextDrawColor 0, PlayerText:0, 0
 	PlayerTextDrawDestroy 0, PlayerText:0
 	PlayerTextDrawFont 0, PlayerText:0, 0
@@ -134,6 +135,7 @@ export dummies()
 	PlayerTextDrawSetProportional 0, PlayerText:0, 1
 	PlayerTextDrawSetShadow 0, PlayerText:0, 0
 	PlayerTextDrawSetString 0, PlayerText:0, buf144
+	PlayerTextDrawShow 0, PlayerText:0
 	RemoveBuildingForPlayer 0, 0, f, f, f, f
 	SendClientMessage 0, 0, buf144
 	SendClientMessageToAll 0, buf144
