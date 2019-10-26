@@ -148,6 +148,7 @@ export dummies()
 	SetPlayerPos 0, f, f, f
 	SetPlayerRaceCheckpoint 0, 0, f, f, f, f, f, f, f
 	SetPlayerSpecialAction 0, 0
+	SetPlayerTime 0, 0, 0
 	SetVehicleHealth 0, f
 	SetVehicleToRespawn 0
 	ShowPlayerDialog 0, 0, 0, buf144, buf144, buf144, buf144

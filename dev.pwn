@@ -116,14 +116,6 @@ hook OnPlayerCommandTextCase(playerid, hash, cmdtext[])
 		PlayerPlaySound playerid, soundid, 0.0, 0.0, 0.0
 		#return 1
 	}
-	case 1455934588: if (Command_Is(cmdtext, "/timex", idx)) {
-		new h, m
-		if (!Command_GetIntParam(cmdtext, idx, h) || !Command_GetIntParam(cmdtext, idx, m)) {
-			#return WARNMSG("Syntax: /timex <h> <m>")
-		}
-		SetPlayerTime playerid, h, m
-		#return 1
-	}
 	case 1926344525: if (Command_Is(cmdtext, "/kickme", idx)) {
 		SendClientMessage playerid, -1, "you're kicked, bye"
 		KickDelayed playerid
