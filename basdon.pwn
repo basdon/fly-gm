@@ -103,10 +103,11 @@ export dummies()
 	new Float:f
 	AddPlayerClass 0, f, f, f, f, 0, 0, 0, 0, 0, 0
 	ChangeVehicleColor 0, 0, 0
-	CreateVehicle 0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0
+	CreateObject 0, f, f, f, f, f, f, f
 	CreatePlayerObject 0, 0, f, f, f, f, f, f, f
 	CreatePlayerTextDraw 0, f, f, buf144
 	CreateVehicle 0, f, f, f, f, 0, 0, 0, 0
+	DestroyObject 0
 	DestroyPlayerObject 0, 0
 	DisablePlayerRaceCheckpoint 0
 	ForceClassSelection 0
