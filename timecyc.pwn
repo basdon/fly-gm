@@ -98,8 +98,6 @@ hook loop100()
 			}
 loop30s:
 ##section loop30s
-##include "heartbeat"
-
 ##include "playtime"
 
 ##endsection

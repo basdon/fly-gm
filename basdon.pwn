@@ -175,6 +175,7 @@ export dummies()
 	cache_get_row_count 0
 	cache_get_row_int 0, 0
 	cache_get_row_float 0, 0
+	cache_insert_id
 	gettime
 	mysql_query 0, buf4096, bool:1
 	mysql_tquery 0, buf4096, buf4096, buf4096
@@ -195,7 +196,6 @@ export dummies()
 ###include "dev"
 ###include "dialog"
 ###include "game_sa"
-###include "heartbeat"
 ###include "login"
 ###include "missions"
 ###include "objects"
@@ -299,7 +299,6 @@ public OnGameModeInit()
 	B_OnGameModeInit
 
 ##section OnGameModeInit
-###include "heartbeat"
 ###include "missions" // 'airport' must be run somewhere before this
 ###include "objects"
 ###include "timecyc"
@@ -313,7 +312,6 @@ public OnGameModeInit()
 public OnGameModeExit()
 {
 ##section OnGameModeExit
-###include "heartbeat"
 ###include "tracker"
 ###include "vehicles"
 ##endsection
@@ -630,7 +628,6 @@ SetPlayerPosHook(playerid, Float:x, Float:y, Float:z)
 #include "dev"
 #include "dialog"
 #include "game_sa"
-#include "heartbeat"
 #include "login"
 #include "missions"
 #include "playtime"
