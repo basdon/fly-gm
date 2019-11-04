@@ -100,13 +100,15 @@ isSpawned(playerid)
 //@summary Function that should never be called, does dummy calls to natives to make {@code SYSREQ.C} happy
 export dummies()
 {
-	new Float:f
+	new i, Float:f
 	AddPlayerClass 0, f, f, f, f, 0, 0, 0, 0, 0, 0
 	ChangeVehicleColor 0, 0, 0
 	CreateObject 0, f, f, f, f, f, f, f
+	CreatePlayer3DTextLabel 0, buf144, 0, f, f, f, f
 	CreatePlayerObject 0, 0, f, f, f, f, f, f, f
 	CreatePlayerTextDraw 0, f, f, buf144
 	CreateVehicle 0, f, f, f, f, 0, 0, 0, 0
+	DeletePlayer3DTextLabel 0, PlayerText3D:0
 	DestroyObject 0
 	DestroyPlayerObject 0, 0
 	DisablePlayerRaceCheckpoint 0
@@ -120,6 +122,7 @@ export dummies()
 	GetPlayerVehicleID 0
 	GetVehicleHealth 0, f
 	GetVehicleModel 0
+	GetVehicleParamsEx 0, i, i, i, i, i, i, i
 	GetVehiclePos 0, f, f, f
 	GetVehicleVelocity 0, f, f, f
 	GetVehicleZAngle 0, f
@@ -138,6 +141,7 @@ export dummies()
 	PlayerTextDrawSetString 0, PlayerText:0, buf144
 	PlayerTextDrawShow 0, PlayerText:0
 	RemoveBuildingForPlayer 0, 0, f, f, f, f
+	RemovePlayerMapIcon 0, 0
 	SendClientMessage 0, 0, buf144
 	SendClientMessageToAll 0, buf144
 	SendRconCommand buf144
@@ -146,11 +150,13 @@ export dummies()
 	SetPlayerCameraLookAt 0, f, f, f
 	SetPlayerColor 0, 0
 	SetPlayerFacingAngle 0, f
+	SetPlayerMapIcon 0, 0, f, f, f, 0, 0, 0
 	SetPlayerPos 0, f, f, f
 	SetPlayerRaceCheckpoint 0, 0, f, f, f, f, f, f, f
 	SetPlayerSpecialAction 0, 0
 	SetPlayerTime 0, 0, 0
 	SetVehicleHealth 0, f
+	SetVehicleParamsEx 0, 0, 0, 0, 0, 0, 0, 0
 	SetVehicleToRespawn 0
 	ShowPlayerDialog 0, 0, 0, buf144, buf144, buf144, buf144
 	SpawnPlayer 0
@@ -188,8 +194,6 @@ export dummies()
 	ssocket_send ssocket:0, buf144, 0
 	tickcount
 }
-
-#define SetPlayerPos SetPlayerPosHook
 
 ##section varinit
 ###include "anticheat"
@@ -239,7 +243,6 @@ export __SHORTNAMED PUB_LOOP25()
 ##section loop5000
 ###include "anticheat"
 ###include "objects"
-###include "vehicles"
 ##endsection
 		lastinvoctime = _tc
 	}
@@ -601,25 +604,6 @@ public SSocket_OnRecv(ssocket:handle, data[], len)
 public OnQueryError(errorid, error[], callback[], query[], connectionHandle)
 {
 	printf "query err %d - %s - %s - %s", errorid, error, callback, query
-}
-
-//@summary Hooks {@link SetPlayerPos} to do stuff
-//@param playerid see {@link SetPlayerPos}
-//@param x see {@link SetPlayerPos}
-//@param y see {@link SetPlayerPos}
-//@param z see {@link SetPlayerPos}
-//@returns see {@link SetPlayerPos}
-//@remarks see {@link SetPlayerPos}
-//@remarks has {@code onSetPlayerPos} section
-//@seealso SetPlayerPos
-SetPlayerPosHook(playerid, Float:x, Float:y, Float:z)
-{
-##section onSetPlayerPos
-###include "vehicles"
-##endsection
-#undef SetPlayerPos
-	SetPlayerPos playerid, x, y, z
-#define SetPlayerPos SetPlayerPosHook
 }
 
 #include "anticheat"

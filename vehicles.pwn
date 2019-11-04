@@ -14,9 +14,6 @@ varinit
 	new vv[MAX_VEHICLES] // vehicle reincarnation value
 
 	// for odo and stuff
-	new Float:lastvehx[MAX_PLAYERS]
-	new Float:lastvehy[MAX_PLAYERS]
-	new Float:lastvehz[MAX_PLAYERS]
 	new Float:playerodo[MAX_PLAYERS]
 	// total flight time of user, multiple of 60s
 	new flighttimeold[MAX_PLAYERS]
@@ -61,10 +58,6 @@ hook loop1splayers(playerid)
 			}
 			new Float:_x, Float:_y, Float:_z
 			GetVehiclePos vid, _x, _y, _z
-			playerodo[playerid] = Veh_AddOdo(vid, playerid, lastvehx[playerid], lastvehy[playerid], lastvehz[playerid], _x, _y, _z, playerodo[playerid])
-			lastvehx[playerid] = _x
-			lastvehy[playerid] = _y
-			lastvehz[playerid] = _z
 			if (Missions_GetState(playerid) == MISSION_STAGE_FLIGHT) {
 				GetVehicleHealthSafe playerid, vid, qw
 				GetVehicleVelocity vid, qx, qy, qz
@@ -79,16 +72,6 @@ hook loop1splayers(playerid)
 			SendClientMessage playerid, COL_WARN, buf144
 			ac_disallowedVehicle1s playerid
 		}
-	}
-	new Float:x, Float:y, Float:z
-	GetPlayerPos playerid, x, y, z
-	updateServicePointsForPlayer playerid, x, y
-}
-
-hook loop5000()
-{
-	if (Veh_GetNextUpdateQuery(buf144)) {
-		mysql_tquery 1, buf144
 	}
 }
 
@@ -137,9 +120,6 @@ hook OnGameModeInit()
 hook OnGameModeExit()
 {
 	Veh_Destroy
-	while (Veh_GetNextUpdateQuery(buf144)) {
-		mysql_tquery 1, buf144
-	}
 }
 
 hook OnPlayerCommandTextCase(playerid, cmdtext[])
@@ -181,7 +161,6 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 
 hook OnPlayerConnect(playerid)
 {
-	playerodo[playerid] = 0.0
 	flighttimenew[playerid] = flighttimeold[playerid] = 0
 }
 
@@ -265,7 +244,6 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 	}
 
 	if (newstate == PLAYER_STATE_DRIVER && (vid = GetPlayerVehicleID(playerid))) {
-		onPlayerNowDriving playerid, vid
 		for (new p : players) {
 			destroyVehicleOwnerLabel vid, p
 		}
@@ -278,23 +256,6 @@ hook OnPlayerUpdate(playerid)
 	if (vid && lastvehicle[playerid] != vid) {
 		lastvehicle[playerid] = vid
 	}
-}
-
-hook onPutPlayerInVehicle(playerid, vehicleid)
-{
-	new Float:x, Float:y, Float:z
-	GetVehiclePos vehicleid, x, y, z
-	updateServicePointsForPlayer playerid, x, y
-}
-
-hook onPutPlayerInVehicleDriver(playerid, vehicleid)
-{
-	onPlayerNowDriving playerid, vehicleid
-}
-
-hook onSetPlayerPos(playerid, Float:x, Float:y, Float:z)
-{
-	updateServicePointsForPlayer playerid, x, y
 }
 
 hook OnVehicleSpawn(vehicleid)
@@ -360,20 +321,6 @@ findPlayerInVehicleSeat(vehicleid, seatid)
 		}
 	}
 	return INVALID_PLAYER_ID
-}
-
-//@summary Function to call when a player is now driver of a vehicle
-//@param playerid playerid that is now driving in a new vehicle
-//@param vehicleid vehicle player is driving in
-onPlayerNowDriving(playerid, vehicleid)
-{
-	GetVehiclePos vehicleid, lastvehx[playerid], lastvehy[playerid], lastvehz[playerid]
-	if (Veh_IsFuelEmpty(vehicleid)) {
-		WARNMSGPB144("This vehicle has no fuel left!")
-		SetVehicleParamsEx vehicleid, .engine=0, .lights=0, .alarm=0, .doors=0, .bonnet=0, .boot=0, .objective=0
-	} else {
-		SetVehicleParamsEx vehicleid, .engine=1, .lights=0, .alarm=0, .doors=0, .bonnet=0, .boot=0, .objective=0
-	}
 }
 
 //@summary Repairs vehicle for player, taking money from the player to fix it
@@ -540,38 +487,6 @@ spawnPlayerVehicles(usrid)
 		idx += 8
 	}
 	*/
-}
-
-//@summary Updates service point map icons and 3D text labels for a player.
-//@param playerid player to update for
-//@param x x-position of the player
-//@param y y-position of the player
-updateServicePointsForPlayer(playerid, Float:x, Float:y)
-{
-	new amount = Veh_UpdateServicePtsVisibility(playerid, x, y, buf4096)
-	new idx = 0;
-	while (amount--) {
-		switch (buf4096[idx]) {
-		case -2: break
-		case -1: {
-			tmp1 = buf4096[idx + 1]
-			x = Float:buf4096[idx + 2]
-			y = Float:buf4096[idx + 3]
-			new Float:z = Float:buf4096[idx + 4]
-			SetPlayerMapIcon playerid, tmp1, x, y, z, 38, 0, MAPICON_GLOBAL
-			new PlayerText3D:id = CreatePlayer3DTextLabel(playerid, "Service Point\n/repair - /refuel", -1, x, y, z, 50.0)
-			Veh_UpdateServicePointTextId playerid, tmp1, id
-		}
-		default: {
-			RemovePlayerMapIcon playerid, buf4096[idx + 1]
-			tmp1 = buf4096[idx]
-			if (tmp1 != INVALID_3DTEXT_ID) {
-				DeletePlayer3DTextLabel playerid, PlayerText3D:tmp1
-			}
-		}
-		}
-		idx += 5
-	}
 }
 
 #printhookguards

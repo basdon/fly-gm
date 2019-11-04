@@ -205,18 +205,10 @@ PutPlayerInVehicleSafe(playerid, vehicleid, seatid)
 		if (isNaN(hp) || hp < 0.0 || 1000.0 < hp) {
 			SetVehicleHealth vehicleid, 1000.0
 		}
-##section onPutPlayerInVehicleDriver
-##include "vehicles"
-
-##endsection
 	}
 #undef PutPlayerInVehicle
 	PutPlayerInVehicle playerid, vehicleid, seatid
 #define PutPlayerInVehicle PutPlayerInVehicle@@
-##section onPutPlayerInVehicle
-##include "vehicles"
-
-##endsection
 }
 
 //@summary When passing playerid to callbacks (for example for a database query), when the callback is \

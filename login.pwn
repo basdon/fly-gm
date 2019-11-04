@@ -38,6 +38,7 @@ varinit
 		"Enter your new name (3-20 length, 0-9a-zA-Z=()[]$@._).\n"\
 		"Names starting with @ are reserved for guests."
 	#define NAMECHANGE_TEXT_NOERR_OFFSET 60
+	native REMOVEME_getplayerodo(playerid);
 }
 
 hook OnPlayerDisconnect(playerid, reason)
@@ -47,7 +48,7 @@ hook OnPlayerDisconnect(playerid, reason)
 			userid[playerid],
 			GetPlayerScore(playerid),
 			playermoney[playerid],
-			playerodo[playerid],
+			playerodo[playerid] + REMOVEME_getplayerodo(playerid),
 			flighttimenew[playerid] + flighttimeold[playerid],
 			REMOVEME_getprefs(playerid),
 			buf4096

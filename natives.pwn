@@ -512,21 +512,6 @@ native Urlencode(const data[], len, output[])
 //@seealso Veh_UpdateSlot
 native Veh_Add(dbid, model, owneruserid, Float:x, Float:y, Float:z, Float:r, col1, col2, odo, ownername[])
 
-//@summary Add odo value to vehicle based on distance between given coords
-//@param vehicleid vehicle id to give odo to
-//@param playerid valid playerid that issued odo update (to update mission distance when applicable)
-//@param x1 first x-position
-//@param y1 first y-position
-//@param z1 first z-position
-//@param x2 second x-position
-//@param y2 second y-position
-//@param z2 second z-position
-//@param podo player odo value, only passed to add the added odo to remove the need for a {@link floatadd} call :)
-//@returns {@param podo} + the added odo value, even if there's no vehicle mapping for {@param vehicleid}
-//@remarks All values are in km.
-//@remarks This will also add travelled distance to player's current mission, if applicable.
-native Float:Veh_AddOdo(vehicleid, playerid, Float:x1, Float:y1, Float:z1, Float:x2, Float:y2, Float:z2, Float:podo)
-
 //@summary Add a service point to the service point table
 //@param index index in the servicepoints table to store this point
 //@param id id of the service point
@@ -571,11 +556,6 @@ native Veh_Destroy();
 //@param labelid the label id will be put in this variable if this returns positive
 //@returns {@code 1} if there is a label to delete, its id will be put in {@param labelid}
 native Veh_GetLabelToDelete(vehicleid, playerid, &PlayerText3D:labelid)
-
-//@summary Gets next queued query to update a vehicle in the db
-//@param buf buffer to store query in
-//@returns {@code 0} if the queue is empty
-native Veh_GetNextUpdateQuery(buf[])
 
 //@summary Inits the db vehicle table
 //@param dbvehiclecount initial size of the table
@@ -645,24 +625,6 @@ native Veh_Repair(Float:x, Float:y, Float:z, vehicleid, playerid, budget, Float:
 //@param buf buffer to store the label text in, if this returns positive
 //@returns {@code 1} if a label should be made, with given text in {@param buf}
 native Veh_ShouldCreateLabel(vehicleid, playerid, buf[])
-
-//@summary Store the id of the 3D text created for a service point in the plugin's data.
-//@param playerid player the text was made for
-//@param index index of the per-player service point pool this text is for
-//@param textid the id of the created 3D text
-native Veh_UpdateServicePointTextId(playerid, index, PlayerText3D:textid)
-
-//@summary Collect map icons and 3D texts that need to be created/destroyed for service points.
-//@param playerid player to update
-//@param x x-position of the player
-//@param y y-position of the player
-//@param data buffer to store data in (should be of minimum size {@code MAX_SERVICE_MAP_ICONS * 2 * 5})
-//@remarks Data is stored as: {@code 0:3dtextid, 1:mapiconid, 2:x, 3:y, 4:z}, for {@code MAX_SERVICE_MAP_ICONS} times.
-//@remarks {@param buf} id meaning (only applicable to mapiconid): <ul>\
-	<li>{@code -2}: nothing needs to happen</li>\
-	<li>{@code -1}: create map icon and 3d text, report id of 3d text using {@link Veh_UpdateServicePointTextId}</li>\
-	<li>{@code 0+}: delete this icon and 3d text (ids given)</li></ul>
-native Veh_UpdateServicePtsVisibility(playerid, Float:x, Float:y, data[])
 
 //@summary Let the plugin know a vehicle was created or destroyed
 //@param vehicleid the id of the vehicle in SA-MP
