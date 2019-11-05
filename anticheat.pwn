@@ -102,19 +102,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	flood playerid, FLOOD_DIALOG
 }
 
-hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
-{
-	if (!ispassenger) {
-		new Float:hp
-#undef GetVehicleHealth
-		GetVehicleHealth vehicleid, hp
-#define GetVehicleHealth GetVehicleHelp@@
-		if (isNaN(hp) || hp < 0.0 || 1000.0 < hp) {
-			SetVehicleHealth vehicleid, 1000.0
-		}
-	}
-}
-
 //@summary Add {@param amount} of flood value to player. Players with a flood value of more than {@code FLOOD_LIMIT} will be kicked.
 //@param playerid player to add flood value to
 //@param amount amount of flood value to add

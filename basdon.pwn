@@ -463,10 +463,6 @@ public OnPlayerEnterRaceCheckpoint(playerid)
 public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
 	B_OnPlayerEnterVehicle playerid, vehicleid, ispassenger
-
-##section OnPlayerEnterVehicle
-###include "anticheat"
-##endsection
 }
 
 public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
