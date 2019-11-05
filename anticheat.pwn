@@ -199,20 +199,6 @@ isValidPlayer(playerid, cid)
 	return cc[playerid] == cid
 }
 
-//@summary Should be called at most every second when a player is in a vehicle they aren't allowed to be in,\
-		player will be kicked if this happens too often
-//@param playerid the offending player
-ac_disallowedVehicle1s(playerid)
-{
-	// value gets decreased in loop5000
-	if ((disallowedvehicleinfractions{playerid} += 3) > 15) {
-		ac_log playerid, "unauthorized vehicle access"
-		format buf144, sizeof(buf144), "%s[%d] was kicked by system (unauthorized vehicle access)", NAMEOF(playerid), playerid
-		SendClientMessageToAll COL_WARN, buf144
-		KickDelayed playerid
-	}
-}
-
 //@summary Log something to db (acl table)
 //@param playerid player
 //@param message message (don't sqli yourself)

@@ -103,6 +103,7 @@ export dummies()
 	new i, Float:f
 	AddPlayerClass 0, f, f, f, f, 0, 0, 0, 0, 0, 0
 	ChangeVehicleColor 0, 0, 0
+	ClearAnimations 0, 0
 	CreateObject 0, f, f, f, f, f, f, f
 	CreatePlayer3DTextLabel 0, buf144, 0, f, f, f, f
 	CreatePlayerObject 0, 0, f, f, f, f, f, f, f
@@ -461,9 +462,10 @@ public OnPlayerEnterRaceCheckpoint(playerid)
 
 public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
+	B_OnPlayerEnterVehicle playerid, vehicleid, ispassenger
+
 ##section OnPlayerEnterVehicle
 ###include "anticheat"
-###include "vehicles"
 ##endsection
 }
 

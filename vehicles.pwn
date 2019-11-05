@@ -67,11 +67,6 @@ hook loop1splayers(playerid)
 				}
 			}
 		}
-		if (!Veh_IsPlayerAllowedInVehicle(userid[playerid], vid, buf144)) {
-			ClearAnimations playerid, .forcesync=1 // should remove from vehicle
-			SendClientMessage playerid, COL_WARN, buf144
-			ac_disallowedVehicle1s playerid
-		}
 	}
 }
 
@@ -162,14 +157,6 @@ hook OnPlayerDisconnect(playerid, reason)
 		}
 	}
 	lastvehicle[playerid] = 0
-}
-
-hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
-{
-	if (!ispassenger && !Veh_IsPlayerAllowedInVehicle(userid[playerid], vehicleid, buf144)) {
-		ClearAnimations playerid, .forcesync=1
-		SendClientMessage playerid, COL_WARN, buf144
-	}
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
