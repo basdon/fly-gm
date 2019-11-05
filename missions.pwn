@@ -48,10 +48,8 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 		DisablePlayerRaceCheckpoint playerid
 		if (money_takeFrom(playerid, MISSION_CANCEL_FINE) != MISSION_CANCEL_FINE) {
 			WARNMSG("You can't afford this!")
-		} else if (Missions_EndUnfinished(playerid, MISSION_STATE_DECLINED, buf4096, buf32)) {
-			mysql_tquery 1, buf4096
-			// TODO: fix ssocket
-			ssocket_send trackerSocket, buf32, 8
+		} else {
+			Missions_EndUnfinished playerid, MISSION_STATE_DECLINED
 		}
 		#return 1
 	}
@@ -97,22 +95,15 @@ hook OnPlayerDeath(playerid, killerid, reason)
 				missionstopreason = MISSION_STATE_CRASHED
 			}
 		}
-		if (Missions_EndUnfinished(playerid, missionstopreason, buf4096, buf32)) {
+		if (Missions_EndUnfinished(playerid, missionstopreason)) {
 			PlayerTextDrawHide playerid, passenger_satisfaction[playerid]
-			mysql_tquery 1, buf4096
-			// TODO: fix ssocket
-			ssocket_send trackerSocket, buf32, 8
 		}
 	}
 }
 
 hook OnPlayerDisconnect(playerid, reason)
 {
-	if (Missions_EndUnfinished(playerid, MISSION_STATE_ABANDONED, buf4096, buf32)) {
-		mysql_tquery 1, buf4096
-		// TODO: fix ssocket
-		ssocket_send trackerSocket, buf32, 8
-	}
+	Missions_EndUnfinished playerid, MISSION_STATE_ABANDONED
 }
 
 hook OnPlayerEnterRaceCP(playerid)
@@ -183,22 +174,12 @@ hook OnPlayerEnterRaceCP(playerid)
 			TogglePlayerControllable playerid, 1
 			new pay
 			if (Missions_PostUnload(playerid, vehiclehp, pay, buf4096)) {
-				// TODO: fix ssocket
-				ssocket_send trackerSocket, buf4096[2201], buf4096[2200]
 				money_giveTo playerid, pay
 				for (new p : allplayers) {
 					if (REMOVEME_getprefs(p) & PREF_SHOW_MISSION_MSGS) {
 						SendClientMessage p, COL_MISSION, buf4096
 					}
 				}
-				ShowPlayerDialog\
-					playerid,
-					DIALOG_DUMMY,
-					DIALOG_STYLE_MSGBOX,
-					"Flight Overview",
-					buf4096[1000],
-					"Close", "",
-					TRANSACTION_MISSION_OVERVIEW
 				mysql_tquery 1, buf4096[200]
 				if (REMOVEME_getprefs(playerid) & PREF_CONSTANT_WORK) {
 					startMission playerid
@@ -211,6 +192,14 @@ hook OnPlayerEnterRaceCP(playerid)
 					Ac_FormatLog playerid, loggedstatus[playerid], buf4096[2100], buf4096
 					mysql_tquery 1, buf4096
 				}
+				ShowPlayerDialog\
+					playerid,
+					DIALOG_DUMMY,
+					DIALOG_STYLE_MSGBOX,
+					"Flight Overview",
+					buf4096[1000],
+					"Close", "",
+					TRANSACTION_MISSION_OVERVIEW
 			}
 		}
 
@@ -255,9 +244,7 @@ startMission(playerid)
 		if (!isValidPlayer(playerid, cid)) return
 		hideGameTextForPlayer(playerid)
 		new Float:x, Float:y, Float:z
-		if (Missions_Start(playerid, cache_insert_id(), x, y, z, buf4096, buf32)) {
-			// TODO: fix ssocket
-			ssocket_send trackerSocket, buf32, 40
+		if (Missions_Start(playerid, cache_insert_id(), x, y, z, buf4096)) {
 			SetPlayerRaceCheckpoint playerid, 2, x, y, z, 0.0, 0.0, 0.0, MISSION_CHECKPOINT_SIZE
 			SendClientMessage playerid, COL_MISSION, buf4096
 			Missions_OnWeatherChanged lockedweather

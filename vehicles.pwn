@@ -56,16 +56,6 @@ hook loop1splayers(playerid)
 					}
 				}
 			}
-			new Float:_x, Float:_y, Float:_z
-			GetVehiclePos vid, _x, _y, _z
-			if (Missions_GetState(playerid) == MISSION_STAGE_FLIGHT) {
-				GetVehicleHealthSafe playerid, vid, qw
-				GetVehicleVelocity vid, qx, qy, qz
-				if (Missions_CreateTrackerMessage(playerid, vid, qw, _x, _y, qx, qy, qz, _z, afk, engine, buf144)) {
-					// TODO: fix ssocket
-					ssocket_send trackerSocket, buf144, 28
-				}
-			}
 		}
 	}
 }

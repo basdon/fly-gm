@@ -208,7 +208,6 @@ export dummies()
 ###include "playername"
 ###include "playtime"
 ###include "timecyc"
-###include "tracker"
 ###include "vehicles"
 ##endsection
 
@@ -307,7 +306,6 @@ public OnGameModeInit()
 ###include "missions" // 'airport' must be run somewhere before this
 ###include "objects"
 ###include "timecyc"
-###include "tracker"
 ###include "vehicles"
 ##endsection
 
@@ -317,7 +315,6 @@ public OnGameModeInit()
 public OnGameModeExit()
 {
 ##section OnGameModeExit
-###include "tracker"
 ###include "vehicles"
 ##endsection
 
@@ -615,6 +612,5 @@ public OnQueryError(errorid, error[], callback[], query[], connectionHandle)
 #include "missions"
 #include "playtime"
 #include "objects"
-#include "tracker"
 #include "vehicles"
 
