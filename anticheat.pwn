@@ -16,8 +16,6 @@ varinit
 {
 	#define GetVehicleHealth@@ please_use_GetVehicleHealthSafe
 	#define GetVehicleHealth GetVehicleHealth@@
-	#define PutPlayerInVehicle@@ use_PutPlayerInVehicleSafe
-	#define PutPlayerInVehicle PutPlayerInVehicle@@
 	#define GetPlayerMoney@@ please_use_playermoney_var
 	#define GetPlayerMoney GetPlayerMoney@@
 	#define GivePlayerMoney@@ please_use_money_funcs
@@ -187,28 +185,6 @@ GetVehicleHealthSafe(playerid, vehicleid, &Float:hp)
 	}
 	SetVehicleHealth vehicleid, 1000.0
 	return 1
-}
-
-//@summary See {@link PutPlayerInVehicle}, but resets the vehicle's health to {@code 1000.0} first if it has an invalid value
-//@param playerid The ID of the player to put in a vehicle
-//@param vehicleid The ID of the vehicle to put the player in
-//@param seatid The ID of the seat to put the player in
-//@returns {@code 1} on success
-//@remarks has {@code onPutPlayerInVehicle} and {@code onPutPlayerInVehicleDriver} sections
-PutPlayerInVehicleSafe(playerid, vehicleid, seatid)
-{
-	if (seatid == 0) {
-		new Float:hp
-#undef GetVehicleHealth
-		GetVehicleHealth vehicleid, hp
-#define GetVehicleHealth GetVehicleHelp@@
-		if (isNaN(hp) || hp < 0.0 || 1000.0 < hp) {
-			SetVehicleHealth vehicleid, 1000.0
-		}
-	}
-#undef PutPlayerInVehicle
-	PutPlayerInVehicle playerid, vehicleid, seatid
-#define PutPlayerInVehicle PutPlayerInVehicle@@
 }
 
 //@summary When passing playerid to callbacks (for example for a database query), when the callback is \

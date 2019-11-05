@@ -141,6 +141,7 @@ export dummies()
 	PlayerTextDrawSetShadow 0, PlayerText:0, 0
 	PlayerTextDrawSetString 0, PlayerText:0, buf144
 	PlayerTextDrawShow 0, PlayerText:0
+	PutPlayerInVehicle 0, 0, 0
 	RemoveBuildingForPlayer 0, 0, f, f, f, f
 	RemovePlayerMapIcon 0, 0
 	SendClientMessage 0, 0, buf144
