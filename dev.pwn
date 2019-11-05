@@ -7,11 +7,6 @@
 
 #namespace "dev"
 
-varinit
-{
-	new dev_vehicle
-}
-
 hook OnPlayerCommandText(playerid, cmdtext[])
 {
 	if (strcmp(cmdtext, "/vhpnan") == 0) {
@@ -123,26 +118,6 @@ hook OnPlayerCommandTextCase(playerid, hash, cmdtext[])
 	}
 	case 1333092464: if (Command_Is(cmdtext, "/crashme", idx)) {
 		GameTextForPlayer playerid, "Wasted~~k~SWITCH_DEBUG_CAM_ON~~k~~TOGGLE_DPAD~~k~~NETWORK_TALK~~k~~SHOW_MOUSE_POINTER_TOGGLE~", 5, 5
-		#return 1
-	}
-	case 1575: if (Command_Is(cmdtext, "/v", idx)) {
-		new modelid
-		if (!Command_GetIntParam(cmdtext, idx, modelid)) {
-			WARNMSG("Syntax: /v <modelid>")
-			#return 1
-		}
-		if (dev_vehicle != 0) {
-			DestroyVehicleSafe dev_vehicle
-		}
-		new Float:x, Float:y, Float:z, Float:r
-		GetPlayerPos playerid, x, y, z
-		GetPlayerFacingAngle playerid, r
-		dev_vehicle = CreateVehicle(modelid, x, y, z, r, 0, 0, -1)
-		if (dev_vehicle == INVALID_VEHICLE_ID) {
-			dev_vehicle = 0
-		} else {
-			PutPlayerInVehicleSafe playerid, dev_vehicle, .seatid=0
-		}
 		#return 1
 	}
 	case 48348: if (Command_Is(cmdtext, "/cp", idx)) {

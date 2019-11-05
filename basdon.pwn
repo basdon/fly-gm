@@ -115,6 +115,7 @@ export dummies()
 	ForceClassSelection 0
 	GameTextForPlayer 0, buf144, 0, 0
 	GetConsoleVarAsInt buf144
+	GetPlayerFacingAngle 0, f
 	GetPlayerIp 0, buf144, 0
 	GetPlayerName 0, buf144, 0
 	GetPlayerPos 0, f, f, f
@@ -197,7 +198,6 @@ export dummies()
 
 ##section varinit
 ###include "anticheat"
-###include "dev"
 ###include "dialog"
 ###include "game_sa"
 ###include "login"
