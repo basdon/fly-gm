@@ -30,13 +30,9 @@ hook loop1splayers(playerid)
 		(vid = GetPlayerVehicleID(playerid)))
 	{
 		if (Game_IsAirVehicle(GetVehicleModel(vid)) && vid == lastvehicle[playerid]) {
-			new Float:qw, Float:qx, Float:qy, Float:qz, engine, afk = isAfk(playerid)
-			GetVehicleRotationQuat vid, qw, qx, qy, qz
+			new engine, afk = isAfk(playerid)
 			GetVehicleParamsEx vid, engine, tmp1, tmp1, tmp1, tmp1, tmp1, tmp1
 			if (!afk) {
-				if (Missions_UpdateSatisfaction(playerid, vid, qw, qx, qy, qz, buf144)) {
-					PlayerTextDrawSetString playerid, passenger_satisfaction[playerid], buf144
-				}
 				if (engine) {
 					new _tmp
 					GetPlayerKeys playerid, _tmp, tmp1, tmp1

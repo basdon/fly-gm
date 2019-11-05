@@ -75,18 +75,13 @@ new Iter:players[MAX_PLAYERS]
 new Iter:allplayers[MAX_PLAYERS]
 
 //@summary Just an underscore used as empty text for dialogs, textdraws, ...
-//@remarks normal variable
-//@seealso TXT_EMPTY_CONST
-new TXT_EMPTY[] = "_"
-
-//@summary Just an underscore used as empty text for dialogs, textdraws, ...
 //@remarks stock const
 //@seealso TXT_EMPTY
 stock const TXT_EMPTY_CONST[] = "_"
 
 new tmp1
 new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
-new emptystring[] = ""
+new emptystring[] = "", underscorestring[] = "_"
 
 native REMOVEME_isspawned(playerid)
 native REMOVEME_onplayerreqclassimpl(playerid,classid)
@@ -126,6 +121,7 @@ export dummies()
 	GetVehicleModel 0
 	GetVehicleParamsEx 0, i, i, i, i, i, i, i
 	GetVehiclePos 0, f, f, f
+	GetVehicleRotationQuat 0, f, f, f, f
 	GetVehicleVelocity 0, f, f, f
 	GetVehicleZAngle 0, f
 	GivePlayerWeapon 0, 0, 0
@@ -203,7 +199,6 @@ export dummies()
 ###include "dialog"
 ###include "game_sa"
 ###include "login"
-###include "missions"
 ###include "objects"
 ###include "playername"
 ###include "playtime"
@@ -270,7 +265,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 public OnGameModeInit()
 {
-	if (!B_Validate(MAX_PLAYERS, buf4096, buf144, buf64, buf32, buf32_1, emptystring)) {
+	if (!B_Validate(MAX_PLAYERS, buf4096, buf144, buf64, buf32, buf32_1,
+		emptystring, underscorestring))
+	{
 		SendRconCommand "exit"
 		return 1
 	}
@@ -405,7 +402,6 @@ public OnPlayerConnect(playerid)
 ###include "playername" // keep this second (sets data: name, ip, ..)
 ###include "anticheat"
 ###include "login"
-###include "missions"
 ###include "objects"
 ###include "playtime"
 ###include "timecyc"
