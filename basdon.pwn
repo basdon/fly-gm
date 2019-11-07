@@ -154,6 +154,7 @@ export dummies()
 	SetPlayerRaceCheckpoint 0, 0, f, f, f, f, f, f, f
 	SetPlayerSpecialAction 0, 0
 	SetPlayerTime 0, 0, 0
+	SetSpawnInfo 0, 0, 0, f, f, f, f, 0, 0, 0, 0, 0, 0
 	SetVehicleHealth 0, f
 	SetVehicleParamsEx 0, 0, 0, 0, 0, 0, 0, 0
 	SetVehicleToRespawn 0
