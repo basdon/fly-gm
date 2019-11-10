@@ -26,16 +26,13 @@ varinit
 	stock const crashstr[] = "Wasted~~k~SWITCH_DEBUG_CAM_ON~~k~~TOGGLE_DPAD~~k~~NETWORK_TALK~~k~~SHOW_MOUSE_POINTER_TOGGLE~"
 
 	new kickprogress[MAX_PLAYERS]
-	new disallowedvehicleinfractions[MAX_PLAYERS char]
 	new cc[MAX_PLAYERS]
-	new vehicle_health_check_player_idx
 	new playermoney[MAX_PLAYERS]
 }
 
 hook OnPlayerConnect(playerid)
 {
 	kickprogress[playerid] = 0
-	disallowedvehicleinfractions{playerid} = 0
 	ResetPlayerMoney playerid
 	playermoney[playerid] = 0
 }
@@ -56,30 +53,11 @@ hook OnPlayerUpdate(playerid)
 
 hook loop100()
 {
-	if (vehicle_health_check_player_idx >= iter_count(allplayers)) {
-		vehicle_health_check_player_idx = 0
-	} else {
-		new vehicleid, playerid = iter_access(allplayers, vehicle_health_check_player_idx++)
-		if ((vehicleid = GetPlayerVehicleID(playerid))) {
-			new Float:hp
-			GetVehicleHealthSafe playerid, vehicleid, hp
-		}
-	}
-
 	foreach (new playerid : allplayers) {
 		if (isAfk(playerid) && kickprogress[playerid]) {
 			if ((kickprogress[playerid] -= 3) <= 0) {
 				Kick playerid
 			}
-		}
-	}
-}
-
-hook loop5000()
-{
-	foreach (new playerid : players) {
-		if (disallowedvehicleinfractions{playerid}) {
-			disallowedvehicleinfractions{playerid}--
 		}
 	}
 }

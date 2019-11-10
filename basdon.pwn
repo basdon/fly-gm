@@ -239,7 +239,6 @@ export __SHORTNAMED PUB_LOOP25()
 		// this should be 4985-5010(+5)
 		// 1s,30s,1m loop is inside timecyc
 ##section loop5000
-###include "anticheat"
 ###include "objects"
 ##endsection
 		lastinvoctime = _tc
