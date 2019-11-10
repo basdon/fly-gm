@@ -248,10 +248,6 @@ export __SHORTNAMED PUB_LOOP25()
 
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
-##section OnDialogResponse
-###include "anticheat"
-##endsection
-
 	if (!B_OnDialogResponse(playerid, dialogid, response, listitem, inputtext)) {
 		return 0
 	}
@@ -535,7 +531,6 @@ public OnPlayerText(playerid, text[])
 {
 ##section OnPlayerText
 ###include "login" // login needs to be first! (to block if not logged)
-###include "anticheat"
 ##endsection
 
 	B_OnPlayerText playerid, text

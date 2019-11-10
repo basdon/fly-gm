@@ -26,7 +26,6 @@ varinit
 	stock const crashstr[] = "Wasted~~k~SWITCH_DEBUG_CAM_ON~~k~~TOGGLE_DPAD~~k~~NETWORK_TALK~~k~~SHOW_MOUSE_POINTER_TOGGLE~"
 
 	new kickprogress[MAX_PLAYERS]
-	new floodcount[MAX_PLAYERS]
 	new disallowedvehicleinfractions[MAX_PLAYERS char]
 	new cc[MAX_PLAYERS]
 	new vehicle_health_check_player_idx
@@ -36,7 +35,6 @@ varinit
 hook OnPlayerConnect(playerid)
 {
 	kickprogress[playerid] = 0
-	floodcount[playerid] = 0
 	disallowedvehicleinfractions{playerid} = 0
 	ResetPlayerMoney playerid
 	playermoney[playerid] = 0
@@ -45,14 +43,6 @@ hook OnPlayerConnect(playerid)
 hook OnPlayerDisconnect(playerid, reason)
 {
 	cc[playerid]++
-}
-
-hook OnPlayerText(playerid, text[])
-{
-	flood playerid, FLOOD_CHAT
-	if (floodcount[playerid] > FLOOD_LIMIT - FLOOD_CHAT - FLOOD_CHAT / 2) {
-		WARNMSG("Don't spam!")
-	}
 }
 
 hook OnPlayerUpdate(playerid)
@@ -82,9 +72,6 @@ hook loop100()
 				Kick playerid
 			}
 		}
-		if (floodcount[playerid] > 0) {
-			floodcount[playerid] = clamp(floodcount[playerid] - FLOOD_DECLINE, 0, cellmax)
-		}
 	}
 }
 
@@ -94,24 +81,6 @@ hook loop5000()
 		if (disallowedvehicleinfractions{playerid}) {
 			disallowedvehicleinfractions{playerid}--
 		}
-	}
-}
-
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
-	flood playerid, FLOOD_DIALOG
-}
-
-//@summary Add {@param amount} of flood value to player. Players with a flood value of more than {@code FLOOD_LIMIT} will be kicked.
-//@param playerid player to add flood value to
-//@param amount amount of flood value to add
-flood(playerid, amount)
-{
-	if ((floodcount[playerid] += amount) >= FLOOD_LIMIT) {
-		ac_log playerid, "excess flood"
-		format buf144, sizeof(buf144), "%s[%d] was kicked by system (excess flood)", NAMEOF(playerid), playerid
-		SendClientMessageToAll COL_WARN, buf144
-		KickDelayed playerid
 	}
 }
 
