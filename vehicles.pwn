@@ -5,7 +5,6 @@
 
 varinit
 {
-	#define FUEL_WARNING_SOUND 3200 // air horn
 
 	#define __DestroyVehicle USE_DestroyVehicleSafe_INSTEAD
 	#define DestroyVehicle __DestroyVehicle
@@ -34,15 +33,6 @@ hook loop1splayers(playerid)
 			GetVehicleParamsEx vid, engine, tmp1, tmp1, tmp1, tmp1, tmp1, tmp1
 			if (!afk) {
 				if (engine) {
-					new _tmp
-					GetPlayerKeys playerid, _tmp, tmp1, tmp1
-					if (Veh_ConsumeFuel(vid, .throttle=_tmp & KEY_SPRINT, .isOutOfFuel=_tmp, .buf=buf144)) {
-						PlayerPlaySound playerid, FUEL_WARNING_SOUND, 0.0, 0.0, 0.0
-						SendClientMessage playerid, COL_WARN, buf144
-						if (_tmp) {
-							SetVehicleParamsEx vid, engine = 0, .lights=0, .alarm=0, .doors=0, .bonnet=0, .boot=0, .objective=0
-						}
-					}
 					if (lastcontrolactivity[playerid] > gettime() - 30) {
 						if (++flighttimenew[playerid] >= 60) {
 							SetPlayerScore(playerid, GetPlayerScore(playerid) + 1)

@@ -113,6 +113,7 @@ export dummies()
 	GetConsoleVarAsInt buf144
 	GetPlayerFacingAngle 0, f
 	GetPlayerIp 0, buf144, 0
+	GetPlayerKeys 0, i, i, i
 	GetPlayerName 0, buf144, 0
 	GetPlayerPos 0, f, f, f
 	GetPlayerState 0
