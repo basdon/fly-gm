@@ -6,27 +6,6 @@
 #define MISSION_LOAD_UNLOAD_TIME 2200
 #define MISSION_CHECKPOINT_SIZE 11.0
 
-hook OnGameModeInit()
-{
-	// msp id (i) should be selected DESC (since added first in linked list in plugin), but since rows are handled reversed here, sort ASC
-	new Cache:msp = mysql_query(1, !"SELECT i,a,x,y,z,t FROM msp ORDER BY a ASC,i ASC")
-	rowcount = cache_get_row_count()
-	while (rowcount--) {
-		new aptindex, id, Float:x, Float:y, Float:z, type
-		cache_get_field_int(rowcount, 0, id)
-		cache_get_field_int(rowcount, 1, aptindex)
-		cache_get_field_flt(rowcount, 2, x)
-		cache_get_field_flt(rowcount, 3, y)
-		cache_get_field_flt(rowcount, 4, z)
-		cache_get_field_int(rowcount, 5, type)
-		Missions_AddPoint aptindex, id, x, y, z, type
-	}
-	cache_delete msp
-	Missions_FinalizeAddPoints
-	// close unfinished dangling flights
-	mysql_query 1, !"UPDATE flg SET state=64 WHERE state=1", .use_cache=false
-}
-
 //hook OnGameModeExit()
 //{
 //	// airport.c frees the msp data

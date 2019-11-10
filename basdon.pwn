@@ -297,7 +297,6 @@ public OnGameModeInit()
 	B_OnGameModeInit
 
 ##section OnGameModeInit
-###include "missions" // 'airport' must be run somewhere before this
 ###include "objects"
 ###include "timecyc"
 ###include "vehicles"
