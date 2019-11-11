@@ -6,23 +6,6 @@
 #define MISSION_LOAD_UNLOAD_TIME 2200
 #define MISSION_CHECKPOINT_SIZE 11.0
 
-//hook OnGameModeExit()
-//{
-//	// airport.c frees the msp data
-//}
-
-hook OnPlayerCommandTextCase(playerid, cmdtext[])
-{
-	case 1576: if (Command_Is(cmdtext, "/w", idx)) {
-		startMission playerid
-		#return 1
-	}
-	case 47060928: if (Command_Is(cmdtext, "/work", idx)) {
-		startMission playerid
-		#return 1
-	}
-}
-
 hook OnPlayerEnterRaceCP(playerid)
 {
 	new Float:x, Float:y, Float:z
@@ -94,7 +77,7 @@ hook OnPlayerEnterRaceCP(playerid)
 				}
 				mysql_tquery 1, buf4096[200]
 				if (REMOVEME_getprefs(playerid) & PREF_CONSTANT_WORK) {
-					startMission playerid
+					/*TODO startMission playerid*/
 				}
 				if (buf4096[2000]) {
 					Ac_FormatLog playerid, loggedstatus[playerid], buf4096[2000], buf4096
@@ -119,51 +102,6 @@ hook OnPlayerEnterRaceCP(playerid)
 	} else if (res == MISSION_ENTERCHECKPOINTRES_ERR) {
 		SendClientMessage playerid, COL_WARN, buf144
 		#return 1
-	}
-}
-
-//@summary attempts to start a mission from closest mission point to a random point
-//@param playerid player to start mission for
-startMission(playerid)
-{
-	new Float:x, Float:y, Float:z, Float:vehiclehp
-	new vehicleid
-
-	if (GetPlayerVehicleSeat(playerid) != 0) {
-		WARNMSG("You must be the driver of a vehicle before starting work!")
-		return
-	}
-	vehicleid = GetPlayerVehicleID(playerid)
-
-	if (GetVehicleHealthSafe(playerid, vehicleid, vehiclehp)) return
-	GetPlayerPos playerid, x, y, z
-	if (!Missions_Create(playerid, x, y, z, vehicleid, vv[vehicleid], vehiclehp, buf144, buf4096)) {
-		SendClientMessage playerid, COL_WARN, buf144
-		return
-	}
-
-	GameTextForPlayer playerid, "~b~Retrieving flight data...", 0x800000, 3
-	mysql_tquery 1, buf4096 // start msp outbound flights
-	mysql_tquery 1, buf4096[200] // end msp inbound flights
-	mysql_tquery 1, buf4096[400], #PUB_MISSION_CREATE, "ii", playerid, cc[playerid]
-
-	#outline
-	//@summary Callback from query that inserts a new mission into the flg table
-	//@param playerid player that created the mission
-	//@param cid cc of playerid (see {@link isValidPlayer})
-	export __SHORTNAMED PUB_MISSION_CREATE(playerid, cid)
-	{
-		if (!isValidPlayer(playerid, cid)) return
-		hideGameTextForPlayer(playerid)
-		new Float:x, Float:y, Float:z
-		if (Missions_Start(playerid, cache_insert_id(), x, y, z, buf4096)) {
-			SetPlayerRaceCheckpoint playerid, 2, x, y, z, 0.0, 0.0, 0.0, MISSION_CHECKPOINT_SIZE
-			SendClientMessage playerid, COL_MISSION, buf4096
-			Missions_OnWeatherChanged lockedweather
-			if (REMOVEME_getprefs(playerid) & PREF_CONSTANT_WORK) {
-				SendClientMessage playerid, COL_SAMP_GREY, "Constant work is ON, a new mission will be started when you complete this one (/autow to disable)."
-			}
-		}
 	}
 }
 

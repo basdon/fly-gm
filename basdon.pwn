@@ -54,7 +54,6 @@
 #define PUB_LOGIN_REGISTER_HASHPW_CB ln // login
 #define PUB_LOGIN_CREATE_NEWUSER_SES lo // login
 #define PUB_TIMECYC_NEXTWEATHER ta // timcyc
-#define PUB_MISSION_CREATE ma // missions
 #define PUB_MISSION_LOADTIMER mb // missions
 #define PUB_MISSION_UNLOADTIMER mc // missions
 
@@ -373,7 +372,6 @@ export OnPlayerCommandTextHash(playerid, hash, cmdtext[])
 	}
 ##section OnPlayerCommandTextCase
 ###include "login"
-###include "missions"
 ###include "timecyc"
 ###include "vehicles"
 ###include "dev" // keep this last (it has the default case)
@@ -591,6 +589,16 @@ public SSocket_OnRecv(ssocket:handle, data[], len)
 public OnQueryError(errorid, error[], callback[], query[], connectionHandle)
 {
 	printf "query err %d - %s - %s - %s", errorid, error, callback, query
+}
+
+export mysql_tquery_proxy(function, data)
+{
+	mysql_tquery 1, buf4096, "MM", "ii", function, data
+}
+
+export MM(function, data)
+{
+	B_OnMysqlResponse function, data
 }
 
 #include "anticheat"
