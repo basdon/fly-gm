@@ -10,6 +10,7 @@
 
 varinit
 {
+	native REMOVEME_setplayermoney(playerid, amount)
 	native REMOVEME_setloggedstatus(playerid, status)
 
 	#define isPlaying(%0) (loggedstatus[%0])
@@ -348,6 +349,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 				playerodo[playerid] = float(iodo)
 				SetPlayerScore playerid, score
 				money_setFor playerid, money
+				REMOVEME_setplayermoney playerid, money
 				PlayerData_UpdateGroup playerid, groups
 
 				mysql_tquery 1, buf4096[1]
@@ -1004,6 +1006,7 @@ loginPlayer(playerid, status)
 	}
 	if (status == LOGGED_GUEST) {
 		money_setFor playerid, MONEY_DEFAULTAMOUNT
+		REMOVEME_setplayermoney playerid, MONEY_DEFAULTAMOUNT
 	}
 	loggedstatus[playerid] = status
 	REMOVEME_setloggedstatus playerid, status

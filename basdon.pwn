@@ -125,6 +125,7 @@ export dummies()
 	GetVehicleRotationQuat 0, f, f, f, f
 	GetVehicleVelocity 0, f, f, f
 	GetVehicleZAngle 0, f
+	GivePlayerMoney 0, 0
 	GivePlayerWeapon 0, 0, 0
 	Kick 0
 	PlayerTextDrawAlignment 0, PlayerText:0, 0
@@ -142,6 +143,7 @@ export dummies()
 	PutPlayerInVehicle 0, 0, 0
 	RemoveBuildingForPlayer 0, 0, f, f, f, f
 	RemovePlayerMapIcon 0, 0
+	ResetPlayerMoney 0
 	SendClientMessage 0, 0, buf144
 	SendClientMessageToAll 0, buf144
 	SendRconCommand buf144
@@ -416,7 +418,6 @@ public OnPlayerDeath(playerid, killerid, reason)
 	B_OnPlayerDeath playerid, killerid, reason
 
 ##section OnPlayerDeath
-###include "missions"
 ###include "timecyc"
 ##endsection
 
@@ -429,7 +430,6 @@ public OnPlayerDisconnect(playerid, reason)
 
 ##section OnPlayerDisconnect
 ###include "anticheat"
-###include "missions"
 ###include "playtime"
 ###include "vehicles"
 ###include "login" // keep this last-ish (clears logged in status)

@@ -13,20 +13,6 @@
 
 hook OnPlayerCommandTextCase(playerid, cmdtext[])
 {
-	case 1572: if (Command_Is(cmdtext, "/s", idx)) {
-		if (Missions_GetState(playerid) == -1) {
-			WARNMSG("You're not on an active mission.")
-			#return 1
-		}
-		DisablePlayerRaceCheckpoint playerid
-		if (money_takeFrom(playerid, MISSION_CANCEL_FINE) != MISSION_CANCEL_FINE) {
-			// TODO : wtf?
-			WARNMSG("You can't afford this!")
-		} else {
-			Missions_EndUnfinished playerid, MISSION_STATE_DECLINED
-		}
-		#return 1
-	}
 	case 1576: if (Command_Is(cmdtext, "/w", idx)) {
 		startMission playerid
 		#return 1
@@ -35,35 +21,6 @@ hook OnPlayerCommandTextCase(playerid, cmdtext[])
 		startMission playerid
 		#return 1
 	}
-	case 1438752217: if (Command_Is(cmdtext, "/autow", idx)) {
-		if (REMOVEME_getprefs(playerid) & PREF_CONSTANT_WORK) {
-			SendClientMessage playerid, COL_SAMP_GREY, "Constant work disabled"
-		} else {
-			SendClientMessage playerid, COL_SAMP_GREY, "Constant work enabled"
-		}
-		REMOVEME_setprefs(playerid, REMOVEME_getprefs(playerid)^PREF_CONSTANT_WORK)
-		#return 1
-	}
-}
-
-hook OnPlayerDeath(playerid, killerid, reason)
-{
-	if (Missions_GetState(playerid) != -1) {
-		DisablePlayerRaceCheckpoint playerid
-		new vid, Float:f, missionstopreason = MISSION_STATE_DIED
-		if ((vid = GetPlayerVehicleID(playerid))) {
-			GetVehicleHealthSafe(playerid, vid, f)
-			if (f <= 200.0) {
-				missionstopreason = MISSION_STATE_CRASHED
-			}
-		}
-		Missions_EndUnfinished playerid, missionstopreason
-	}
-}
-
-hook OnPlayerDisconnect(playerid, reason)
-{
-	Missions_EndUnfinished playerid, MISSION_STATE_ABANDONED
 }
 
 hook OnPlayerEnterRaceCP(playerid)
