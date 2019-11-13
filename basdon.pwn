@@ -53,7 +53,6 @@
 #define PUB_LOGIN_CREATE_GUEST_USR lm // login
 #define PUB_LOGIN_REGISTER_HASHPW_CB ln // login
 #define PUB_LOGIN_CREATE_NEWUSER_SES lo // login
-#define PUB_TIMECYC_NEXTWEATHER ta // timcyc
 #define PUB_MISSION_LOADTIMER mb // missions
 #define PUB_MISSION_UNLOADTIMER mc // missions
 
@@ -82,14 +81,9 @@ new tmp1
 new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
 new emptystring[] = "", underscorestring[] = "_"
 
-native REMOVEME_isspawned(playerid)
 native REMOVEME_onplayerreqclassimpl(playerid,classid)
 native REMOVEME_setprefs(playerid, prefs)
 native REMOVEME_getprefs(playerid)
-isSpawned(playerid)
-{
-	return REMOVEME_isspawned(playerid)
-}
 
 //@summary Function that should never be called, does dummy calls to natives to make {@code SYSREQ.C} happy
 export dummies()
@@ -156,6 +150,7 @@ export dummies()
 	SetPlayerRaceCheckpoint 0, 0, f, f, f, f, f, f, f
 	SetPlayerSpecialAction 0, 0
 	SetPlayerTime 0, 0, 0
+	SetPlayerWeather 0, 0
 	SetSpawnInfo 0, 0, 0, f, f, f, f, 0, 0, 0, 0, 0, 0
 	SetVehicleHealth 0, f
 	SetVehicleParamsEx 0, 0, 0, 0, 0, 0, 0, 0
@@ -299,7 +294,6 @@ public OnGameModeInit()
 
 ##section OnGameModeInit
 ###include "objects"
-###include "timecyc"
 ###include "vehicles"
 ##endsection
 
@@ -372,7 +366,6 @@ export OnPlayerCommandTextHash(playerid, hash, cmdtext[])
 	}
 ##section OnPlayerCommandTextCase
 ###include "login"
-###include "timecyc"
 ###include "vehicles"
 ###include "dev" // keep this last (it has the default case)
 ##endsection
@@ -400,7 +393,6 @@ public OnPlayerConnect(playerid)
 ###include "login"
 ###include "objects"
 ###include "playtime"
-###include "timecyc"
 ###include "vehicles"
 ##endsection
 
@@ -414,11 +406,6 @@ public OnPlayerDeath(playerid, killerid, reason)
 	}
 
 	B_OnPlayerDeath playerid, killerid, reason
-
-##section OnPlayerDeath
-###include "timecyc"
-##endsection
-
 	return 1
 }
 
@@ -486,10 +473,6 @@ onPlayerNowAfk(playerid)
 public OnPlayerRequestClass(playerid, classid)
 {
 	B_OnPlayerRequestClass playerid, classid
-
-##section OnPlayerRequestClass
-###include "timecyc"
-##endsection
 	return 1
 }
 
@@ -497,7 +480,6 @@ public OnPlayerRequestSpawn(playerid)
 {
 ##section OnPlayerRequestSpawn
 ###include "login" // login needs to be first! (to block if not logged)
-###include "timecyc"
 ##endsection
 	return B_OnPlayerRequestSpawn(playerid)
 }
@@ -537,7 +519,6 @@ public OnPlayerUpdate(playerid)
 {
 ##section OnPlayerUpdate
 ###include "playtime"
-###include "timecyc"
 ###include "vehicles"
 ###include "anticheat" // keep this last (lastvehicle updated in vehicles)
 ##endsection
@@ -555,7 +536,6 @@ onPlayerWasAfk(playerid)
 	REMOVEME_onplayerwasafk playerid
 ##section onPlayerWasAfk
 ###include "playtime"
-###include "timecyc"
 ##endsection
 }
 
@@ -603,7 +583,6 @@ export MM(function, data)
 
 #include "anticheat"
 #include "playername" // try to keep this top-ish (for onPlayerNameChange section)
-#include "timecyc" // also try to keep this top-ish (because 1s 30s 1m loop hooks)
 #include "dev"
 #include "dialog"
 #include "game_sa"

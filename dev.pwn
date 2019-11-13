@@ -80,29 +80,6 @@ hook OnPlayerCommandTextCase(playerid, hash, cmdtext[])
 		SetPlayerHealth playerid, 0.0
 		#return 1
 	}
-	case -449545731: if (Command_Is(cmdtext, "/fweather", idx)) {
-		new weatherid
-		if (!Command_GetIntParam(cmdtext, idx, weatherid)) {
-			#return WARNMSG("Syntax: /fweather <weatherid>")
-		}
-		lockedweather = upcomingweather = currentweather = weatherid // timecyc hack
-		forceTimecycForPlayer playerid
-		SendClientMessageToAll -1, "forced weather"
-		#return 1
-	}
-	case -1820004817: if (Command_Is(cmdtext, "/tweather", idx)) {
-		new weatherid
-		if (!Command_GetIntParam(cmdtext, idx, weatherid)) {
-			#return WARNMSG("Syntax: /tweather <weatherid>")
-		}
-		setWeather weatherid
-		SendClientMessageToAll -1, "changing weather"
-		#return 1
-	}
-	case 608035061: if (Command_Is(cmdtext, "/nweather", idx)) {
-		PUB_TIMECYC_NEXTWEATHER
-		#return 1
-	}
 	case 1455197760: if (Command_Is(cmdtext, "/sound", idx)) {
 		new soundid
 		if (!Command_GetIntParam(cmdtext, idx, soundid)) {
