@@ -571,11 +571,6 @@ public OnQueryError(errorid, error[], callback[], query[], connectionHandle)
 	printf "query err %d - %s - %s - %s", errorid, error, callback, query
 }
 
-export mysql_tquery_proxy(function, data)
-{
-	mysql_tquery 1, buf4096, "MM", "ii", function, data
-}
-
 export MM(function, data)
 {
 	B_OnMysqlResponse function, data
