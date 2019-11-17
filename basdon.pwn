@@ -519,7 +519,8 @@ public OnPlayerUpdate(playerid)
 ###include "vehicles"
 ###include "anticheat" // keep this last (lastvehicle updated in vehicles)
 ##endsection
-	return 1
+
+	return B_OnPlayerUpdate(playerid)
 }
 
 native REMOVEME_onplayerwasafk(playerid)
