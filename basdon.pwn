@@ -53,8 +53,6 @@
 #define PUB_LOGIN_CREATE_GUEST_USR lm // login
 #define PUB_LOGIN_REGISTER_HASHPW_CB ln // login
 #define PUB_LOGIN_CREATE_NEWUSER_SES lo // login
-#define PUB_MISSION_LOADTIMER mb // missions
-#define PUB_MISSION_UNLOADTIMER mc // missions
 
 #namespace "basdon"
 
@@ -171,6 +169,7 @@ export dummies()
 	TextDrawTextSize Text:0, f, f
 	TextDrawUseBox Text:0, 1
 	TogglePlayerClock 0, 0
+	TogglePlayerControllable 0, 0
 	TogglePlayerSpectating 0, 0
 	Veh_UpdateSlot 0, 0
 	cache_delete Cache:0
@@ -428,9 +427,7 @@ public OnPlayerDisconnect(playerid, reason)
 
 public OnPlayerEnterRaceCheckpoint(playerid)
 {
-##section OnPlayerEnterRaceCP
-###include "missions"
-##endsection
+	B_OnPlayerEnterRaceCP playerid
 	return 1
 }
 
@@ -582,7 +579,6 @@ export MM(function, data)
 #include "dialog"
 #include "game_sa"
 #include "login"
-#include "missions"
 #include "playtime"
 #include "objects"
 #include "vehicles"
