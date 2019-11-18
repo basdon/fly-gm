@@ -14,25 +14,18 @@
 
 varinit
 {
-	#define GetPlayerMoney@@ please_use_playermoney_var
-	#define GetPlayerMoney GetPlayerMoney@@
-	#define GivePlayerMoney@@ please_use_money_funcs
-	#define GivePlayerMoney GivePlayerMoney@@
-
 	#define CRASH(%0) GameTextForPlayer(%0,crashstr,5,5)
 
 	stock const crashstr[] = "Wasted~~k~SWITCH_DEBUG_CAM_ON~~k~~TOGGLE_DPAD~~k~~NETWORK_TALK~~k~~SHOW_MOUSE_POINTER_TOGGLE~"
 
 	new kickprogress[MAX_PLAYERS]
 	new cc[MAX_PLAYERS]
-	new playermoney[MAX_PLAYERS]
 }
 
 hook OnPlayerConnect(playerid)
 {
 	kickprogress[playerid] = 0
 	ResetPlayerMoney playerid
-	playermoney[playerid] = 0
 }
 
 hook OnPlayerDisconnect(playerid, reason)
@@ -87,58 +80,6 @@ KickDelayed(playerid, delay=1)
 isValidPlayer(playerid, cid)
 {
 	return cc[playerid] == cid
-}
-
-//@summary Takes money from a player
-//@param playerid player to take money from
-//@param amount amount to take
-//@returns actual amount of money that was taken from {@param playerid}
-//@remarks will not take any money when it would cause an underflow
-money_takeFrom(playerid, amount)
-{
-	if (amount < 0) {
-		money_giveTo playerid, -amount
-	}
-	if (playermoney[playerid] - amount > playermoney[playerid]) {
-		return 0
-	}
-	playermoney[playerid] -= amount
-#undef GivePlayerMoney
-	GivePlayerMoney playerid, -amount
-#define GivePlayerMoney GivePlayerMoney@@
-	return amount
-}
-
-//@summary Gives money to a player
-//@param playerid player to give money to
-//@param amount amount to give
-//@returns actual amount of money that was given to {@param playerid}
-//@remarks will not give any money when it would cause an overflow
-money_giveTo(playerid, amount)
-{
-	if (amount < 0) {
-		money_takeFrom playerid, -amount
-	}
-	if (playermoney[playerid] + amount < playermoney[playerid]) {
-		return 0
-	}
-	playermoney[playerid] += amount
-#undef GivePlayerMoney
-	GivePlayerMoney playerid, amount
-#define GivePlayerMoney GivePlayerMoney@@
-	return amount
-}
-
-//@summary Sets the money of a player
-//@param playerid player to set the money for
-//@param amount amount of money the player should have
-money_setFor(playerid, amount)
-{
-#undef GivePlayerMoney
-	ResetPlayerMoney playerid
-	GivePlayerMoney playerid, amount
-#define GivePlayerMoney GivePlayerMoney@@
-	playermoney[playerid] = amount
 }
 
 #printhookguards
