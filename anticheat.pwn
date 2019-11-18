@@ -14,8 +14,6 @@
 
 varinit
 {
-	#define GetVehicleHealth@@ please_use_GetVehicleHealthSafe
-	#define GetVehicleHealth GetVehicleHealth@@
 	#define GetPlayerMoney@@ please_use_playermoney_var
 	#define GetPlayerMoney GetPlayerMoney@@
 	#define GivePlayerMoney@@ please_use_money_funcs
@@ -79,48 +77,6 @@ KickDelayed(playerid, delay=1)
 	kickprogress[playerid] = delay
 }
 
-//@summary Gets the vehicle health, but checks first for NaN or unacceptable high/low values, and handling offenders
-//@param playerid the player in the vehicle, {@code INVALID_PLAYER_ID} is accepted
-//@param vehicleid vehicle id of which to get the hp
-//@param hp reference to store vehicel hp in
-//@returns {@code 1} if the player is being kicked because of invalid hp
-//@seealso GetVehicleHealth
-//@remarks macro makes sure {@link GetVehicleHealth} can't be used, don't worry
-GetVehicleHealthSafe(playerid, vehicleid, &Float:hp)
-{
-#undef GetVehicleHealth
-	GetVehicleHealth vehicleid, hp
-#define GetVehicleHealth GetVehicleHelp@@
-	// tested: passengers have no saying in what the vehicle hp is
-	if (isNaN(hp)) {
-		if (playerid != INVALID_PLAYER_ID && GetPlayerVehicleSeat(playerid) != 0) {
-			hp = 1000.0
-			return 0
-		}
-		ac_log playerid, "NaN vehicle hp"
-	} else if (hp > 1000.0) {
-		if (playerid != INVALID_PLAYER_ID && GetPlayerVehicleSeat(playerid) != 0) {
-			hp = 1000.0
-			return 0
-		}
-		format buf144, sizeof(buf144), "vehicle hp %.4f", hp
-		ac_log playerid, buf144
-	} else if (hp < 0.0) {
-		hp = 0.0
-		return 0
-	} else {
-		return 0
-	}
-	if (playerid != INVALID_PLAYER_ID) {
-		format buf144, sizeof(buf144), "%s[%d] was kicked by system (invalid vehicle hp)", NAMEOF(playerid), playerid
-		SendClientMessageToAll COL_WARN, buf144
-		CRASH(playerid)
-		KickDelayed playerid
-	}
-	SetVehicleHealth vehicleid, 1000.0
-	return 1
-}
-
 //@summary When passing playerid to callbacks (for example for a database query), when the callback is \
 		called the player with {@param playerid} might be disconnected or even a different player. \
 		This func checks if the player with given id is still the same player by counting the amount \
@@ -131,15 +87,6 @@ GetVehicleHealthSafe(playerid, vehicleid, &Float:hp)
 isValidPlayer(playerid, cid)
 {
 	return cc[playerid] == cid
-}
-
-//@summary Log something to db (acl table)
-//@param playerid player
-//@param message message (don't sqli yourself)
-ac_log(playerid, const message[])
-{
-	Ac_FormatLog playerid, loggedstatus[playerid], message, buf4096
-	mysql_tquery 1, buf4096
 }
 
 //@summary Takes money from a player

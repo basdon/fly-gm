@@ -27,9 +27,7 @@ hook OnPlayerCommandText(playerid, cmdtext[])
 	}
 	if (strcmp(cmdtext, "/vhp") == 0) {
 		new Float:res
-#undef GetVehicleHealth
 		GetVehicleHealth(GetPlayerVehicleID(playerid), res)
-#define GetVehicleHealth GetVehicleHealth@@
 		format buf144, sizeof(buf144), "hp %f", res
 		SendClientMessage playerid, -1, buf144
 		#return 1
