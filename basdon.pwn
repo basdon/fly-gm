@@ -109,6 +109,7 @@ export dummies()
 	GetPlayerPos 0, f, f, f
 	GetPlayerState 0
 	GetPlayerVehicleID 0
+	GetServerTickRate
 	GetVehicleHealth 0, f
 	GetVehicleModel 0
 	GetVehicleParamsEx 0, i, i, i, i, i, i, i
@@ -119,6 +120,7 @@ export dummies()
 	GivePlayerMoney 0, 0
 	GivePlayerWeapon 0, 0, 0
 	Kick 0
+	PlayerPlaySound 0, 0, f, f, f
 	PlayerTextDrawAlignment 0, PlayerText:0, 0
 	PlayerTextDrawBackgroundColor 0, PlayerText:0, 0
 	PlayerTextDrawColor 0, PlayerText:0, 0
@@ -144,6 +146,7 @@ export dummies()
 	SetPlayerCameraLookAt 0, f, f, f
 	SetPlayerColor 0, 0
 	SetPlayerFacingAngle 0, f
+	SetPlayerHealth 0, f
 	SetPlayerMapIcon 0, 0, f, f, f, 0, 0, 0
 	SetPlayerPos 0, f, f, f
 	SetPlayerRaceCheckpoint 0, 0, f, f, f, f, f, f, f
@@ -335,7 +338,6 @@ public OnPlayerCommandText(playerid, cmdtext[])
 {
 ##section OnPlayerCommandText
 ###include "login" // login needs to be first! (to block if not logged)
-###include "dev"
 ##endsection
 
 	new uid = userid[playerid]
@@ -355,18 +357,8 @@ export OnPlayerCommandTextHash(playerid, hash, cmdtext[])
 {
 	new idx
 	switch (hash) {
-	case 159897060: if (Command_Is(cmdtext, "/helpkeys", idx)) {
-		GameTextForPlayer playerid, "~w~start/stop engine: ~b~~k~~CONVERSATION_NO~~n~~w~landing gear: ~b~~k~~TOGGLE_SUBMISSIONS~", 5000, 3
-		return 1
-	}
-	case -1408243412: if (Command_Is(cmdtext, "/tickrate", idx)) {
-		format(buf144, sizeof(buf144), "%d", GetServerTickRate())
-		SendClientMessage playerid, -1, buf144
-		return 1
-	}
 ##section OnPlayerCommandTextCase
 ###include "login"
-###include "dev" // keep this last (it has the default case)
 ##endsection
 	}
 
@@ -576,7 +568,6 @@ export MM(function, data)
 
 #include "anticheat"
 #include "playername" // try to keep this top-ish (for onPlayerNameChange section)
-#include "dev"
 #include "dialog"
 #include "game_sa"
 #include "login"
