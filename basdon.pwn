@@ -134,6 +134,7 @@ export dummies()
 	PutPlayerInVehicle 0, 0, 0
 	RemoveBuildingForPlayer 0, 0, f, f, f, f
 	RemovePlayerMapIcon 0, 0
+	RepairVehicle 0
 	ResetPlayerMoney 0
 	SendClientMessage 0, 0, buf144
 	SendClientMessageToAll 0, buf144
@@ -365,7 +366,6 @@ export OnPlayerCommandTextHash(playerid, hash, cmdtext[])
 	}
 ##section OnPlayerCommandTextCase
 ###include "login"
-###include "vehicles"
 ###include "dev" // keep this last (it has the default case)
 ##endsection
 	}

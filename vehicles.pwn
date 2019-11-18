@@ -74,39 +74,11 @@ hook OnGameModeInit()
 		}
 	}
 	cache_delete veh
-	veh = mysql_query(1, !"SELECT s.id,s.x,s.y,s.z FROM svp s JOIN apt a ON s.apt=a.i WHERE a.e=1")
-	rowcount = cache_get_row_count()
-	Veh_InitServicePoints rowcount
-	while (rowcount--) {
-		new id, Float:x, Float:y, Float:z
-		cache_get_field_int(rowcount, 0, id)
-		cache_get_field_flt(rowcount, 1, x)
-		cache_get_field_flt(rowcount, 2, y)
-		cache_get_field_flt(rowcount, 3, z)
-		Veh_AddServicePoint rowcount, id, x, y, z
-	}
-	cache_delete veh
 }
 
 hook OnGameModeExit()
 {
 	Veh_Destroy
-}
-
-hook OnPlayerCommandTextCase(playerid, cmdtext[])
-{
-	case 1501574: if (Command_Is(cmdtext, "/fix", idx)) {
-		repairVehicleForPlayer playerid
-		#return 1
-	}
-	case 2123432060: if (Command_Is(cmdtext, "/repair", idx)) {
-		repairVehicleForPlayer playerid
-		#return 1
-	}
-	case 2123153240: if (Command_Is(cmdtext, "/refuel", idx)) {
-		refuelVehicleForPlayer playerid
-		#return 1
-	}
 }
 
 hook OnPlayerConnect(playerid)
@@ -263,91 +235,6 @@ findPlayerInVehicleSeat(vehicleid, seatid)
 		}
 	}
 	return INVALID_PLAYER_ID
-}
-
-//@summary Repairs vehicle for player, taking money from the player to fix it
-//@param playerid player that needs their vehicle fixed
-//@remarks also notifies the mission script about the vehicle's new hp
-//@remarks passengers can also repair vehicles
-repairVehicleForPlayer(playerid)
-{
-	// passengers may also repair the vehicle, why not?
-	new vehicleid = GetPlayerVehicleID(playerid)
-	if (vehicleid == 0) {
-		WARNMSGPB144("You must be in a vehicle to do this!")
-		return
-	}
-	new Float:hp, Float:newhp, Float:x, Float:y, Float:z
-	GetVehiclePos vehicleid, x, y, z
-	GetVehicleHealthSafe playerid, vehicleid, hp
-	new cost = Veh_Repair(x, y, z, vehicleid, playerid, playermoney[playerid], hp, newhp, buf144, buf4096)
-	if (!cost) {
-		SendClientMessage playerid, COL_WARN, buf144
-		return
-	}
-
-	if (buf4096[0]) {
-		mysql_tquery 1, buf4096
-	}
-	money_takeFrom playerid, cost
-	SendClientMessage playerid, COL_INFO, buf144
-	RepairVehicle vehicleid
-	SetVehicleHealth vehicleid, newhp
-	if (GetPlayerVehicleSeat(playerid) != 0) {
-		new driverid = findPlayerInVehicleSeat(vehicleid, .seatid=0)
-		if (driverid == INVALID_PLAYER_ID) {
-			return
-		}
-		format buf144, sizeof(buf144), INFO"Player %s[%d] repaired your vehicle!", NAMEOF(playerid), playerid
-		SendClientMessage driverid, COL_INFO, buf144
-		playerid = driverid
-	}
-	Missions_OnVehicleRepaired playerid, vehicleid, hp, newhp
-}
-
-//@summary Refuels vehicle for player, taking money from the player to refuel it
-//@param playerid player that needs their vehicle refueled
-//@remarks also notifies the mission script about the vehicle's new hp
-//@remarks passengers can also refuel vehicles
-refuelVehicleForPlayer(playerid)
-{
-	// passengers may also refuel the vehicle, why not?
-	new vehicleid = GetPlayerVehicleID(playerid)
-	if (vehicleid == 0) {
-		WARNMSGPB144("You must be in a vehicle to do this!")
-		return
-	}
-
-	new engine
-	GetVehicleParamsEx vehicleid, engine, tmp1, tmp1, tmp1, tmp1, tmp1, tmp1
-	if (engine) {
-		WARNMSGPB144("The engine must be turned off first. Press n or check out /helpkeys")
-		return
-	}
-
-	new Float:refuelamount, Float:x, Float:y, Float:z
-	GetVehiclePos vehicleid, x, y, z
-	new cost = Veh_Refuel(x, y, z, vehicleid, playerid, 1.2, playermoney[playerid], refuelamount, buf144, buf4096)
-	if (!cost) {
-		SendClientMessage playerid, COL_WARN, buf144
-		return
-	}
-
-	if (buf4096[0]) {
-		mysql_tquery 1, buf4096
-	}
-	money_takeFrom playerid, cost
-	SendClientMessage playerid, COL_INFO, buf144
-	if (GetPlayerVehicleSeat(playerid) != 0) {
-		new driverid = findPlayerInVehicleSeat(vehicleid, .seatid=0)
-		if (driverid == INVALID_PLAYER_ID) {
-			return
-		}
-		format buf144, sizeof(buf144), INFO"Player %s[%d] refueled your vehicle!", NAMEOF(playerid), playerid
-		SendClientMessage driverid, COL_INFO, buf144
-		playerid = driverid
-	}
-	Missions_OnVehicleRefueled playerid, vehicleid, refuelamount
 }
 
 //@summary Spawns vehicles owned by a player
