@@ -110,32 +110,6 @@ hook OnPlayerDisconnect(playerid, reason)
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	lastcontrolactivity[playerid] = gettime()
-	if (newkeys & KEY_NO && (oldkeys & KEY_NO) == 0) {
-		new vid
-		if ((vid = GetPlayerVehicleID(playerid)) && GetPlayerVehicleSeat(playerid) == 0) {
-			new engine
-			GetVehicleParamsEx vid, engine, tmp1, tmp1, tmp1, tmp1, tmp1, tmp1
-			if (engine) {
-				new Float:_x, Float:_y, Float:_z
-				GetVehicleVelocity vid, _x, _y, _z
-				_x *= _x
-				_y *= _y
-				_z *= _z
-				#assert VEL_VER == 2
-				if (_x + _y + _z > 0.00027714) { // 3kph
-					WARNMSGPB144("You can't shut down the engine while moving!")
-				} else {
-					SetVehicleParamsEx vid, .engine=0, .lights=0, .alarm=0, .doors=0, .bonnet=0, .boot=0, .objective=0
-					SendClientMessage playerid, COL_INFO, INFO"engine stopped"
-				}
-			} else if (Veh_IsFuelEmpty(vid)) {
-				WARNMSGPB144("You can't start the engine, there is no fuel!")
-			} else {
-				SetVehicleParamsEx vid, .engine=1, .lights=0, .alarm=0, .doors=0, .bonnet=0, .boot=0, .objective=0
-				SendClientMessage playerid, COL_INFO, INFO"engine started"
-			}
-		}
-	}
 }
 
 hook OnPlayerLogin(playerid)

@@ -110,6 +110,7 @@ export dummies()
 	GetPlayerState 0
 	GetPlayerVehicleID 0
 	GetServerTickRate
+	GetVehicleDamageStatus 0, i, i, i, i
 	GetVehicleHealth 0, f
 	GetVehicleModel 0
 	GetVehicleParamsEx 0, i, i, i, i, i, i, i
@@ -175,6 +176,7 @@ export dummies()
 	TogglePlayerClock 0, 0
 	TogglePlayerControllable 0, 0
 	TogglePlayerSpectating 0, 0
+	UpdateVehicleDamageStatus 0, i, i, i, i
 	Veh_UpdateSlot 0, 0
 	cache_delete Cache:0
 	cache_get_row 0, 0, buf4096
@@ -430,6 +432,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 
 public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	B_OnPlayerKeyStateChange playerid, oldkeys, newkeys
 ##section OnPlayerKeyStateChange
 ###include "vehicles"
 ##endsection
