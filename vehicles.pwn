@@ -14,36 +14,6 @@ varinit
 
 	// for odo and stuff
 	new Float:playerodo[MAX_PLAYERS]
-	// total flight time of user, multiple of 60s
-	new flighttimeold[MAX_PLAYERS]
-	// amount of seconds flight time of user that is not yet added to flighttimeold,
-	//   to increase player's score when this reaches 60
-	new flighttimenew[MAX_PLAYERS]
-	new lastcontrolactivity[MAX_PLAYERS]
-}
-
-hook loop1splayers(playerid)
-{
-	new vid
-	if (GetPlayerVehicleSeat(playerid) == 0 &&
-		(vid = GetPlayerVehicleID(playerid)))
-	{
-		if (Game_IsAirVehicle(GetVehicleModel(vid)) && vid == lastvehicle[playerid]) {
-			new engine, afk = isAfk(playerid)
-			GetVehicleParamsEx vid, engine, tmp1, tmp1, tmp1, tmp1, tmp1, tmp1
-			if (!afk) {
-				if (engine) {
-					if (lastcontrolactivity[playerid] > gettime() - 30) {
-						if (++flighttimenew[playerid] >= 60) {
-							SetPlayerScore(playerid, GetPlayerScore(playerid) + 1)
-							flighttimeold[playerid] += 60
-							flighttimenew[playerid] -= 60
-						}
-					}
-				}
-			}
-		}
-	}
 }
 
 hook OnGameModeInit()
@@ -81,11 +51,6 @@ hook OnGameModeExit()
 	Veh_Destroy
 }
 
-hook OnPlayerConnect(playerid)
-{
-	flighttimenew[playerid] = flighttimeold[playerid] = 0
-}
-
 hook OnPlayerDisconnect(playerid, reason)
 {
 	Veh_OnPlayerDisconnect playerid
@@ -105,11 +70,6 @@ hook OnPlayerDisconnect(playerid, reason)
 		}
 	}
 	lastvehicle[playerid] = 0
-}
-
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
-{
-	lastcontrolactivity[playerid] = gettime()
 }
 
 hook OnPlayerLogin(playerid)

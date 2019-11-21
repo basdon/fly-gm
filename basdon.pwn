@@ -386,7 +386,6 @@ public OnPlayerConnect(playerid)
 ###include "login"
 ###include "objects"
 ###include "playtime"
-###include "vehicles"
 ##endsection
 
 	return 1
@@ -433,9 +432,6 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	B_OnPlayerKeyStateChange playerid, oldkeys, newkeys
-##section OnPlayerKeyStateChange
-###include "vehicles"
-##endsection
 }
 
 //@summary Function that gets called when a player logs in

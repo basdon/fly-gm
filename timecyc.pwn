@@ -46,12 +46,6 @@ hook loop100()
 	if (time > lasttime) {
 ##section loop1s
 ##endsection
-##section loop1splayers
-	foreach (new playerid : players) {
-##include "vehicles"
-
-	}
-##endsection
 		if (++time_s >= 60) {
 			time_s = 0
 			if (++time_h >= 24) {
