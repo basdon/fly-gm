@@ -121,6 +121,7 @@ export dummies()
 	GivePlayerMoney 0, 0
 	GivePlayerWeapon 0, 0, 0
 	Kick 0
+	MoveObject 0, f, f, f, f, f, f, f
 	PlayerPlaySound 0, 0, f, f, f
 	PlayerTextDrawAlignment 0, PlayerText:0, 0
 	PlayerTextDrawBackgroundColor 0, PlayerText:0, 0
@@ -202,7 +203,6 @@ export dummies()
 ###include "dialog"
 ###include "game_sa"
 ###include "login"
-###include "objects"
 ###include "playername"
 ###include "vehicles"
 ##endsection
@@ -234,9 +234,6 @@ export __SHORTNAMED PUB_LOOP25()
 	new _tc = tickcount()
 	if (_tc - lastinvoctime > 4984) {
 		// this should be 4985-5010(+5)
-##section loop5000
-###include "objects"
-##endsection
 		lastinvoctime = _tc
 	}
 }
@@ -293,7 +290,6 @@ public OnGameModeInit()
 	B_OnGameModeInit
 
 ##section OnGameModeInit
-###include "objects"
 ###include "vehicles"
 ##endsection
 
@@ -379,7 +375,6 @@ public OnPlayerConnect(playerid)
 ###include "playername" // keep this second (sets data: name, ip, ..)
 ###include "anticheat"
 ###include "login"
-###include "objects"
 ##endsection
 
 	return 1
@@ -534,6 +529,5 @@ export MM(function, data)
 #include "dialog"
 #include "game_sa"
 #include "login"
-#include "objects"
 #include "vehicles"
 
