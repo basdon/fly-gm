@@ -204,8 +204,6 @@ export dummies()
 ###include "login"
 ###include "objects"
 ###include "playername"
-###include "playtime"
-###include "timecyc"
 ###include "vehicles"
 ##endsection
 
@@ -230,15 +228,12 @@ export __SHORTNAMED PUB_LOOP25()
 	if (!invoc) {
 ##section loop100
 ###include "anticheat"
-###include "playtime"
-###include "timecyc"
 ##endsection
 		invoc = 0
 	}
 	new _tc = tickcount()
 	if (_tc - lastinvoctime > 4984) {
 		// this should be 4985-5010(+5)
-		// 1s,30s,1m loop is inside timecyc
 ##section loop5000
 ###include "objects"
 ##endsection
@@ -385,7 +380,6 @@ public OnPlayerConnect(playerid)
 ###include "anticheat"
 ###include "login"
 ###include "objects"
-###include "playtime"
 ##endsection
 
 	return 1
@@ -407,7 +401,6 @@ public OnPlayerDisconnect(playerid, reason)
 
 ##section OnPlayerDisconnect
 ###include "anticheat"
-###include "playtime"
 ###include "vehicles"
 ###include "login" // keep this last-ish (clears logged in status)
 ###include "playername" // keep this last-ish (clears data)
@@ -443,20 +436,6 @@ OnPlayerLogin(playerid)
 ##endsection
 }
 
-native REMOVEME_onplayernowafk(playerid)
-
-//@summary Called when a player goes afk
-//@param playerid the playerid that went afk
-//@remarks {@b A player is also marked afk when they are not spawned (dead or in class select)!}
-//@seealso onPlayerWasAfk
-//@seealso isAfk
-onPlayerNowAfk(playerid)
-{
-	REMOVEME_onplayernowafk playerid
-##section onPlayerNowAfk
-###include "playtime"
-##endsection
-}
 
 public OnPlayerRequestClass(playerid, classid)
 {
@@ -506,26 +485,11 @@ public OnPlayerText(playerid, text[])
 public OnPlayerUpdate(playerid)
 {
 ##section OnPlayerUpdate
-###include "playtime"
 ###include "vehicles"
 ###include "anticheat" // keep this last (lastvehicle updated in vehicles)
 ##endsection
 
 	return B_OnPlayerUpdate(playerid)
-}
-
-native REMOVEME_onplayerwasafk(playerid)
-//@summary Gets called when a player comes back from being afk
-//@param playerid the playerid that is now back
-//@remarks {@b A player is also marked afk when they are not spawned (dead or in class select)!}
-//@seealso onPlayerNowAfk
-//@seealso isAfk
-onPlayerWasAfk(playerid)
-{
-	REMOVEME_onplayerwasafk playerid
-##section onPlayerWasAfk
-###include "playtime"
-##endsection
 }
 
 public OnVehicleSpawn(vehicleid)
@@ -570,7 +534,6 @@ export MM(function, data)
 #include "dialog"
 #include "game_sa"
 #include "login"
-#include "playtime"
 #include "objects"
 #include "vehicles"
 

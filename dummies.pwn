@@ -35,17 +35,6 @@ stock cache_get_field_flt(row, field, &Float:dest) {
 	this_function _ should_not _ be_called
 }
 
-//@summary Check if a player is afk.
-//@param playerid the playerid to check
-//@remarks Is implemented as a preprocessor replacement.
-//@remarks A player is considered to be ask if they has not sent an update for over {@b 1000ms}.
-//@remarks {@b A player is also marked afk when they are not spawned (dead or in class select)!}
-//@returns {@code 0} if the player is not afk
-//@seealso isSpawned
-stock isAfk(playerid) {
-	this_function _ should_not _ be_called
-}
-
 /* game_sa.pwn */
 
 //@summary Checks if a player is in a vehicle in the category 'air'

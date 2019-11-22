@@ -43,6 +43,7 @@ varinit
 	native REMOVEME_getplayermoney(playerid);
 	native REMOVEME_getflighttime(playerid);
 	native REMOVEME_setflighttime(playerid, flighttime);
+	native REMOVEME_setsessionid(playerid, sessionid);
 }
 
 hook OnPlayerDisconnect(playerid, reason)
@@ -73,6 +74,7 @@ hook OnPlayerConnect(playerid)
 {
 	userid[playerid] = -1
 	sessionid[playerid] = -1
+	REMOVEME_setsessionid playerid, sessionid[playerid]
 	failedlogins{playerid} = 0
 
 	#assert PLAYERNAMEVER == 1
@@ -250,6 +252,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 					endDialogTransaction playerid, TRANSACTION_LOGIN
 					hideGameTextForPlayer(playerid)
 					sessionid[playerid] = cache_insert_id()
+					REMOVEME_setsessionid playerid, sessionid[playerid]
 					loginPlayer playerid, LOGGED_IN
 					/*
 					if (sessionid[playerid] == -1) {
@@ -380,6 +383,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 					if (!isValidPlayer(playerid, cid)) return
 
 					sessionid[playerid] = cache_insert_id()
+					REMOVEME_setsessionid playerid, sessionid[playerid]
 					loginPlayer playerid, LOGGED_IN
 					format\
 						buf144,
@@ -961,6 +965,7 @@ loginAndSpawnAsGuest(playerid)
 			hideGameTextForPlayer(playerid)
 			loginPlayer playerid, LOGGED_GUEST
 			sessionid[playerid] = cache_insert_id()
+			REMOVEME_setsessionid playerid, sessionid[playerid]
 			/*
 			if (sessionid[playerid] == -1) {
 				// failed to create session

@@ -45,11 +45,12 @@ hook OnPlayerUpdate(playerid)
 hook loop100()
 {
 	foreach (new playerid : allplayers) {
-		if (isAfk(playerid) && kickprogress[playerid]) {
-			if ((kickprogress[playerid] -= 3) <= 0) {
-				Kick playerid
-			}
-		}
+		// TODO
+		//if (isAfk(playerid) && kickprogress[playerid]) {
+		//	if ((kickprogress[playerid] -= 3) <= 0) {
+		//		Kick playerid
+		//	}
+		//}
 	}
 }
 
@@ -64,9 +65,10 @@ KickDelayed(playerid, delay=1)
 		Kick playerid
 		return
 	}
-	if (isAfk(playerid)) {
-		delay = clamp(delay, 4, cellmax)
-	}
+	// TODO
+	//if (isAfk(playerid)) {
+	//	delay = clamp(delay, 4, cellmax)
+	//}
 	kickprogress[playerid] = delay
 }
 
