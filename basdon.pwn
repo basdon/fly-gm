@@ -75,7 +75,6 @@ new Iter:allplayers[MAX_PLAYERS]
 //@seealso TXT_EMPTY
 stock const TXT_EMPTY_CONST[] = "_"
 
-new tmp1
 new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
 new emptystring[] = "", underscorestring[] = "_"
 
@@ -88,6 +87,7 @@ export dummies()
 {
 	new i, Float:f
 	AddPlayerClass 0, f, f, f, f, 0, 0, 0, 0, 0, 0
+	AddStaticVehicleEx 0, f, f, f, f, 0, 0, 0, 0
 	ChangeVehicleColor 0, 0, 0
 	ClearAnimations 0, 0
 	CreateObject 0, f, f, f, f, f, f, f
@@ -98,6 +98,7 @@ export dummies()
 	DeletePlayer3DTextLabel 0, PlayerText3D:0
 	DestroyObject 0
 	DestroyPlayerObject 0, 0
+	DestroyVehicle 0
 	DisablePlayerRaceCheckpoint 0
 	ForceClassSelection 0
 	GameTextForPlayer 0, buf144, 0, 0
@@ -106,9 +107,11 @@ export dummies()
 	GetPlayerIp 0, buf144, 0
 	GetPlayerKeys 0, i, i, i
 	GetPlayerName 0, buf144, 0
+	GetPlayerPing 0
 	GetPlayerPos 0, f, f, f
 	GetPlayerState 0
 	GetPlayerVehicleID 0
+	GetPlayerVehicleSeat 0
 	GetServerTickRate
 	GetVehicleDamageStatus 0, i, i, i, i
 	GetVehicleHealth 0, f
@@ -120,6 +123,8 @@ export dummies()
 	GetVehicleZAngle 0, f
 	GivePlayerMoney 0, 0
 	GivePlayerWeapon 0, 0, 0
+	IsValidVehicle 0
+	IsVehicleStreamedIn 0, 0
 	Kick 0
 	MoveObject 0, f, f, f, f, f, f, f
 	PlayerPlaySound 0, 0, f, f, f
@@ -178,7 +183,6 @@ export dummies()
 	TogglePlayerControllable 0, 0
 	TogglePlayerSpectating 0, 0
 	UpdateVehicleDamageStatus 0, i, i, i, i
-	Veh_UpdateSlot 0, 0
 	cache_delete Cache:0
 	cache_get_row 0, 0, buf4096
 	cache_get_row_count 0
@@ -186,6 +190,7 @@ export dummies()
 	cache_get_row_float 0, 0
 	cache_insert_id
 	gettime
+	mysql_escape_string buf144, buf144, 1, 1000
 	mysql_query 0, buf4096, bool:1
 	mysql_tquery 0, buf4096, buf4096, buf4096
 	//mysql_tquery 0, buf4096
@@ -204,7 +209,6 @@ export dummies()
 ###include "game_sa"
 ###include "login"
 ###include "playername"
-###include "vehicles"
 ##endsection
 
 main()
@@ -285,23 +289,12 @@ public OnGameModeInit()
 	UsePlayerPedAnims
 	EnableStuntBonusForAll 0
 
-	new rowcount // used in airprot, vehicles
-
 	B_OnGameModeInit
-
-##section OnGameModeInit
-###include "vehicles"
-##endsection
-
 	return 1;
 }
 
 public OnGameModeExit()
 {
-##section OnGameModeExit
-###include "vehicles"
-##endsection
-
 	B_OnGameModeExit
 
 	if (mysql_unprocessed_queries() > 0) {
@@ -396,7 +389,6 @@ public OnPlayerDisconnect(playerid, reason)
 
 ##section OnPlayerDisconnect
 ###include "anticheat"
-###include "vehicles"
 ###include "login" // keep this last-ish (clears logged in status)
 ###include "playername" // keep this last-ish (clears data)
 ##endsection
@@ -422,13 +414,12 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	B_OnPlayerKeyStateChange playerid, oldkeys, newkeys
 }
 
+native REMOVEME_onplayerlogin(playerid)
 //@summary Function that gets called when a player logs in
 //@param playerid the player that just logged in
 OnPlayerLogin(playerid)
 {
-##section OnPlayerLogin
-###include "vehicles"
-##endsection
+	REMOVEME_onplayerlogin playerid
 }
 
 
@@ -460,11 +451,7 @@ public OnPlayerSpawn(playerid)
 public OnPlayerStateChange(playerid, newstate, oldstate)
 {
 	B_OnPlayerStateChange playerid, newstate, oldstate
-
-##section OnPlayerStateChange
-###include "vehicles"
-##endsection
-    return 1
+	return 1
 }
 
 public OnPlayerText(playerid, text[])
@@ -480,7 +467,6 @@ public OnPlayerText(playerid, text[])
 public OnPlayerUpdate(playerid)
 {
 ##section OnPlayerUpdate
-###include "vehicles"
 ###include "anticheat" // keep this last (lastvehicle updated in vehicles)
 ##endsection
 
@@ -490,23 +476,16 @@ public OnPlayerUpdate(playerid)
 public OnVehicleSpawn(vehicleid)
 {
 	B_OnVehicleSpawn vehicleid
-##section OnVehicleSpawn
-###include "vehicles"
-##endsection
 }
 
 public OnVehicleStreamIn(vehicleid, forplayerid)
 {
-##section OnVehicleStreamIn
-###include "vehicles"
-##endsection
+	B_OnVehicleStreamIn vehicleid, forplayerid
 }
 
 public OnVehicleStreamOut(vehicleid, forplayerid)
 {
-##section OnVehicleStreamOut
-###include "vehicles"
-##endsection
+	B_OnVehicleStreamOut vehicleid, forplayerid
 }
 
 public SSocket_OnRecv(ssocket:handle, data[], len)
@@ -529,5 +508,4 @@ export MM(function, data)
 #include "dialog"
 #include "game_sa"
 #include "login"
-#include "vehicles"
 

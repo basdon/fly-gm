@@ -40,6 +40,7 @@ varinit
 		"Names starting with @ are reserved for guests."
 	#define NAMECHANGE_TEXT_NOERR_OFFSET 60
 	native REMOVEME_getplayerodo(playerid);
+	native REMOVEME_setplayerodo(playerid, Float:iodo);
 	native REMOVEME_getplayermoney(playerid);
 	native REMOVEME_getflighttime(playerid);
 	native REMOVEME_setflighttime(playerid, flighttime);
@@ -53,7 +54,7 @@ hook OnPlayerDisconnect(playerid, reason)
 			userid[playerid],
 			GetPlayerScore(playerid),
 			REMOVEME_getplayermoney(playerid),
-			playerodo[playerid] + REMOVEME_getplayerodo(playerid),
+			REMOVEME_getplayerodo(playerid),
 			REMOVEME_getflighttime(playerid),
 			REMOVEME_getprefs(playerid),
 			buf4096
@@ -351,7 +352,7 @@ hook OnDialogResponseCase(playerid, dialogid, response, listitem, inputtext[])
 				cache_get_field_int(0, 7, groups)
 				REMOVEME_setprefs playerid, prefs
 				REMOVEME_setflighttime playerid, flighttime
-				playerodo[playerid] = float(iodo)
+				REMOVEME_setplayerodo(playerid, Float:iodo)
 				SetPlayerScore playerid, score
 				REMOVEME_setplayermoney playerid, money
 				PlayerData_UpdateGroup playerid, groups

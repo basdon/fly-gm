@@ -1,15 +1,6 @@
 
 // vim: set filetype=c ts=8 noexpandtab:
 
-#namespace "anticheat.c"
-
-//@summary Formats query to insert log into db
-//@param playerid player that triggered log
-//@param loggedstatus logged in status of the player
-//@param message message to put in log (not sqli safe)
-//@param buf the buffer where the query will be written into
-native Ac_FormatLog(playerid, loggedstatus, const message[], buf[])
-
 #namespace "basdon.c"
 
 //@summary Plugin callback for {@link B_OnDialogResponse}
@@ -75,6 +66,12 @@ native B_OnRecv(ssocket:handle, data[], len)
 //@remarks {@paramref vehicleid} is passed-by-reference because the vehicle \
            might be recreated, in which case the id will be changed
 native B_OnVehicleSpawn(&vehicleid)
+
+//@summary Plugin callback for {@link OnVehicleStreamIn}
+native B_OnVehicleStreamIn(vehicleid, forplayerid)
+
+//@summary Plugin callback for {@link OnVehicleStreamOut}
+native B_OnVehicleStreamOut(vehicleid, forplayerid)
 
 //@summary Validate the script and plugin
 //@param maxplayers pass {@code MAX_PLAYERS}, to check if the plugin has the same value for it
@@ -276,13 +273,6 @@ native Login_PasswordConfirmValidate(playerid, pwhash[])
 //@seealso Login_GetPassword
 native Login_UsePassword(playerid, buf[]);
 
-#namespace "nav.c"
-
-//@summary Resets all nav for a vehicle
-//@param vehicleid vehicle to reset nav for
-//@returns {@code 0} if nav was not enabled for vehicle
-native Nav_Reset(vehicleid)
-
 #namespace "playerdata.c"
 
 //@summary Clears login data for a player
@@ -321,93 +311,3 @@ native PlayerData_UpdateGroup(playerid, group)
 //@returns {@code 0} if there was no player data saved for {@param playerid}
 native PlayerData_UpdateName(playerid, name[], namelen)
 
-#namespace "timecyc.c"
-
-//@summary Gets the current weather message
-//@param buf buffer to store message in (should be {@code buf144})
-//@remarks {@link Timecyc_GetNextWeatherMsg} MUST be called at least once before invoking this function
-native Timecyc_GetCurrentWeatherMsg(buf[]);
-
-//@summary Gets the next weather and the message to broadcast and query string to execute for weather stats
-//@param nextweatherindex index of next weather, MUST be from {@code 0} to {@code NEXT_WEATHER_POSSIBILITIES} (exclusive)
-//@param bufmsg buffer to store message in (should be {@code buf144})
-//@param bufquery buffer to store query in to save weather statistics (should be {@code buf4096})
-//@returns the weather ID to set
-//@remarks {@code bufquery[0]} will be {@code 0} if no query should be executed
-//@remarks Also sets the current weather in the plugin for use in {@link Timecyc_GetCurrentWeatherMsg}
-native Timecyc_GetNextWeatherMsgQuery(nextweatherindex, bufmsg[], bufquery[])
-
-#namespace "vehicles.c"
-
-//@summary Adds a vehicle in the db vehicle table
-//@param dbid id of the vehicle in db
-//@param model model of the vehicle
-//@param owneruserid user id of the owning player
-//@param x saved x position
-//@param y saved y position
-//@param z saved z position
-//@param r saved z rotation
-//@param col1 first color
-//@param col2 second color
-//@param odo odometer value
-//@param ownername name of the owner
-//@returns the position of the vehicle in the vehicle table
-//@remarks table will be resized and reallocated if it's already full
-//@seealso Veh_Destroy
-//@seealso Veh_Init
-//@seealso Veh_UpdateSlot
-native Veh_Add(dbid, model, owneruserid, Float:x, Float:y, Float:z, Float:r, col1, col2, odo, ownername[])
-
-//@summary Collects all vehicles from the table that are owned by a player
-//@param userid user id of the player of whom to collect all vehicles
-//@param buf buffer to put in the vehicle data
-//@returns the amount of vehicles that were placed in {@param buf}
-//@remarks vehicles are placed in buf in following order: {@code col2, col1, r, z, y, x, model, dbid}
-native Veh_CollectPlayerVehicles(userid, buf[])
-
-//@summary Collects all vehicle owned by player that are spawned
-//@param userid user id of the player of whom to collect spawned vehicles
-//@param buf buffer to put the vehicle ids in
-//@returns the amount of vehicles that were placed in {@param buf}
-native Veh_CollectSpawnedVehicles(userid, buf[])
-
-//@summary Destroys the db vehicle table and service points table and frees used memory
-//@seealso Veh_Add
-//@seealso Veh_Init
-native Veh_Destroy();
-
-//@summary Check if there is a label on given vehicle for given player, {@b and unregister it}
-//@param vehicleid vehicle on which a label might be
-//@param playerid player for which the label would have been created
-//@param labelid the label id will be put in this variable if this returns positive
-//@returns {@code 1} if there is a label to delete, its id will be put in {@param labelid}
-native Veh_GetLabelToDelete(vehicleid, playerid, &PlayerText3D:labelid)
-
-//@summary Inits the db vehicle table
-//@param dbvehiclecount initial size of the table
-//@seealso Veh_Add
-//@seealso Veh_Destroy
-native Veh_Init(dbvehiclecount)
-
-//@summary Clears data when a player disconnects
-//@param playerid the player that disconnected
-native Veh_OnPlayerDisconnect(playerid)
-
-//@summary Let the plugin know a label was created on a vehicle for a player
-//@param vehicleid the vehicle the label is attached to
-//@param playerid the player the label was made for
-//@param labelid the label id assigned to the newly created label
-native Veh_RegisterLabel(vehicleid, playerid, PlayerText3D:labelid)
-
-//@summary Check if a label should be created on a vehicle for a player
-//@param vehicleid vehicle on which the label would be attached
-//@param playerid player for which the label would show
-//@param buf buffer to store the label text in, if this returns positive
-//@returns {@code 1} if a label should be made, with given text in {@param buf}
-native Veh_ShouldCreateLabel(vehicleid, playerid, buf[])
-
-//@summary Let the plugin know a vehicle was created or destroyed
-//@param vehicleid the id of the vehicle in SA-MP
-//@param dbid id of the vehicle in the vehicle table (returned by {@link Veh_Add}), or {@code -1} if slot is now free
-//@seealso Veh_Add
-native Veh_UpdateSlot(vehicleid, dbid)
