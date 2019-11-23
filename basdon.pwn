@@ -155,6 +155,7 @@ export dummies()
 	SetPlayerFacingAngle 0, f
 	SetPlayerHealth 0, f
 	SetPlayerMapIcon 0, 0, f, f, f, 0, 0, 0
+	SetPlayerName 0, buf144
 	SetPlayerPos 0, f, f, f
 	SetPlayerRaceCheckpoint 0, 0, f, f, f, f, f, f, f
 	SetPlayerSpecialAction 0, 0
@@ -390,7 +391,6 @@ public OnPlayerDisconnect(playerid, reason)
 ##section OnPlayerDisconnect
 ###include "anticheat"
 ###include "login" // keep this last-ish (clears logged in status)
-###include "playername" // keep this last-ish (clears data)
 ##endsection
 	iter_remove(players, playerid)
 	iter_remove(allplayers, playerid)

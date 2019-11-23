@@ -10,16 +10,12 @@ varinit
 #define NAMEOF(%0) playernames[%0][1]
 #define NAMELEN(%0) playernames[%0][0]
 	new playernames[MAX_PLAYERS][MAX_PLAYER_NAME + 2]
+	native REMOVEME_setplayername(playerid, name[])
 }
 
 hook OnPlayerConnect(playerid)
 {
 	playernames[playerid][0] = GetPlayerName(playerid, playernames[playerid][1], 20)
-}
-
-hook OnPlayerDisconnect(playerid)
-{
-	PlayerData_Clear playerid
 }
 
 //@summary Hooks {@link SetPlayerName} to cache playernames, both in script and plugin
@@ -29,22 +25,14 @@ hook OnPlayerDisconnect(playerid)
 //@remarks see {@link SetPlayerName}
 //@remarks has {@code onPlayerNameChange} section
 //@seealso SetPlayerName
-SetPlayerNameHook(playerid, const name[])
+SetPlayerNameHook(playerid, name[])
 {
-#undef SetPlayerName
-	new res = SetPlayerName(playerid, name)
-#define SetPlayerName SetPlayerNameHook
+	new res = REMOVEME_setplayername(playerid, name)
 	if (res == 1) {
 		new len = strlen(name)
 		playernames[playerid][0] = len
 		#allowmemcpywitharrayindexer
 		memcpy(playernames[playerid], name, 4, ++len * 4)
-		PlayerData_UpdateName playerid, NAMEOF(playerid), NAMELEN(playerid)
-##section onPlayerNameChange
-##endsection
-		new msg[34 + MAX_PLAYER_NAME + 1]
-		format msg, sizeof(msg), "Your name has been changed to '%s'", NAMEOF(playerid)
-		SendClientMessage playerid, COL_SAMP_GREEN, msg
 		// TODO: if we ever do name changes, broadcast to other players that someone's name changed
 	}
 	return res
