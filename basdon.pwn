@@ -191,11 +191,15 @@ export dummies()
 	cache_get_row_float 0, 0
 	cache_insert_id
 	gettime
+	mysql_connect buf144, buf144, buf144, buf144, 0, bool:0, 0
+	mysql_close
+	mysql_errno
 	mysql_escape_string buf144, buf144, 1, 1000
+	mysql_log LOG_ERROR | LOG_WARNING, LOG_TYPE_TEXT
 	mysql_query 0, buf4096, bool:1
 	mysql_tquery 0, buf4096, buf4096, buf4096
-	//mysql_tquery 0, buf4096
-	random(0)
+	mysql_unprocessed_queries
+	random 0
 	ssocket_connect ssocket:0, buf144, 0
 	ssocket_create
 	ssocket_destroy ssocket:0
@@ -267,52 +271,17 @@ public OnGameModeInit()
 		return 1
 	}
 
-	new File:mysqlfile = fopen("mysql.dat", io_read)
-	if (!mysqlfile) {
-		printf "file mysql.dat not found"
-		SendRconCommand "exit"
-		return 1
-	}
-	new creds[100]
-	fblockread mysqlfile, creds
-	fclose mysqlfile
-
-	mysql_log LOG_ERROR | LOG_WARNING
-	if (!mysql_connect("127.0.0.1", creds[creds[0]], creds[creds[1]], creds[creds[2]]) || mysql_errno() != 0) {
-		printf "no db connection"
-		SendRconCommand "exit"
-		return 1
-	}
-	//mysql_set_charset "Windows-1252"
-
 	SetGameModeText VERSION
 
 	UsePlayerPedAnims
 	EnableStuntBonusForAll 0
 
-	B_OnGameModeInit
-	return 1;
+	return B_OnGameModeInit()
 }
 
 public OnGameModeExit()
 {
-	B_OnGameModeExit
-
-	if (mysql_unprocessed_queries() > 0) {
-		new starttime = gettime()
-		do {
-			if (gettime() - starttime > 10) {
-				print "queries are taking > 10s, exiting anyways"
-				goto fuckit
-			}
-			print "waiting on queries before exiting"
-			for (new i = 0; i < 80_000_000; i++) {}
-		} while (mysql_unprocessed_queries() > 0)
-		print "done"
-	}
-fuckit:
-	mysql_close()
-	return 1
+	return B_OnGameModeExit()
 }
 
 public OnObjectMoved(objectid)
@@ -326,14 +295,6 @@ public OnPlayerCommandText(playerid, cmdtext[])
 ##section OnPlayerCommandText
 ###include "login" // login needs to be first! (to block if not logged)
 ##endsection
-
-	new uid = userid[playerid]
-	if (uid == -1) {
-		mysql_format 1, buf4096, sizeof(buf4096), "INSERT INTO cmdlog(loggedstatus,cmd) VALUES(%d,'%e')", loggedstatus[playerid], cmdtext
-	} else {
-		mysql_format 1, buf4096, sizeof(buf4096), "INSERT INTO cmdlog(player,loggedstatus,cmd) VALUES(%d,%d,'%e')", uid, loggedstatus[playerid], cmdtext
-	}
-	mysql_tquery 1, buf4096
 
 	return B_OnPlayerCommandText(playerid, cmdtext)
 }
