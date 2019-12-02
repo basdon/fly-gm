@@ -193,7 +193,7 @@ public OnPlayerConnect(playerid)
 #ifndef PROD
 	// Keep this. There are currently no code effects of PROD,
 	// but it does influence compiler flags.
-	SendClientMessage playerid, COL_WARN, "GM: DEVELOPMENT BUILD"
+	SendClientMessage playerid, 0xe84c3dff, "GM: DEVELOPMENT BUILD"
 #endif
 	return B_OnPlayerConnect(playerid)
 }
