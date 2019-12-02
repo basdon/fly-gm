@@ -1,88 +1,29 @@
 
 // vim: set filetype=c ts=8 noexpandtab:
 
-#include "dummies"
 #include <a_samp>
 #include <a_http>
 #include <a_mysql_min>
 #include <bcrypt>
 #include <simplesocket>
-#include "simpleiter"
-#include "util"
-#include "settings"
 #include "natives"
 
 #pragma tabsize 0 // it does not go well with some macros and preprocess
-
-#define VERSION "0.1"
 
 #undef MAX_PLAYERS
 #include "sharedsymbols"
 #ifndef MAX_PLAYERS
 #error "no MAX_PLAYERS"
 #endif
-#define SLOTS MAX_PLAYERS
 
 #define export%0\32%1(%2) forward %1(%2);public %1(%2)
 
-#define cos(%0) floatcos(%0, degrees)
-#define sin(%0) floatsin(%0, degrees)
-#define tan(%0) floattan(%0, degrees)
-#define strcicmp(%0) strcmp(%0, .ignorecase=true)
-#define strcscmp(%0) strcmp(%0, .ignorecase=false)
-#define atoi strval
-#define FLOAT_PINF (Float:0x7F800000)
-#define FLOAT_NINF (Float:0xFF800000)
-#define WARNMSG(%0) SendClientMessage(playerid, COL_WARN, WARN%0)
-#define WARNMSGPB144(%0) strunpack(buf144, !WARN%0);SendClientMessage(playerid, COL_WARN, buf144)
-
-// public symbols
-#define PUB_LOOP25 ba // basdon
-#define PUB_LOGIN_USERCHECK_CB la // login
-#define PUB_LOGIN_REGISTER_CB lb // login
-#define PUB_LOGIN_PWVERIFY_CB lc // login
-#define PUB_LOGIN_CREATE_GUEST_SES ld // login
-#define PUB_LOGIN_GUESTREGISTERUSERCHECK_CB le // login
-#define PUB_LOGIN_GUESTREGISTER_CB lf // login
-#define PUB_LOGIN_CHANGEPASS_CHECK_CB lg // login
-#define PUB_LOGIN_CHANGEPASS_CHANGE_CB lh // login
-#define PUB_LOGIN_LOADACCOUNT_CB li // login
-#define PUB_LOGIN_CREATEGAMESESSION_CB lj // login
-#define PUB_LOGIN_GUESTREGISTER_HASHPW_CB lk // login
-#define PUB_LOGIN_CHANGEPASS_HASHPW_CB ll // login
-#define PUB_LOGIN_CREATE_GUEST_USR lm // login
-#define PUB_LOGIN_REGISTER_HASHPW_CB ln // login
-#define PUB_LOGIN_CREATE_NEWUSER_SES lo // login
-
 #namespace "basdon"
-
-//@summary Checks if a float is any NaN
-//@param n number to check for NaN-ness
-//@returns {@code 1} if {@param n} is any NaN
-stock isNaN(Float:n)
-{
-	return (_:n | 0x807FFFFF) == -1 && (_:n & 0x007FFFFF)
-}
-
-//@summary Iter that contains {@b logged in (or guest)} players
-new Iter:players[MAX_PLAYERS]
-
-//@summary Iter that contains {@b all} players
-new Iter:allplayers[MAX_PLAYERS]
-
-//@summary Just an underscore used as empty text for dialogs, textdraws, ...
-//@remarks stock const
-//@seealso TXT_EMPTY
-stock const TXT_EMPTY_CONST[] = "_"
 
 new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
 new emptystring[] = "", underscorestring[] = "_"
 
-native REMOVEME_onplayerreqclassimpl(playerid,classid)
-native REMOVEME_setprefs(playerid, prefs)
-native REMOVEME_getprefs(playerid)
-
-//@summary Function that should never be called, does dummy calls to natives to make {@code SYSREQ.C} happy
+//@summary Dummy function to fill the native table.
 export dummies()
 {
 	new i, Float:f
@@ -99,7 +40,9 @@ export dummies()
 	DestroyObject 0
 	DestroyPlayerObject 0, 0
 	DestroyVehicle 0
+	DisablePlayerCheckpoint 0
 	DisablePlayerRaceCheckpoint 0
+	EnableStuntBonusForAll 0
 	ForceClassSelection 0
 	GameTextForPlayer 0, buf144, 0, 0
 	GetConsoleVarAsInt buf144
@@ -109,6 +52,7 @@ export dummies()
 	GetPlayerName 0, buf144, 0
 	GetPlayerPing 0
 	GetPlayerPos 0, f, f, f
+	GetPlayerScore 0
 	GetPlayerState 0
 	GetPlayerVehicleID 0
 	GetPlayerVehicleSeat 0
@@ -145,9 +89,11 @@ export dummies()
 	RemovePlayerMapIcon 0, 0
 	RepairVehicle 0
 	ResetPlayerMoney 0
+	SHA256_PassHash buf144, buf144, buf144, 0
 	SendClientMessage 0, 0, buf144
 	SendClientMessageToAll 0, buf144
 	SendRconCommand buf144
+	SetGameModeText buf144
 	SetCameraBehindPlayer 0
 	SetPlayerCameraPos 0, f, f, f
 	SetPlayerCameraLookAt 0, f, f, f
@@ -158,6 +104,7 @@ export dummies()
 	SetPlayerName 0, buf144
 	SetPlayerPos 0, f, f, f
 	SetPlayerRaceCheckpoint 0, 0, f, f, f, f, f, f, f
+	SetPlayerScore 0, 0
 	SetPlayerSpecialAction 0, 0
 	SetPlayerTime 0, 0, 0
 	SetPlayerWeather 0, 0
@@ -184,6 +131,11 @@ export dummies()
 	TogglePlayerControllable 0, 0
 	TogglePlayerSpectating 0, 0
 	UpdateVehicleDamageStatus 0, i, i, i, i
+	UsePlayerPedAnims
+	bcrypt_check buf144, buf144, buf144, buf144
+	bcrypt_get_hash buf144
+	bcrypt_hash buf144, 0, buf144, buf144
+	bcrypt_is_equal
 	cache_delete Cache:0
 	cache_get_row 0, 0, buf4096
 	cache_get_row_count 0
@@ -208,74 +160,21 @@ export dummies()
 	tickcount
 }
 
-##section varinit
-###include "anticheat"
-###include "dialog"
-###include "game_sa"
-###include "login"
-###include "playername"
-##endsection
-
 main()
 {
-	// beware: sometimes main() gets called after OnGameModeInit
-	print "  Loaded gamemode basdon-fly "#VERSION"\n"
-##section init
-##endsection
-	SetTimer #PUB_LOOP25, 25, .repeating=1
-}
-
-//@summary Basic loop that handles (almost) all timed stuff.
-export __SHORTNAMED PUB_LOOP25()
-{
-	static lastinvoctime = 0
-	static invoc = 0
-
-##section loop25
-##endsection
-	invoc = (++invoc & 0x3)
-	if (!invoc) {
-##section loop100
-###include "anticheat"
-##endsection
-		invoc = 0
-	}
-	new _tc = tickcount()
-	if (_tc - lastinvoctime > 4984) {
-		// this should be 4985-5010(+5)
-		lastinvoctime = _tc
-	}
 }
 
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
-	if (!B_OnDialogResponse(playerid, dialogid, response, listitem, inputtext)) {
-		return 0
-	}
-
-##section OnDialogResponseCase
-	switch (dialogid) {
-	case DIALOG_DUMMY: return 1
-###include "login"
-	}
-##endsection
-	return 0
+	return B_OnDialogResponse(
+		playerid, dialogid, response, listitem, inputtext)
 }
 
 public OnGameModeInit()
 {
-	if (!B_Validate(MAX_PLAYERS, buf4096, buf144, buf64, buf32, buf32_1,
-		emptystring, underscorestring))
-	{
-		SendRconCommand "exit"
-		return 1
-	}
-
-	SetGameModeText VERSION
-
-	UsePlayerPedAnims
-	EnableStuntBonusForAll 0
-
+	B_Validate(
+		MAX_PLAYERS, buf4096, buf144, buf64, buf32, buf32_1,
+		emptystring, underscorestring)
 	return B_OnGameModeInit()
 }
 
@@ -284,85 +183,34 @@ public OnGameModeExit()
 	return B_OnGameModeExit()
 }
 
-public OnObjectMoved(objectid)
-{
-##section OnObjectMoved
-##endsection
-}
-
 public OnPlayerCommandText(playerid, cmdtext[])
 {
-##section OnPlayerCommandText
-###include "login" // login needs to be first! (to block if not logged)
-##endsection
-
 	return B_OnPlayerCommandText(playerid, cmdtext)
-}
-
-//@summary Called from plugin after {@link OnPlayerCommandText} and processing plugin commands
-//@param hash hash of the command
-export OnPlayerCommandTextHash(playerid, hash, cmdtext[])
-{
-	new idx
-	switch (hash) {
-##section OnPlayerCommandTextCase
-###include "login"
-##endsection
-	}
-
-	return 0
 }
 
 public OnPlayerConnect(playerid)
 {
-	DisablePlayerCheckpoint(playerid)
-	DisablePlayerRaceCheckpoint(playerid)
-
-	iter_add(allplayers, playerid)
-
 #ifndef PROD
+	// Keep this. There are currently no code effects of PROD,
+	// but it does influence compiler flags.
 	SendClientMessage playerid, COL_WARN, "GM: DEVELOPMENT BUILD"
 #endif
-
-	B_OnPlayerConnect playerid
-
-##section OnPlayerConnect
-###include "playername" // keep this second (sets data: name, ip, ..)
-###include "anticheat"
-###include "login"
-##endsection
-
-	return 1
+	return B_OnPlayerConnect(playerid)
 }
 
 public OnPlayerDeath(playerid, killerid, reason)
 {
-	if (!isPlaying(playerid)) {
-		return 0
-	}
-
-	B_OnPlayerDeath playerid, killerid, reason
-	return 1
+	return B_OnPlayerDeath(playerid, killerid, reason)
 }
 
 public OnPlayerDisconnect(playerid, reason)
 {
-	B_OnPlayerDisconnect playerid, reason
-
-##section OnPlayerDisconnect
-###include "anticheat"
-###include "login" // keep this last-ish (clears logged in status)
-##endsection
-	iter_remove(players, playerid)
-	iter_remove(allplayers, playerid)
-
-	return 1
+	return B_OnPlayerDisconnect(playerid, reason)
 }
 
 public OnPlayerEnterRaceCheckpoint(playerid)
 {
-	B_OnPlayerEnterRaceCP playerid
-	return 1
+	return B_OnPlayerEnterRaceCP(playerid)
 }
 
 public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
@@ -375,62 +223,33 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	B_OnPlayerKeyStateChange playerid, oldkeys, newkeys
 }
 
-native REMOVEME_onplayerlogin(playerid)
-//@summary Function that gets called when a player logs in
-//@param playerid the player that just logged in
-OnPlayerLogin(playerid)
-{
-	REMOVEME_onplayerlogin playerid
-}
-
-
 public OnPlayerRequestClass(playerid, classid)
 {
-	B_OnPlayerRequestClass playerid, classid
-	return 1
+	return B_OnPlayerRequestClass(playerid, classid)
 }
 
 public OnPlayerRequestSpawn(playerid)
 {
-##section OnPlayerRequestSpawn
-###include "login" // login needs to be first! (to block if not logged)
-##endsection
 	return B_OnPlayerRequestSpawn(playerid)
 }
 
 public OnPlayerSpawn(playerid)
 {
-	if (!isPlaying(playerid)) {
-		return 0
-	}
-
-	B_OnPlayerSpawn playerid
-
-	return 1
+	return B_OnPlayerSpawn(playerid)
 }
 
 public OnPlayerStateChange(playerid, newstate, oldstate)
 {
-	B_OnPlayerStateChange playerid, newstate, oldstate
-	return 1
+	return B_OnPlayerStateChange(playerid, newstate, oldstate)
 }
 
 public OnPlayerText(playerid, text[])
 {
-##section OnPlayerText
-###include "login" // login needs to be first! (to block if not logged)
-##endsection
-
-	B_OnPlayerText playerid, text
-	return 1
+	return B_OnPlayerText(playerid, text)
 }
 
 public OnPlayerUpdate(playerid)
 {
-##section OnPlayerUpdate
-###include "anticheat" // keep this last (lastvehicle updated in vehicles)
-##endsection
-
 	return B_OnPlayerUpdate(playerid)
 }
 
@@ -461,12 +280,6 @@ public OnQueryError(errorid, error[], callback[], query[], connectionHandle)
 
 export MM(function, data)
 {
-	B_OnMysqlResponse function, data
+	B_OnCallbackHit function, data
 }
-
-#include "anticheat"
-#include "playername" // try to keep this top-ish (for onPlayerNameChange section)
-#include "dialog"
-#include "game_sa"
-#include "login"
 
