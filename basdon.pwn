@@ -2,19 +2,13 @@
 // vim: set filetype=c ts=8 noexpandtab:
 
 // stack/heap size:
-// compiler report says estimated max is 16 cells
-// that does not include heap space needed for vararg calls
-// might not include heap space needed for pass-by-reference parameters
-#pragma dynamic 36
-
-native B_Validate(
-	buf4096[], buf144[], buf64[], buf32[], buf32_1[],
-	emptystring[], underscorestring[])
+// - compiler report says estimated max is 16 cells
+// - that does not include heap space needed for vararg calls
+// - might not include heap space needed for pass-by-reference parameters
+// - on top of that, samp/plugins might push strings, which need heapspace...
+#pragma dynamic 512
 
 #define export%0\32%1(%2) forward %1(%2);public %1(%2)
-
-new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
-new emptystring[] = "", underscorestring[] = "_"
 
 #define NATIVE_ENTRY ();native
 forward __UNUSED
@@ -44,10 +38,10 @@ export OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 export OnGameModeInit()
 {
-	B_Validate(
-		buf4096, buf144, buf64, buf32, buf32_1,
-		emptystring, underscorestring)
-	return B_OnGameModeInit()
+#emit STACK 0x8
+#emit SYSREQ.C B_OnGameModeInit
+#emit STACK 0xfffffff8
+#emit RETN
 }
 
 export OnGameModeExit()
