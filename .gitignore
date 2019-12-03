@@ -1,7 +1,1 @@
-/p/**
-!/p/
-!/p/.gitkeep
 /out/**
-!/out/
-!/out/.gitkeep
-*.xml
