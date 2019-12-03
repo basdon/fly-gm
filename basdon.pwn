@@ -1,285 +1,206 @@
 
 // vim: set filetype=c ts=8 noexpandtab:
 
-#include <a_samp>
-#include <a_http>
-#include <a_mysql_min>
-#include <bcrypt>
-#include <simplesocket>
-#include "natives"
+native printf(const format[], {Float,_}:...)
+native B_Validate(
+	buf4096[], buf144[], buf64[], buf32[], buf32_1[],
+	emptystring[], underscorestring[])
 
 #pragma tabsize 0 // it does not go well with some macros and preprocess
 
-#undef MAX_PLAYERS
-#include "sharedsymbols"
-#ifndef MAX_PLAYERS
-#error "no MAX_PLAYERS"
-#endif
-
 #define export%0\32%1(%2) forward %1(%2);public %1(%2)
-
-#namespace "basdon"
 
 new buf4096[4096], buf144[144], buf64[64], buf32[32], buf32_1[32]
 new emptystring[] = "", underscorestring[] = "_"
 
-//@summary Dummy function to fill the native table.
+#define NATIVE_ENTRY ();native
+forward __UNUSED
+###include "natives"
+()
+#undef NATIVE_ENTRY
+
 export dummies()
 {
-	new i, Float:f
-	AddPlayerClass 0, f, f, f, f, 0, 0, 0, 0, 0, 0
-	AddStaticVehicleEx 0, f, f, f, f, 0, 0, 0, 0
-	ChangeVehicleColor 0, 0, 0
-	ClearAnimations 0, 0
-	CreateObject 0, f, f, f, f, f, f, f
-	CreatePlayer3DTextLabel 0, buf144, 0, f, f, f, f
-	CreatePlayerObject 0, 0, f, f, f, f, f, f, f
-	CreatePlayerTextDraw 0, f, f, buf144
-	CreateVehicle 0, f, f, f, f, 0, 0, 0, 0
-	DeletePlayer3DTextLabel 0, PlayerText3D:0
-	DestroyObject 0
-	DestroyPlayerObject 0, 0
-	DestroyVehicle 0
-	DisablePlayerCheckpoint 0
-	DisablePlayerRaceCheckpoint 0
-	EnableStuntBonusForAll 0
-	ForceClassSelection 0
-	GameTextForPlayer 0, buf144, 0, 0
-	GetConsoleVarAsInt buf144
-	GetPlayerFacingAngle 0, f
-	GetPlayerIp 0, buf144, 0
-	GetPlayerKeys 0, i, i, i
-	GetPlayerName 0, buf144, 0
-	GetPlayerPing 0
-	GetPlayerPos 0, f, f, f
-	GetPlayerScore 0
-	GetPlayerState 0
-	GetPlayerVehicleID 0
-	GetPlayerVehicleSeat 0
-	GetServerTickRate
-	GetVehicleDamageStatus 0, i, i, i, i
-	GetVehicleHealth 0, f
-	GetVehicleModel 0
-	GetVehicleParamsEx 0, i, i, i, i, i, i, i
-	GetVehiclePos 0, f, f, f
-	GetVehicleRotationQuat 0, f, f, f, f
-	GetVehicleVelocity 0, f, f, f
-	GetVehicleZAngle 0, f
-	GivePlayerMoney 0, 0
-	GivePlayerWeapon 0, 0, 0
-	IsValidVehicle 0
-	IsVehicleStreamedIn 0, 0
-	Kick 0
-	MoveObject 0, f, f, f, f, f, f, f
-	PlayerPlaySound 0, 0, f, f, f
-	PlayerTextDrawAlignment 0, PlayerText:0, 0
-	PlayerTextDrawBackgroundColor 0, PlayerText:0, 0
-	PlayerTextDrawColor 0, PlayerText:0, 0
-	PlayerTextDrawDestroy 0, PlayerText:0
-	PlayerTextDrawFont 0, PlayerText:0, 0
-	PlayerTextDrawHide 0, PlayerText:0
-	PlayerTextDrawLetterSize 0, PlayerText:0, f, f
-	PlayerTextDrawSetOutline 0, PlayerText:0, 1
-	PlayerTextDrawSetProportional 0, PlayerText:0, 1
-	PlayerTextDrawSetShadow 0, PlayerText:0, 0
-	PlayerTextDrawSetString 0, PlayerText:0, buf144
-	PlayerTextDrawShow 0, PlayerText:0
-	PutPlayerInVehicle 0, 0, 0
-	RemoveBuildingForPlayer 0, 0, f, f, f, f
-	RemovePlayerMapIcon 0, 0
-	RepairVehicle 0
-	ResetPlayerMoney 0
-	SHA256_PassHash buf144, buf144, buf144, 0
-	SendClientMessage 0, 0, buf144
-	SendClientMessageToAll 0, buf144
-	SendRconCommand buf144
-	SetGameModeText buf144
-	SetCameraBehindPlayer 0
-	SetPlayerCameraPos 0, f, f, f
-	SetPlayerCameraLookAt 0, f, f, f
-	SetPlayerColor 0, 0
-	SetPlayerFacingAngle 0, f
-	SetPlayerHealth 0, f
-	SetPlayerMapIcon 0, 0, f, f, f, 0, 0, 0
-	SetPlayerName 0, buf144
-	SetPlayerPos 0, f, f, f
-	SetPlayerRaceCheckpoint 0, 0, f, f, f, f, f, f, f
-	SetPlayerScore 0, 0
-	SetPlayerSpecialAction 0, 0
-	SetPlayerTime 0, 0, 0
-	SetPlayerWeather 0, 0
-	SetSpawnInfo 0, 0, 0, f, f, f, f, 0, 0, 0, 0, 0, 0
-	SetVehicleHealth 0, f
-	SetVehicleParamsEx 0, 0, 0, 0, 0, 0, 0, 0
-	SetVehicleToRespawn 0
-	ShowPlayerDialog 0, 0, 0, buf144, buf144, buf144, buf144
-	SpawnPlayer 0
-	TextDrawAlignment Text:0, 0
-	TextDrawBoxColor Text:0, 0
-	TextDrawColor Text:0, 0
-	TextDrawCreate f, f, buf144
-	TextDrawFont Text:0, 0
-	TextDrawHideForPlayer 0, Text:0
-	TextDrawLetterSize Text:0, f, f
-	TextDrawSetOutline Text:0, 0
-	TextDrawSetProportional Text:0, 1
-	TextDrawSetShadow Text:0, 0
-	TextDrawShowForPlayer 0, Text:0
-	TextDrawTextSize Text:0, f, f
-	TextDrawUseBox Text:0, 1
-	TogglePlayerClock 0, 0
-	TogglePlayerControllable 0, 0
-	TogglePlayerSpectating 0, 0
-	UpdateVehicleDamageStatus 0, i, i, i, i
-	UsePlayerPedAnims
-	bcrypt_check buf144, buf144, buf144, buf144
-	bcrypt_get_hash buf144
-	bcrypt_hash buf144, 0, buf144, buf144
-	bcrypt_is_equal
-	cache_delete Cache:0
-	cache_get_row 0, 0, buf4096
-	cache_get_row_count 0
-	cache_get_row_int 0, 0
-	cache_get_row_float 0, 0
-	cache_insert_id
-	gettime
-	mysql_connect buf144, buf144, buf144, buf144, 0, bool:0, 0
-	mysql_close
-	mysql_errno
-	mysql_escape_string buf144, buf144, 1, 1000
-	mysql_log LOG_ERROR | LOG_WARNING, LOG_TYPE_TEXT
-	mysql_query 0, buf4096, bool:1
-	mysql_tquery 0, buf4096, buf4096, buf4096
-	mysql_unprocessed_queries
-	random 0
-	ssocket_connect ssocket:0, buf144, 0
-	ssocket_create
-	ssocket_destroy ssocket:0
-	ssocket_listen ssocket:0, 0
-	ssocket_send ssocket:0, buf144, 0
-	tickcount
+#define NATIVE_ENTRY
+###include "natives"
 }
 
 main()
 {
 }
 
-public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+export OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
-	return B_OnDialogResponse(
-		playerid, dialogid, response, listitem, inputtext)
+#emit STACK 0x8
+#emit SYSREQ.C B_OnDialogResponse
+#emit STACK 0xfffffff8
+#emit RETN
 }
 
-public OnGameModeInit()
+export OnGameModeInit()
 {
 	B_Validate(
-		MAX_PLAYERS, buf4096, buf144, buf64, buf32, buf32_1,
+		buf4096, buf144, buf64, buf32, buf32_1,
 		emptystring, underscorestring)
 	return B_OnGameModeInit()
 }
 
-public OnGameModeExit()
+export OnGameModeExit()
 {
-	return B_OnGameModeExit()
+#emit STACK 0x8
+#emit SYSREQ.C B_OnGameModeExit
+#emit STACK 0xfffffff8
+#emit RETN
 }
 
-public OnPlayerCommandText(playerid, cmdtext[])
+export OnPlayerCommandText(playerid, cmdtext[])
 {
-	return B_OnPlayerCommandText(playerid, cmdtext)
+#emit STACK 0x8
+#emit SYSREQ.C B_OnPlayerCommandText
+#emit STACK 0xfffffff8
+#emit RETN
 }
 
-public OnPlayerConnect(playerid)
+export OnPlayerConnect(playerid)
 {
-#ifndef PROD
-	// Keep this. There are currently no code effects of PROD,
-	// but it does influence compiler flags.
-	SendClientMessage playerid, 0xe84c3dff, "GM: DEVELOPMENT BUILD"
-#endif
-	return B_OnPlayerConnect(playerid)
+#emit STACK 0x8
+#emit SYSREQ.C B_OnPlayerConnect
+#emit STACK 0xfffffff8
+#emit RETN
 }
 
-public OnPlayerDeath(playerid, killerid, reason)
+export OnPlayerDeath(playerid, killerid, reason)
 {
-	return B_OnPlayerDeath(playerid, killerid, reason)
+#emit STACK 0x8
+#emit SYSREQ.C B_OnPlayerDeath
+#emit STACK 0xfffffff8
+#emit RETN
 }
 
-public OnPlayerDisconnect(playerid, reason)
+export OnPlayerDisconnect(playerid, reason)
 {
-	return B_OnPlayerDisconnect(playerid, reason)
+#emit STACK 0x8
+#emit SYSREQ.C B_OnPlayerDisconnect
+#emit STACK 0xfffffff8
+#emit RETN
 }
 
-public OnPlayerEnterRaceCheckpoint(playerid)
+export OnPlayerEnterRaceCheckpoint(playerid)
 {
-	return B_OnPlayerEnterRaceCP(playerid)
+#emit STACK 0x8
+#emit SYSREQ.C B_OnPlayerEnterRaceCP
+#emit STACK 0xfffffff8
+#emit RETN
 }
 
-public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
+export OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
-	B_OnPlayerEnterVehicle playerid, vehicleid, ispassenger
+#emit STACK 0x8
+#emit SYSREQ.C B_OnPlayerEnterVehicle
+#emit STACK 0xfffffff8
+#emit RETN
 }
 
-public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+export OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	B_OnPlayerKeyStateChange playerid, oldkeys, newkeys
+#emit STACK 0x8
+#emit SYSREQ.C B_OnPlayerKeyStateChange
+#emit STACK 0xfffffff8
+#emit RETN
 }
 
-public OnPlayerRequestClass(playerid, classid)
+export OnPlayerRequestClass(playerid, classid)
 {
-	return B_OnPlayerRequestClass(playerid, classid)
+#emit STACK 0x8
+#emit SYSREQ.C B_OnPlayerRequestClass
+#emit STACK 0xfffffff8
+#emit RETN
 }
 
-public OnPlayerRequestSpawn(playerid)
+export OnPlayerRequestSpawn(playerid)
 {
-	return B_OnPlayerRequestSpawn(playerid)
+#emit STACK 0x8
+#emit SYSREQ.C B_OnPlayerRequestSpawn
+#emit STACK 0xfffffff8
+#emit RETN
 }
 
-public OnPlayerSpawn(playerid)
+export OnPlayerSpawn(playerid)
 {
-	return B_OnPlayerSpawn(playerid)
+#emit STACK 0x8
+#emit SYSREQ.C B_OnPlayerSpawn
+#emit STACK 0xfffffff8
+#emit RETN
 }
 
-public OnPlayerStateChange(playerid, newstate, oldstate)
+export OnPlayerStateChange(playerid, newstate, oldstate)
 {
-	return B_OnPlayerStateChange(playerid, newstate, oldstate)
+#emit STACK 0x8
+#emit SYSREQ.C B_OnPlayerStateChange
+#emit STACK 0xfffffff8
+#emit RETN
 }
 
-public OnPlayerText(playerid, text[])
+export OnPlayerText(playerid, text[])
 {
-	return B_OnPlayerText(playerid, text)
+#emit STACK 0x8
+#emit SYSREQ.C B_OnPlayerText
+#emit STACK 0xfffffff8
+#emit RETN
 }
 
-public OnPlayerUpdate(playerid)
+export OnPlayerUpdate(playerid)
 {
-	return B_OnPlayerUpdate(playerid)
+#emit STACK 0x8
+#emit SYSREQ.C B_OnPlayerUpdate
+#emit STACK 0xfffffff8
+#emit RETN
 }
 
-public OnVehicleSpawn(vehicleid)
+export OnVehicleSpawn(vehicleid)
 {
-	B_OnVehicleSpawn vehicleid
+#emit STACK 0x8
+#emit SYSREQ.C B_OnVehicleSpawn
+#emit STACK 0xfffffff8
+#emit RETN
 }
 
-public OnVehicleStreamIn(vehicleid, forplayerid)
+export OnVehicleStreamIn(vehicleid, forplayerid)
 {
-	B_OnVehicleStreamIn vehicleid, forplayerid
+#emit STACK 0x8
+#emit SYSREQ.C B_OnVehicleStreamIn
+#emit STACK 0xfffffff8
+#emit RETN
 }
 
-public OnVehicleStreamOut(vehicleid, forplayerid)
+export OnVehicleStreamOut(vehicleid, forplayerid)
 {
-	B_OnVehicleStreamOut vehicleid, forplayerid
+#emit STACK 0x8
+#emit SYSREQ.C B_OnVehicleStreamOut
+#emit STACK 0xfffffff8
+#emit RETN
 }
 
-public SSocket_OnRecv(ssocket:handle, data[], len)
+export SSocket_OnRecv(ssocket:handle, data[], len)
 {
-	B_OnRecv handle, data, len
+#emit STACK 0x8
+#emit SYSREQ.C B_OnRecv
+#emit STACK 0xfffffff8
+#emit RETN
 }
 
-public OnQueryError(errorid, error[], callback[], query[], connectionHandle)
+export OnQueryError(errorid, error[], callback[], query[], connectionHandle)
 {
-	printf "query err %d - %s - %s - %s", errorid, error, callback, query
+#emit STACK 0x8
+#emit SYSREQ.C B_OnQueryError
+#emit STACK 0xfffffff8
+#emit RETN
 }
 
 export MM(function, data)
 {
-	B_OnCallbackHit function, data
+#emit STACK 0x8
+#emit SYSREQ.C B_OnCallbackHit
+#emit STACK 0xfffffff8
+#emit RETN
 }
-

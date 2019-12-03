@@ -17,13 +17,18 @@ IF [%~1] EQU [make] (
 	EXIT /B
 )
 
-SET "_EXTRAFLAGS=%~1"
-SET "_FLAGS=-d3 -O1"
+REM always do prod builds now, since gm is pretty much empty
 
-IF [%~1] EQU [prod] (
-        set "_EXTRAFLAGS=PROD=1"
-        set "_FLAGS=-d0 -O0"
-)
+REM SET "_EXTRAFLAGS=%~1"
+REM SET "_FLAGS=-d3 -O0"
+REM
+REM IF [%~1] EQU [prod] (
+REM	set "_EXTRAFLAGS=PROD=1 %~2"
+REM	set "_FLAGS=-d0 -O1"
+REM )
+
+set "_EXTRAFLAGS=%~1"
+set "_FLAGS=-d0 -O1"
 
 IF [%~1] EQU [nomake] (
 	SET "_EXTRAFLAGS="
