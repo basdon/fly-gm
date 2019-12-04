@@ -6,7 +6,8 @@
 // - that does not include heap space needed for vararg calls
 // - might not include heap space needed for pass-by-reference parameters
 // - on top of that, samp/plugins might push strings, which need heapspace...
-#pragma dynamic 512
+// TODO: lower this again (to 512?) when ssocket is added into the plugin
+#pragma dynamic 8192
 
 #define export%0\32%1(%2) forward %1(%2);public %1(%2)
 
