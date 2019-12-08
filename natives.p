@@ -87,6 +87,7 @@ NATIVE_ENTRY ResetPlayerMoney
 NATIVE_ENTRY SHA256_PassHash
 NATIVE_ENTRY SendClientMessage
 NATIVE_ENTRY SendClientMessageToAll
+NATIVE_ENTRY SendDeathMessage
 NATIVE_ENTRY SendRconCommand
 NATIVE_ENTRY SetGameModeText
 NATIVE_ENTRY SetCameraBehindPlayer
