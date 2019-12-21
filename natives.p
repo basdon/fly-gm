@@ -128,6 +128,7 @@ NATIVE_ENTRY TogglePlayerControllable
 NATIVE_ENTRY TogglePlayerSpectating
 NATIVE_ENTRY UpdateVehicleDamageStatus
 NATIVE_ENTRY UsePlayerPedAnims
+NATIVE_ENTRY gpci
 NATIVE_ENTRY random
 NATIVE_ENTRY tickcount
 // bcrypt
