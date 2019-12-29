@@ -57,6 +57,7 @@ NATIVE_ENTRY GetVehicleHealth
 NATIVE_ENTRY GetVehicleModel
 NATIVE_ENTRY GetVehicleParamsEx
 NATIVE_ENTRY GetVehiclePos
+NATIVE_ENTRY GetVehiclePoolSize
 NATIVE_ENTRY GetVehicleRotationQuat
 NATIVE_ENTRY GetVehicleVelocity
 NATIVE_ENTRY GetVehicleZAngle
