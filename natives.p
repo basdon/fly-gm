@@ -107,7 +107,9 @@ NATIVE_ENTRY SetPlayerWeather
 NATIVE_ENTRY SetSpawnInfo
 NATIVE_ENTRY SetVehicleHealth
 NATIVE_ENTRY SetVehicleParamsEx
+NATIVE_ENTRY SetVehiclePos
 NATIVE_ENTRY SetVehicleToRespawn
+NATIVE_ENTRY SetVehicleZAngle
 NATIVE_ENTRY ShowPlayerDialog
 NATIVE_ENTRY SpawnPlayer
 NATIVE_ENTRY TextDrawAlignment
