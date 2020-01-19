@@ -47,6 +47,12 @@ export OnGameModeExit()
 #emit RETN
 }
 
+export OnIncomingConnection(playerid, ip_address[], port)
+{
+#emit SYSREQ.C B_OnIncomingConnection
+#emit RETN
+}
+
 export OnPlayerCommandText(playerid, cmdtext[])
 {
 #emit SYSREQ.C B_OnPlayerCommandText

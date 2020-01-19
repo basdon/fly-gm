@@ -3,6 +3,7 @@ NATIVE_ENTRY B_OnCallbackHit
 NATIVE_ENTRY B_OnDialogResponse
 NATIVE_ENTRY B_OnGameModeExit
 NATIVE_ENTRY B_OnGameModeInit
+NATIVE_ENTRY B_OnIncomingConnection
 NATIVE_ENTRY B_OnPlayerCommandText
 NATIVE_ENTRY B_OnPlayerConnect
 NATIVE_ENTRY B_OnPlayerDeath
