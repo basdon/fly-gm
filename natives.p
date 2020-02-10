@@ -71,6 +71,7 @@ NATIVE_ENTRY MoveObject
 NATIVE_ENTRY PlayerPlaySound
 NATIVE_ENTRY PlayerTextDrawAlignment
 NATIVE_ENTRY PlayerTextDrawBackgroundColor
+NATIVE_ENTRY PlayerTextDrawBoxColor
 NATIVE_ENTRY PlayerTextDrawColor
 NATIVE_ENTRY PlayerTextDrawDestroy
 NATIVE_ENTRY PlayerTextDrawFont
@@ -81,6 +82,7 @@ NATIVE_ENTRY PlayerTextDrawSetProportional
 NATIVE_ENTRY PlayerTextDrawSetShadow
 NATIVE_ENTRY PlayerTextDrawSetString
 NATIVE_ENTRY PlayerTextDrawShow
+NATIVE_ENTRY PlayerTextDrawUseBox
 NATIVE_ENTRY PutPlayerInVehicle
 NATIVE_ENTRY RemoveBuildingForPlayer
 NATIVE_ENTRY RemovePlayerMapIcon
