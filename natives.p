@@ -82,6 +82,7 @@ NATIVE_ENTRY PlayerTextDrawSetProportional
 NATIVE_ENTRY PlayerTextDrawSetShadow
 NATIVE_ENTRY PlayerTextDrawSetString
 NATIVE_ENTRY PlayerTextDrawShow
+NATIVE_ENTRY PlayerTextDrawTextSize
 NATIVE_ENTRY PlayerTextDrawUseBox
 NATIVE_ENTRY PutPlayerInVehicle
 NATIVE_ENTRY RemoveBuildingForPlayer
